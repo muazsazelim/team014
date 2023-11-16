@@ -41,7 +41,7 @@ public class HashedPasswordGenerator {
     }
 
     public static void main(String[] args) {
-        char[] password = "asd@456".toCharArray();
+        char[] password = "password1234".toCharArray();
         String hashedPassword = hashPassword(password);
 
         System.out.println("Original Password: " + String.valueOf(password));
