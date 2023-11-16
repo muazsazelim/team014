@@ -1,4 +1,4 @@
-package com.sheffield;
+package com.sheffield.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
