@@ -1,7 +1,7 @@
 
 // Main.java
-import com.sheffield.DatabaseConnectionHandler;
-import com.sheffield.DatabaseOperations;
+import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.DatabaseOperations;
 
 public class Main {
     public static void main(String[] args) {
