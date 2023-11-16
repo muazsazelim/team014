@@ -1,6 +1,5 @@
 package com.sheffield.util;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -141,7 +140,7 @@ public class TestOperations {
             databaseConnectionHandler.openConnection();
 
             // // Adding a book to the database.
-            User user1 = new User(UniqueUserIDGenerator.generateUniqueUserID(), "user1@gmail.com", "ShawnSpencer", "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0, false);
+            User user1 = new User(UniqueUserIDGenerator.generateUniqueUserID(), "shawnspencer@example.com", "ShawnSpencer", "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0, false);
             databaseOperations.insertUser(user1, databaseConnectionHandler.getConnection());
 
             // Retrieving all the books and printing them out.
