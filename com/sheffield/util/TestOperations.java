@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.sheffield.model.DatabaseConnectionHandler;
-import com.sheffield.model.DatabaseOperations;
+//import com.sheffield.model.DatabaseOperations;
 import com.sheffield.model.user.User;
 
 public class TestOperations {
