@@ -89,6 +89,16 @@
                     System.out.println(databaseOperations.verifyLogin(connection, username, passwordChars));
                     // Secure disposal of the password
                     Arrays.fill(passwordChars, '\u0000');
+                    dispose();
+                    UserMainView userMainView = null;
+                    try {
+                        userMainView = new UserMainView(connection);
+                        userMainView.setVisible(true);
+        
+                    } catch (Throwable t) {
+                        throw new RuntimeException(t);
+                    }
+
                 }
             });
 
