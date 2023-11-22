@@ -8,7 +8,7 @@ public class User {
     private String password_hash;
     private boolean account_locked;
 
-    // Constructor to initialize a Book object with its attributes
+    // Constructor to initialize a User object with its attributes
     public User(String userId, String email, String username, String password_hash, int failed_login_attempts, boolean account_locked) {
         this.setuserId(userId);
         this.setemail(email);

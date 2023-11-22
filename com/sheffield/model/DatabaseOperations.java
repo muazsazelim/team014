@@ -5,8 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+import java.awt.*;
+
+import javax.swing.FocusManager;
+//import javax.swing.*;
+import javax.swing.JFrame;
+
 // import com.mysql.cj.protocol.ResultsetRow;
 import com.sheffield.util.HashedPasswordGenerator;
+import com.sheffield.views.UserMainView;
 
 public class DatabaseOperations {
 
@@ -36,6 +44,18 @@ public class DatabaseOperations {
                         statement = connection.prepareStatement(sql);
                         statement.setString(1, userId);
                         statement.executeUpdate();
+                        
+                        Frame currentFrame = JFrame.getFrames()[0];
+                        currentFrame.dispose();
+
+                        UserMainView userMainView = null;
+                        try {
+                            userMainView = new UserMainView(connection);
+                            userMainView.setVisible(true);
+            
+                        } catch (Throwable t) {
+                            throw new RuntimeException(t);
+                        }
                         return "Login successful for user: "+ username;
                     } else {
                         //Incorrect pass
