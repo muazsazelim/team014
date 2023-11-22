@@ -171,6 +171,72 @@ public class TestOperations {
         }
     }
 
+    public void updateEmailUsername(String username, String email, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET email=?" +
+            "WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, username);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + username);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void updateFNameUsername(String username, String fname, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET forename=?" +
+            "WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, fname);
+            preparedStatement.setString(2, username);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + username);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void updateSNameUsername(String username, String sname, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET surname=?" +
+            "WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, sname);
+            preparedStatement.setString(2, username);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + username);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
     // Delete a user from the database by userId
     public void deleteUser(String userId, Connection connection) throws SQLException {
         try {
