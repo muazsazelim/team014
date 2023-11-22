@@ -50,6 +50,8 @@ public class TestOperations {
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed login attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account locked='" + resultSet.getBoolean("account_locked") + "'" +
+                        ", forename='" + resultSet.getString("forename") + "'" +
+                        ", surname='" + resultSet.getString("surname") + "'" +
                         "}");
             }
             System.out.println("<======================================================>");
@@ -59,7 +61,7 @@ public class TestOperations {
         }
     }
 
-    // Get a book by username
+    // Get a user by username
     public void getUserByusername(String username, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT * FROM Users WHERE username=?";
@@ -68,6 +70,7 @@ public class TestOperations {
             ResultSet resultSet = preparedStatement.executeQuery();
             System.out.println("<==================== User BY username =====================>");
             if (resultSet.next()) {
+
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
@@ -75,11 +78,66 @@ public class TestOperations {
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed_login_attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account_locked='" + resultSet.getBoolean("account_locked") + "'" +
+                        ", forename='" + resultSet.getString("forename") + "'" +
+                        ", surname='" + resultSet.getString("surname") + "'" +
                         "}");
             } else {
                 System.out.println("User with username " + username + " not found.");
             }
             System.out.println("<=======================================================>");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public String getForenameByUsername(String username, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+
+                return resultSet.getString("forename");
+            } else {
+                return "Not Found";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public String getSurnameByUsername(String username, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+
+                return resultSet.getString("surname");
+            } else {
+                return "Not Found";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public String getEmailByUsername(String username, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("email");
+            } else {
+                return "Not Found";
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;// Re-throw the exception to signal an error.
