@@ -43,6 +43,16 @@ public class UserMainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to User Details Page");
+
+                dispose();
+                UserDetailsView userDetailsView = null;
+                try {
+                    userDetailsView = new UserDetailsView(connection);
+                    userDetailsView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
             }
         });
         

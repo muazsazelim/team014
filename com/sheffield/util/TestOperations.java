@@ -50,6 +50,8 @@ public class TestOperations {
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed login attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account locked='" + resultSet.getBoolean("account_locked") + "'" +
+                        ", forename='" + resultSet.getString("forename") + "'" +
+                        ", surname='" + resultSet.getString("surname") + "'" +
                         "}");
             }
             System.out.println("<======================================================>");
@@ -59,7 +61,7 @@ public class TestOperations {
         }
     }
 
-    // Get a book by username
+    // Get a user by username
     public void getUserByusername(String username, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT * FROM Users WHERE username=?";
@@ -68,6 +70,7 @@ public class TestOperations {
             ResultSet resultSet = preparedStatement.executeQuery();
             System.out.println("<==================== User BY username =====================>");
             if (resultSet.next()) {
+
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
@@ -75,11 +78,66 @@ public class TestOperations {
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed_login_attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account_locked='" + resultSet.getBoolean("account_locked") + "'" +
+                        ", forename='" + resultSet.getString("forename") + "'" +
+                        ", surname='" + resultSet.getString("surname") + "'" +
                         "}");
             } else {
                 System.out.println("User with username " + username + " not found.");
             }
             System.out.println("<=======================================================>");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public String getForenameByUsername(String username, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+
+                return resultSet.getString("forename");
+            } else {
+                return "Not Found";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public String getSurnameByUsername(String username, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+
+                return resultSet.getString("surname");
+            } else {
+                return "Not Found";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public String getEmailByUsername(String username, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("email");
+            } else {
+                return "Not Found";
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;// Re-throw the exception to signal an error.
@@ -106,6 +164,72 @@ public class TestOperations {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
                 System.out.println("No rows were updated for userId: " + newUser.getuserId());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void updateEmailUsername(String username, String email, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET email=?" +
+            "WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, username);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + username);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void updateFNameUsername(String username, String fname, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET forename=?" +
+            "WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, fname);
+            preparedStatement.setString(2, username);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + username);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void updateSNameUsername(String username, String sname, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET surname=?" +
+            "WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, sname);
+            preparedStatement.setString(2, username);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + username);
             }
         } catch (SQLException e) {
             e.printStackTrace();
