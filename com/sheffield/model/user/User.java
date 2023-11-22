@@ -7,15 +7,19 @@ public class User {
     private int failed_login_attempts;
     private String password_hash;
     private boolean account_locked;
+    private String forename;
+    private String surname;
 
     // Constructor to initialize a Book object with its attributes
-    public User(String userId, String email, String username, String password_hash, int failed_login_attempts, boolean account_locked) {
+    public User(String userId, String email, String username, String password_hash, int failed_login_attempts, boolean account_locked, String forename, String surname) {
         this.setuserId(userId);
         this.setemail(email);
         this.setusername(username);
         this.setPasswordHash(password_hash);
         this.setFailedLogin(failed_login_attempts);
         this.setaccountLocked(account_locked);
+        this.setForename(forename);
+        this.setSurname(surname);
     }
 
     // Getter and setter methods for the userId attribute with validation
@@ -83,6 +87,22 @@ public class User {
         this.account_locked = account_locked;
     }
 
+    public void setForename(String forename) {
+        this.forename = forename;
+    }
+
+    public String getForename() {
+        return forename;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
 
 
     // Private validation methods for each attribute
@@ -111,6 +131,8 @@ public class User {
             ", username='" + getusername() + "'" +
             ", failed attempts ='" + getFailedLoginAttempt() + "'" +
             ", Account Locked ='" + getaccountLocked() + "'" +
+            ", Forename ='" + getForename() + "'" +
+            ", Surname ='" + getSurname() + "'" +
             " }";
     }
 
