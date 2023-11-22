@@ -9,9 +9,7 @@ import java.sql.SQLException;
 
 
 public class UserMainView extends JFrame {
-    private JButton userDetails;
-    private JButton orderHistory;
-    private JButton products;
+    
     public UserMainView (Connection connection) throws SQLException {
         // Create the JFrame in the constructor
         this.setTitle("Train of Sheffield");
@@ -26,14 +24,23 @@ public class UserMainView extends JFrame {
         panel.setLayout(new GridLayout(0,1));
 
         // Create buttons that links to other pages from default page
+
+        JButton userDetails;
+        JButton orderHistory;
+        JButton products;
         userDetails = new JButton("Change Details");
         orderHistory = new JButton("Order History");
         products = new JButton("View Products");
+
+        JButton staff = new JButton("Staff");
+        JButton manager = new JButton("Manager");
 
         // Add components to the panel
         panel.add(userDetails);
         panel.add(orderHistory);
         panel.add(products);
+        panel.add(staff);
+        panel.add(manager);
 
         this.getContentPane().add(panel, BorderLayout.NORTH);
         this.pack();
@@ -69,6 +76,41 @@ public class UserMainView extends JFrame {
                 System.out.println("Went to Products Page");
             }
         });
+
+        staff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Staff Page");
+
+                dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection);
+                    staffView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
+        manager.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Manager Page");
+
+                dispose();
+                ManagerView managerView = null;
+                try {
+                    managerView = new ManagerView(connection);
+                    managerView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
 
     }
     
