@@ -139,9 +139,11 @@ public class TestOperations {
         try {
             databaseConnectionHandler.openConnection();
 
-            // // Adding a book to the database.
+            // // Adding a user to the database.
+            /*
             User user1 = new User(UniqueUserIDGenerator.generateUniqueUserID(), "shawnspencer@example.com", "ShawnSpencer", "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0, false);
             databaseOperations.insertUser(user1, databaseConnectionHandler.getConnection());
+            */
 
             // Retrieving all the books and printing them out.
             databaseOperations.getAllUsers(databaseConnectionHandler.getConnection());
