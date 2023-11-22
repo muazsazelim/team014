@@ -11,7 +11,6 @@ import com.sheffield.util.TestOperations;
 
 
 public class UserDetailsView extends JFrame {
-    private JLabel userDetails;
 
     public UserDetailsView (Connection connection) throws SQLException {
         // Create the JFrame in the constructor
@@ -26,11 +25,12 @@ public class UserDetailsView extends JFrame {
         JFrame parent = this;
 
         parent.getContentPane().setLayout(new BorderLayout());
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         
         // Create buttons that links to other pages from default page
-        userDetails = new JLabel("Change Details");
+        JLabel changeDetails;
+        changeDetails = new JLabel("Change Details");
 
         // Create JLabels for username and password
         JLabel usernameLabel = new JLabel("  Username:");
@@ -40,13 +40,18 @@ public class UserDetailsView extends JFrame {
 
 
         // Create a JButton for the login action
-        JButton searchButton = new JButton("Search");        
+        JButton searchButton = new JButton("Search");   
+        
+        JPanel userDetails = new JPanel();
+        userDetails.setLayout(new BoxLayout(userDetails, BoxLayout.PAGE_AXIS));
 
         // Add components to the panel
-        panel.add(userDetails);
+        panel.add(changeDetails);
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(searchButton);
+        panel.add(userDetails);
+        
 
         parent.getContentPane().add(panel, BorderLayout.NORTH);
         parent.pack();
@@ -56,50 +61,65 @@ public class UserDetailsView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 TestOperations testOperations = new TestOperations();
                 try {
-                    panel.add(new JLabel("Email - "+testOperations.getEmailByUsername(usernameField.getText(),connection)));
+                    userDetails.removeAll();
+                    
+                    JLabel userEmail = new JLabel("Email - "+testOperations.getEmailByUsername(usernameField.getText(),connection));
+                    userDetails.add(userEmail);
                     JTextField updateEmail = new JTextField();
-                    panel.add(updateEmail);
+                    userDetails.add(updateEmail);
                     JButton updateEmailButton = new JButton("Update Email");
-                    panel.add(updateEmailButton);
+                    userDetails.add(updateEmailButton);
 
                     updateEmailButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             try {
                                 testOperations.updateEmailUsername(usernameField.getText(), updateEmail.getText(), connection);
+                                updateEmail.setText("");
+                                userEmail.setText("Email - "+testOperations.getEmailByUsername(usernameField.getText(),connection));
+                                userEmail.revalidate();
                             } catch (SQLException error) {
                                 System.out.println("SQL Error");
                             }
                         }
                     });
 
-                    panel.add(new JLabel("Forename - "+testOperations.getForenameByUsername(usernameField.getText(),connection)));
+                    JLabel userFname = new JLabel("Forename - "+testOperations.getForenameByUsername(usernameField.getText(),connection)); 
+                    userDetails.add(userFname);
                     JTextField updateFName = new JTextField();
-                    panel.add(updateFName);
+                    userDetails.add(updateFName);
                     JButton updateFNameButton = new JButton("Update Name");
-                    panel.add(updateFNameButton);
+                    userDetails.add(updateFNameButton);
 
                     updateFNameButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             try {
                                 testOperations.updateFNameUsername(usernameField.getText(), updateFName.getText(), connection);
+                                updateFName.setText("");
+                                userFname.setText("Forename - "+testOperations.getForenameByUsername(usernameField.getText(),connection));
+                                userFname.revalidate();
                             } catch (SQLException error) {
                                 System.out.println("SQL Error");
                             }
                         }
                     });
-                    panel.add(new JLabel("Surname - "+testOperations.getSurnameByUsername(usernameField.getText(),connection)));
+
+                    JLabel userSname = new JLabel("Surname - "+testOperations.getSurnameByUsername(usernameField.getText(),connection)); 
+                    userDetails.add(userSname);
                     JTextField updateSName = new JTextField();
-                    panel.add(updateSName);
+                    userDetails.add(updateSName);
                     JButton updateSNameButton = new JButton("Update Name");
-                    panel.add(updateSNameButton);
+                    userDetails.add(updateSNameButton);
 
                     updateSNameButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             try {
                                 testOperations.updateSNameUsername(usernameField.getText(), updateSName.getText(), connection);
+                                updateSName.setText("");
+                                userSname.setText("Surname - "+testOperations.getSurnameByUsername(usernameField.getText(),connection));
+                                userSname.revalidate();
                             } catch (SQLException error) {
                                 System.out.println("SQL Error");
                             }
