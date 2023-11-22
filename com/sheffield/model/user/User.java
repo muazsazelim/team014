@@ -11,7 +11,7 @@ public class User {
     private String surname;
 
     // Constructor to initialize a User object with its attributes
-    public User(String userId, String email, String username, String password_hash, int failed_login_attempts, boolean account_locked) {
+    public User(String userId, String email, String username, String password_hash, int failed_login_attempts, boolean account_locked, String forename, String surname) {
         this.setuserId(userId);
         this.setemail(email);
         this.setusername(username);

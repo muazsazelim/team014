@@ -7,10 +7,12 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.sheffield.model.user.User;
+
 
 public class UserMainView extends JFrame {
     
-    public UserMainView (Connection connection) throws SQLException {
+    public UserMainView (Connection connection, User user) throws SQLException {
         // Create the JFrame in the constructor
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,7 +56,7 @@ public class UserMainView extends JFrame {
                 dispose();
                 UserDetailsView userDetailsView = null;
                 try {
-                    userDetailsView = new UserDetailsView(connection);
+                    userDetailsView = new UserDetailsView(connection, user);
                     userDetailsView.setVisible(true);
     
                 } catch (Throwable t) {

@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 
 // import com.mysql.cj.protocol.ResultsetRow;
 import com.sheffield.util.HashedPasswordGenerator;
+import com.sheffield.util.TestOperations;
 import com.sheffield.views.UserMainView;
 
 public class DatabaseOperations {
@@ -47,10 +48,11 @@ public class DatabaseOperations {
                         
                         Frame currentFrame = JFrame.getFrames()[0];
                         currentFrame.dispose();
+                        TestOperations testOperations = new TestOperations();
 
                         UserMainView userMainView = null;
                         try {
-                            userMainView = new UserMainView(connection);
+                            userMainView = new UserMainView(connection, testOperations.getUser(username, connection));
                             userMainView.setVisible(true);
             
                         } catch (Throwable t) {

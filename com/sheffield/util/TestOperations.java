@@ -121,6 +121,37 @@ public class TestOperations {
         }
     }
 
+    public User getUser(String username, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            System.out.println("<==================== User BY username =====================>");
+            if (resultSet.next()) {
+                User user = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"));
+                System.out.println("{" +
+                        "userId='" + resultSet.getString("userId") + "'" +
+                        ", email='" + resultSet.getString("email") + "'" +
+                        ", username='" + resultSet.getString("username") + "'" +
+                        ", passwordHash='" + resultSet.getString("password_hash") + "'" +
+                        ", failed_login_attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
+                        ", account_locked='" + resultSet.getBoolean("account_locked") + "'" +
+                        ", forename='" + resultSet.getString("forename") + "'" +
+                        ", surname='" + resultSet.getString("surname") + "'" +
+                        "}");
+                return user;
+            } else {
+                System.out.println("User with username " + username + " not found.");
+                return null;
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
     public String getForenameByUsername(String username, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT * FROM Users WHERE username=?";
