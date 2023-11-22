@@ -6,8 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.sheffield.util.TestOperations;
+import com.sheffield.model.user.User;
 
 
 public class ManagerView extends JFrame {
@@ -34,6 +36,14 @@ public class ManagerView extends JFrame {
 
         // Add components to the panel
         panel.add(managerView);
+
+        TestOperations testOperations = new TestOperations();
+
+        ArrayList users = new ArrayList<User>(testOperations.getAllUsersObj(connection));
+        
+        for (int i = 0; i < users.size(); i++) {
+            panel.add(new JLabel(users.get(i).toString()));
+        }
 
         parent.getContentPane().add(panel, BorderLayout.NORTH);
         parent.pack();
