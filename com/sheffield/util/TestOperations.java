@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.sheffield.model.DatabaseConnectionHandler;
 //import com.sheffield.model.DatabaseOperations;
@@ -55,6 +56,35 @@ public class TestOperations {
                         "}");
             }
             System.out.println("<======================================================>");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public ArrayList getAllUsersObj(Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            System.out.println("<=================== GET ALL Current Users ====================>");
+            ArrayList users = new ArrayList<User>();
+            while (resultSet.next()) {
+                User newUser = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"));
+                System.out.println("{" +
+                        "userId='" + resultSet.getString("userId") + "'" +
+                        ", email='" + resultSet.getString("email") + "'" +
+                        ", username='" + resultSet.getString("username") + "'" +
+                        ", passwordHash='" + resultSet.getString("password_hash") + "'" +
+                        ", failed login attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
+                        ", account locked='" + resultSet.getBoolean("account_locked") + "'" +
+                        ", forename='" + resultSet.getString("forename") + "'" +
+                        ", surname='" + resultSet.getString("surname") + "'" +
+                        "}");
+                users.add(newUser);
+            }
+            System.out.println("<======================================================>");
+            return users;
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;// Re-throw the exception to signal an error.
