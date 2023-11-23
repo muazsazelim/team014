@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+
 public class OrderHistoryView extends JFrame {
     private JButton userDetails;
     private JButton orderHistory;
@@ -65,7 +66,15 @@ public class OrderHistoryView extends JFrame {
                 int column = basketTable.columnAtPoint(e.getPoint());
                 int row = basketTable.rowAtPoint(e.getPoint());
                 if (column == 0) { // Column index
-                    showOrderDetailsPopup(row);
+                    
+                    try {
+                        OrderDetailsView orderDetailsView = new OrderDetailsView(connection);
+                        orderDetailsView.setVisible(true);
+                        dispose(); 
+                    } catch (SQLException i) {
+                        i.printStackTrace();
+                       
+                    }
                 }
             }
         });
@@ -116,17 +125,6 @@ public class OrderHistoryView extends JFrame {
 
         
 
-    }
-    // orderDetails needs to get orderline  product code & brand & product name & quantity & derived line cost & total cost &staus
-    private void showOrderDetailsPopup(int row) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        String orderDetails = "Order Details:\n " +
-                "Order ID: " + data[row][0] + "\n " +
-                "Product Name: " + data[row][1] + "\n " +
-                "Quantity: " + data[row][2];
-        JMenuItem menuItem = new JMenuItem(orderDetails);
-        popupMenu.add(menuItem);
-        popupMenu.show(basketTable, basketTable.getCellRect(row, 0, true).x, basketTable.getCellRect(row, 0, true).y);
     }
     
 }

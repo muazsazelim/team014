@@ -9,13 +9,13 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PendingOrderStaffView extends JFrame {
-    private JButton archivedOrders;
+public class OrderDetailsView extends JFrame {
+    private JButton userDetails;
     private JButton orderHistory;
     private JButton products;
     private JTable basketTable;
     private Object[][] data;
-    public PendingOrderStaffView (Connection connection) throws SQLException {
+    public OrderDetailsView (Connection connection) throws SQLException {
 
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,25 +29,25 @@ public class PendingOrderStaffView extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
        // panel.setLayout(new GridLayout(0,1));
 
-        JLabel titleLabel = new JLabel("Order Mangement");
+        JLabel titleLabel = new JLabel("Order Details");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
 
         //sample data -filter for one customer - needs order no. - date of order(cutomer) -filter for all -  customer detail - email - address (staff)
         data = new Object[][]{
-            {"Order1", "11-02-2023", "Mike", "Wazowaki", "mikewazzer@gmail.com", "West Street 24, S10 1TB", "£24", "pending"},
-            {"Order2", "12-02-2023", "Albert", "Einstein", "bertto123@gmail.com", "Bank Street 134, S3 7BY", "£15", "pending"},
-            {"Order3", "13-02-2023", "Joshva", "Jerry", "theoriginaljoshva101@gmail.com", "65 Edward St, S4 9HY", "£56", "pending"}
+            {"Order 1", "Product A", 10},
+            {"Order 2", "Product B", 5},
+            {"Order 3", "Product C", 8}
         };
 
 
-        String[] columnNames = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status"};
+        String[] columnNames = {"Product Name", "Quantitiy", "Price"};
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 7; 
+                return false; 
             }
         };
 
@@ -80,12 +80,12 @@ public class PendingOrderStaffView extends JFrame {
 
         
         // Create buttons that links to other pages from default page
-        archivedOrders = new JButton("Archived Orders");
+        userDetails = new JButton("Change Details");
         orderHistory = new JButton("Order History");
         products = new JButton("View Products");
 
         // Add components to the panel
-        panel.add(archivedOrders);
+        panel.add(userDetails);
         panel.add(orderHistory);
         panel.add(products);
 
@@ -93,10 +93,10 @@ public class PendingOrderStaffView extends JFrame {
         this.pack();
 
         // Create an ActionListener for the view buttons
-        archivedOrders.addActionListener(new ActionListener() {
+        userDetails.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("went to Archived Page");
+                System.out.println("went to Basket Page");
             }
         });
         
@@ -128,5 +128,7 @@ public class PendingOrderStaffView extends JFrame {
         popupMenu.add(menuItem);
         popupMenu.show(basketTable, basketTable.getCellRect(row, 0, true).x, basketTable.getCellRect(row, 0, true).y);
     }
+
+    
     
 }

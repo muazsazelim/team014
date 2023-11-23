@@ -68,7 +68,16 @@ public class UserMainView extends JFrame {
         orderHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Order History Page");
+                dispose();
+                OrderHistoryView orderHistoryView = null;
+                try {
+                    orderHistoryView = new OrderHistoryView(connection, user);
+                    orderHistoryView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+                System.out.println("Went to Order History");
             }
         });
 

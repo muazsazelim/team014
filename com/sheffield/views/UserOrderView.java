@@ -117,10 +117,10 @@ public class UserOrderView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                OrderHistoryView orderHistoryView = null;
+             //   OrderHistoryView orderHistoryView = null;
                 try {
-                    orderHistoryView = new OrderHistoryView(connection);
-                    orderHistoryView.setVisible(true);
+                 //   orderHistoryView = new OrderHistoryView(connection, user);
+                //    orderHistoryView.setVisible(true);
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
