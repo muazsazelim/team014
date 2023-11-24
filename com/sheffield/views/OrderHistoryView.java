@@ -69,7 +69,7 @@ public class OrderHistoryView extends JFrame {
                 if (column == 0) { // Column index
                     
                     try {
-                        OrderDetailsView orderDetailsView = new OrderDetailsView(connection);
+                        OrderDetailsView orderDetailsView = new OrderDetailsView(connection, user);
                         orderDetailsView.setVisible(true);
                         dispose(); 
                     } catch (SQLException i) {

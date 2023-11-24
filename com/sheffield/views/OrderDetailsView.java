@@ -9,13 +9,17 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.sheffield.model.order.Order;
+import com.sheffield.model.user.User;
+import com.sheffield.util.TestOperations;
+
 public class OrderDetailsView extends JFrame {
     private JButton userDetails;
     private JButton orderHistory;
     private JButton products;
     private JTable basketTable;
     private Object[][] data;
-    public OrderDetailsView (Connection connection) throws SQLException {
+    public OrderDetailsView (Connection connection, User user) throws SQLException {
 
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,25 +38,38 @@ public class OrderDetailsView extends JFrame {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        //sample data -filter for one customer - needs order no. - date of order(cutomer) -filter for all -  customer detail - email - address (staff)
-        data = new Object[][]{
-            {"Order 1", "Product A", 10},
-            {"Order 2", "Product B", 5},
-            {"Order 3", "Product C", 8}
-        };
 
+        TestOperations testOperations = new TestOperations();
+         try {
+            Order[] userOrders = testOperations.getAllOrdersByUser(user.getuserId(), connection);
 
-        String[] columnNames = {"Product Name", "Quantitiy", "Price"};
-
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            String[] columnNames = {"OrderID", "Date"};
+            DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; 
             }
-        };
+            };
+           
+            for (Order order: userOrders){
+            Object[] ordersForTable = {order.getOrderID(), order.getIssueDate()};
+            model.addRow(ordersForTable);
+            }
+
+             basketTable = new JTable(model);
+        } catch (SQLException e) {
+            e.printStackTrace();
+          
+        }
+
+        
+
+        
+
+        
 
 
-        basketTable = new JTable(model);
+       
 
         basketTable.setCellSelectionEnabled(false);
         basketTable.setRowSelectionAllowed(false);
