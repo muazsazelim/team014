@@ -50,13 +50,30 @@ public class EditInventoryView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String productID;
                 String quantity;
-                productID = txtPID.getText();
-                quantity = txtQuantity.getText();
+                productID = txtPID.getText().strip();
+                quantity = txtQuantity.getText().strip();
                 try {
-                    Statement stmt = connection.createStatement();
-                    String query = "UPDATE Inventory SET Quantity = " + quantity + " WHERE ProductID = " + productID;
-                    stmt.executeUpdate(query);
+                    if (!productID.equals("") && !quantity.equals("")) {
+                        try {
+                            Integer.parseInt(productID);
+                            Integer.parseInt(quantity);
+                            Statement stmt = connection.createStatement();
+                            String query = "UPDATE Inventory SET Quantity = " + quantity + " WHERE ProductID = "
+                                    + productID;
+                            stmt.executeUpdate(query);
 
+                            txtPID.setText("");
+                            txtQuantity.setText("");
+
+                            JOptionPane.showMessageDialog(panel, "Inventory Updated");
+                        } catch (NumberFormatException n) {
+
+                            JOptionPane.showMessageDialog(panel, "Please Enter Only Number");
+                        }
+                    } else {
+
+                        JOptionPane.showMessageDialog(panel, "Empty Input");
+                    }
                 } catch (Exception s) {
                     s.printStackTrace();
 
