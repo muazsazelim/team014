@@ -91,7 +91,7 @@ public class EditInventoryView extends JFrame {
         this.getContentPane().setLayout(new BorderLayout());
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panel.setSize(320, 180);
+        panel.setSize(320, 170);
         this.setVisible(true);
     }
 
