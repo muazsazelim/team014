@@ -70,7 +70,7 @@ public class TestOperations {
             System.out.println("<=================== GET ALL Current Users ====================>");
             ArrayList users = new ArrayList<User>();
             while (resultSet.next()) {
-                User newUser = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"));
+                User newUser = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"),resultSet.getString("usertype"));
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
@@ -129,7 +129,7 @@ public class TestOperations {
             ResultSet resultSet = preparedStatement.executeQuery();
             System.out.println("<==================== User BY username =====================>");
             if (resultSet.next()) {
-                User user = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"));
+                User user = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"), resultSet.getString("usertype"));
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
