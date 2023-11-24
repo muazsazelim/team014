@@ -48,17 +48,17 @@ public class UserDetailsView extends JFrame {
         try {
             userDetails.removeAll();
             
-            JLabel userEmail = new JLabel("Email - "+testOperations.getEmailByUsername(user.getusername(),connection));
+            JLabel userEmail = new JLabel("Email - "+testOperations.getEmail(user.getuserId(),connection));
             userDetails.add(userEmail);
             JTextField updateEmail = new JTextField();
             userDetails.add(updateEmail);
 
-            JLabel userFname = new JLabel("Forename - "+testOperations.getForenameByUsername(user.getusername(),connection)); 
+            JLabel userFname = new JLabel("Forename - "+testOperations.getForename(user.getuserId(),connection)); 
             userDetails.add(userFname);
             JTextField updateFName = new JTextField();
             userDetails.add(updateFName);
 
-            JLabel userSname = new JLabel("Surname - "+testOperations.getSurnameByUsername(user.getusername(),connection)); 
+            JLabel userSname = new JLabel("Surname - "+testOperations.getSurname(user.getuserId(),connection)); 
             userDetails.add(userSname);
             JTextField updateSName = new JTextField();
             userDetails.add(updateSName);
@@ -72,21 +72,21 @@ public class UserDetailsView extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         if (!updateEmail.getText().equals("")) {
-                            testOperations.updateEmailUsername(user.getusername(), updateEmail.getText(), connection);
+                            testOperations.updateEmail(user.getuserId(), updateEmail.getText(), connection);
                             updateEmail.setText("");
-                            userEmail.setText("Email - "+testOperations.getEmailByUsername(user.getusername(),connection));
+                            userEmail.setText("Email - "+testOperations.getEmail(user.getuserId(),connection));
                             userEmail.revalidate();
                         }
                         if (!updateFName.getText().equals("")) {
-                            testOperations.updateFNameUsername(user.getusername(), updateFName.getText(), connection);
+                            testOperations.updateFName(user.getuserId(), updateFName.getText(), connection);
                             updateFName.setText("");
-                            userFname.setText("Forename - "+testOperations.getForenameByUsername(user.getusername(),connection));
+                            userFname.setText("Forename - "+testOperations.getForename(user.getuserId(),connection));
                             userFname.revalidate();
                         }
                         if (!updateSName.getText().equals("")) {
-                            testOperations.updateSNameUsername(user.getusername(), updateSName.getText(), connection);
+                            testOperations.updateSName(user.getuserId(), updateSName.getText(), connection);
                             updateSName.setText("");
-                            userSname.setText("Surname - "+testOperations.getSurnameByUsername(user.getusername(),connection));
+                            userSname.setText("Surname - "+testOperations.getSurname(user.getuserId(),connection));
                             userSname.revalidate();
                         }
                     } catch (SQLException error) {

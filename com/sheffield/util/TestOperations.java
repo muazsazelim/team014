@@ -155,11 +155,29 @@ public class TestOperations {
         }
     }
 
-    public String getForenameByEmail(String email, Connection connection) throws SQLException {
+    public String getEmail(String userID, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE email=?";
+            String selectSQL = "SELECT * FROM Users WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, email);
+            preparedStatement.setString(1, userID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+
+                return resultSet.getString("email");
+            } else {
+                return "Not Found";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public String getForename(String userID, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users WHERE userID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, userID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getString("forename");
@@ -172,11 +190,11 @@ public class TestOperations {
         }
     }
 
-    public String getSurnameByEmail(String email, Connection connection) throws SQLException {
+    public String getSurname(String userID, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE forename=?";
+            String selectSQL = "SELECT * FROM Users WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, email);
+            preparedStatement.setString(1, userID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
 
@@ -219,21 +237,21 @@ public class TestOperations {
         }
     }
 
-    public void updateEmailforename(String forename, String email, Connection connection) throws SQLException {
+    public void updateEmail(String userID, String email, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET email=?" +
-            "WHERE forename=?";
+            "WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, forename);
+            preparedStatement.setString(2, userID);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + forename);
+                System.out.println("No rows were updated for userId: " + userID);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -241,21 +259,21 @@ public class TestOperations {
         }
     }
 
-    public void updateFNameByEmail(String email, String fname, Connection connection) throws SQLException {
+    public void updateFName(String userID, String fname, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET forename=?" +
-            "WHERE email=?";
+            "WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, fname);
-            preparedStatement.setString(2, email);
+            preparedStatement.setString(2, userID);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + email);
+                System.out.println("No rows were updated for userId: " + userID);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -263,21 +281,21 @@ public class TestOperations {
         }
     }
 
-    public void updateSNameByEmail(String email, String sname, Connection connection) throws SQLException {
+    public void updateSName(String userID, String sname, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET surname=?" +
-            "WHERE email=?";
+            "WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, sname);
-            preparedStatement.setString(2, email);
+            preparedStatement.setString(2, userID);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + email);
+                System.out.println("No rows were updated for userId: " + userID);
             }
         } catch (SQLException e) {
             e.printStackTrace();
