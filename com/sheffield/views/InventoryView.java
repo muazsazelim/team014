@@ -122,7 +122,8 @@ public class InventoryView extends JFrame {
 
             // j.setBounds(30, 40, 200, 300);
             j.getColumnModel().getColumn(0).setPreferredWidth(5);
-            j.getColumnModel().getColumn(2).setPreferredWidth(5);
+            j.getColumnModel().getColumn(1).setPreferredWidth(150);
+            j.getColumnModel().getColumn(2).setPreferredWidth(50);
 
             JScrollPane sp = new JScrollPane(j);
             panel.add(sp);

@@ -55,20 +55,26 @@ public class EditInventoryView extends JFrame {
                 try {
                     if (!productID.equals("") && !quantity.equals("")) {
                         try {
-                            Integer.parseInt(productID);
+                            int pIDInt = Integer.parseInt(productID);
                             Integer.parseInt(quantity);
-                            Statement stmt = connection.createStatement();
-                            String query = "UPDATE Inventory SET Quantity = " + quantity + " WHERE ProductID = "
-                                    + productID;
-                            stmt.executeUpdate(query);
+                            if (pIDInt > 0 && pIDInt < 14) {
+                                Statement stmt = connection.createStatement();
+                                String query = "UPDATE Inventory SET Quantity = " + quantity + " WHERE ProductID = "
+                                        + productID;
+                                stmt.executeUpdate(query);
 
-                            txtPID.setText("");
-                            txtQuantity.setText("");
+                                txtPID.setText("");
+                                txtQuantity.setText("");
 
-                            JOptionPane.showMessageDialog(panel, "Inventory Updated");
+                                JOptionPane.showMessageDialog(panel, "Inventory Updated");
+                            } else {
+
+                                JOptionPane.showMessageDialog(panel, "Product did not exists");
+                            }
                         } catch (NumberFormatException n) {
 
                             JOptionPane.showMessageDialog(panel, "Please Enter Only Number");
+
                         }
                     } else {
 
