@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
+import com.sheffield.model.user.User;
 
 
 public class OrderHistoryView extends JFrame {
@@ -16,7 +17,7 @@ public class OrderHistoryView extends JFrame {
     private JButton products;
     private JTable basketTable;
     private Object[][] data;
-    public OrderHistoryView (Connection connection) throws SQLException {
+    public OrderHistoryView (Connection connection, User user) throws SQLException {
 
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
