@@ -5,9 +5,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
 import javax.swing.table.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import com.sheffield.model.DatabaseConnectionHandler;
 
 public class InventoryView extends JFrame {
@@ -17,35 +18,99 @@ public class InventoryView extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(320, 320);
 
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
         this.add(panel);
-
-        this.getContentPane().setLayout(new BorderLayout());
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        // panel.setLayout(new GridLayout(0,1));
 
         JLabel titleLabel = new JLabel("Inventory");
         titleLabel.setFont(new Font("Default", Font.BOLD, 18));
-        titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
+
+        JButton managerPage;
+        managerPage = new JButton("Manager Page");
+        JButton staffPage;
+        staffPage = new JButton("Staff Page");
+        JButton editPage;
+        editPage = new JButton("Edit Inventory");
+
+        panel.add(managerPage);
+        panel.add(staffPage);
+
+        managerPage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Manager View");
+
+                dispose();
+                ManagerView managerView = null;
+                try {
+                    managerView = new ManagerView(connection);
+                    managerView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
+        staffPage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Staff View");
+
+                dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection);
+                    staffView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
+        editPage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Edit Inventory View");
+
+                dispose();
+                EditInventoryView editInventoryView = null;
+                try {
+                    editInventoryView = new EditInventoryView(connection);
+                    editInventoryView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
+        this.getContentPane().setLayout(new BorderLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         try {
             JTable j;
             String selectAll = "SELECT * FROM Inventory";
             String productName = "SELECT productName FROM Product, Inventory WHERE Inventory.ProductID = Product.productID";
+            String productID = "SELECT ProductID FROM Inventory";
             PreparedStatement preparedStatement = connection.prepareStatement(selectAll);
             PreparedStatement preparedStatement2 = connection.prepareStatement(productName);
+            PreparedStatement preparedStatement3 = connection.prepareStatement(productID);
             ResultSet resultSet = preparedStatement.executeQuery();
             ResultSet resultSet2 = preparedStatement2.executeQuery();
+            ResultSet resultSet3 = preparedStatement3.executeQuery();
 
-            String[] columnNames = { "Product Name", "Quantity" };
+            String[] columnNames = { "ID", "Product Name", "Quantity" };
             DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
-            while (resultSet.next() && resultSet2.next()) {
+            while (resultSet.next() && resultSet2.next() && resultSet3.next()) {
                 String pName = resultSet2.getString("productName");
                 String pQuantity = Integer.toString(resultSet.getInt("Quantity"));
+                String pID = Integer.toString(resultSet3.getInt("ProductID"));
 
-                String[] data = { pName, pQuantity };
+                String[] data = { pID, pName, pQuantity };
 
                 tableModel.addRow(data);
             }
@@ -55,11 +120,15 @@ public class InventoryView extends JFrame {
             Font headerFont = new Font("Default", Font.PLAIN, 13);
             tableHeader.setFont(headerFont);
 
-            j.setBounds(30, 40, 200, 300);
+            // j.setBounds(30, 40, 200, 300);
+            j.getColumnModel().getColumn(0).setPreferredWidth(5);
+            j.getColumnModel().getColumn(2).setPreferredWidth(5);
 
             JScrollPane sp = new JScrollPane(j);
             panel.add(sp);
-            panel.setSize(320, 320);
+
+            panel.add(editPage);
+            panel.setSize(320, 280);
 
             this.setVisible(true);
 
