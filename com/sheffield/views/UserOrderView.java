@@ -45,32 +45,27 @@ public class UserOrderView extends JFrame {
 
         TestOperations testOperations = new TestOperations();
 
-        try{
+        try {
             Order[] userOrders = testOperations.getAllOrdersByUser(user.getuserId(), connection);
+
+            String[] columnNames = {"OrderID", "Date"};
+            DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; 
+            }
+            };
+           
+            for (Order order: userOrders){
+            Object[] ordersForTable = {order.getOrderID(), order.getIssueDate()};
+            model.addRow(ordersForTable);
+            }
+
+             basketTable = new JTable(model);
         } catch (SQLException e) {
             e.printStackTrace();
+          
         }
-        //sample data - needs to contain an array of prodcts and quantities tey add to thir basket
-        data = new Object[][]{
-            {"Order 1", "Product A", 10},
-            {"Order 2", "Product B", 5},
-            {"Order 3", "Product C", 8}
-        };
-
-        
-
-
-        String[] columnNames = {"Product Name", "Quantitiy", "Price"};
-
-        DefaultTableModel model = new DefaultTableModel(data, columnNames){
-            @Override
-            public boolean isCellEditable(int row, int coloumn){
-                return coloumn == 1;
-            }
-        };
-
-       
-        basketTable = new JTable(model);
 
         basketTable.getDefaultEditor(Object.class).addCellEditorListener(new CellEditorListener() {
 
