@@ -115,7 +115,13 @@ public class InventoryView extends JFrame {
                 tableModel.addRow(data);
             }
 
-            j = new JTable(tableModel);
+            j = new JTable(tableModel) {
+                private static final long serialVersionUID = 1L;
+
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                };
+            };
             JTableHeader tableHeader = j.getTableHeader();
             Font headerFont = new Font("Default", Font.PLAIN, 13);
             tableHeader.setFont(headerFont);
