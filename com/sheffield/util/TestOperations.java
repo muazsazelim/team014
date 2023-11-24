@@ -303,6 +303,48 @@ public class TestOperations {
         }
     }
 
+    public void promoteUserByEmail(String email, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET usertype='staff'" +
+            "WHERE email=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, email);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + email);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void demoteUser(String userID, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET usertype='customer'" +
+            "WHERE userID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, userID);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + userID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
     // Delete a user from the database by userId
     public void deleteUser(String userId, Connection connection) throws SQLException {
         try {
