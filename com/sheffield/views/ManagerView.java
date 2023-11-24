@@ -27,7 +27,7 @@ public class ManagerView extends JFrame {
         JFrame parent = this;
 
         parent.getContentPane().setLayout(new BorderLayout());
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0,2));
 
         
         // Create buttons that links to other pages from default page
@@ -35,17 +35,20 @@ public class ManagerView extends JFrame {
         managerView = new JLabel("Manager View");
 
         // Add components to the panel
-        panel.add(managerView);
+        parent.getContentPane().add(managerView, BorderLayout.NORTH);
 
         TestOperations testOperations = new TestOperations();
 
-        ArrayList users = new ArrayList<User>(testOperations.getAllUsersObj(connection));
+        ArrayList<User> users = new ArrayList<User>(testOperations.getAllUsersObj(connection));
         
         for (int i = 0; i < users.size(); i++) {
-            panel.add(new JLabel(users.get(i).toString()));
+            if (users.get(i).getUserType().equals("staff")) {
+                panel.add(new JLabel("First Name - " + users.get(i).getForename() + ", Surname - " + users.get(i).getSurname() + ", Email - " +users.get(i).getemail()));
+                panel.add(new JButton("Demote"));
+            }
         }
 
-        parent.getContentPane().add(panel, BorderLayout.NORTH);
+        parent.getContentPane().add(panel, BorderLayout.CENTER);
         parent.pack();
 
     }

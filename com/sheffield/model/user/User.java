@@ -8,9 +8,12 @@ public class User {
     private boolean account_locked;
     private String forename;
     private String surname;
+    private String usertype;
+    
 
     // Constructor to initialize a User object with its attributes
-    public User(String userId, String email, String password_hash, int failed_login_attempts, boolean account_locked, String forename, String surname) {
+
+    public User(String userId, String email, String password_hash, int failed_login_attempts, boolean account_locked, String forename, String surname, String usertype) {
         this.setuserId(userId);
         this.setemail(email);
         this.setPasswordHash(password_hash);
@@ -18,6 +21,7 @@ public class User {
         this.setaccountLocked(account_locked);
         this.setForename(forename);
         this.setSurname(surname);
+        this.setUserType(usertype);
     }
 
     // Getter and setter methods for the userId attribute with validation
@@ -88,6 +92,13 @@ public class User {
         return surname;
     }
 
+    public void setUserType(String usertype) {
+        this.usertype = usertype;
+    }
+
+    public String getUserType() {
+        return usertype;
+    }
 
 
     // Private validation methods for each attribute
