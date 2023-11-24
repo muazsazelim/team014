@@ -3,7 +3,6 @@ package com.sheffield.model.user;
 public class User {
     private String userId;
     private String email;
-    private String username;
     private int failed_login_attempts;
     private String password_hash;
     private boolean account_locked;
@@ -13,10 +12,10 @@ public class User {
     
 
     // Constructor to initialize a User object with its attributes
-    public User(String userId, String email, String username, String password_hash, int failed_login_attempts, boolean account_locked, String forename, String surname, String usertype) {
+
+    public User(String userId, String email, String password_hash, int failed_login_attempts, boolean account_locked, String forename, String surname, String usertype) {
         this.setuserId(userId);
         this.setemail(email);
-        this.setusername(username);
         this.setPasswordHash(password_hash);
         this.setFailedLogin(failed_login_attempts);
         this.setaccountLocked(account_locked);
@@ -48,19 +47,6 @@ public class User {
             this.email = email;
         } else {
             throw new IllegalArgumentException("email is not valid.");
-        }
-    }
-
-    // Getter and setter methods for the username attribute with validation
-    public String getusername() {
-        return username;
-    }
-
-    public void setusername(String username) {
-        if (isValidusername(username)) {
-            this.username = username;
-        } else {
-            throw new IllegalArgumentException("username is not valid.");
         }
     }
 
@@ -127,18 +113,12 @@ public class User {
         return email != null && email.length() <= 100;
     }
 
-    private boolean isValidusername(String username) {
-        // Implement author name validation logic here (e.g., length)
-        return username != null && username.length() <= 50;
-    }
-
 
     @Override
     public String toString() {
         return "{ " +
             " userId='" + getuserId() + "'" +
             ", email='" + getemail() + "'" +
-            ", username='" + getusername() + "'" +
             ", failed attempts ='" + getFailedLoginAttempt() + "'" +
             ", Account Locked ='" + getaccountLocked() + "'" +
             ", Forename ='" + getForename() + "'" +

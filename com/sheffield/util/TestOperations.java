@@ -5,10 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
 
 import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.order.Order;
 //import com.sheffield.model.DatabaseOperations;
 import com.sheffield.model.user.User;
+
+
 
 public class TestOperations {
 
@@ -16,16 +21,17 @@ public class TestOperations {
     public void insertUser(User newUser, Connection connection) throws SQLException {
         try {
             // Create an SQL INSERT statement
-            String insertSQL = "INSERT INTO Users (userId, email, username, password_hash, failed_login_attempts, account_locked) VALUES (?, ?, ?, ?, ?, ?)";
+            String insertSQL = "INSERT INTO Users (userId, email, password_hash, failed_login_attempts, account_locked, forename, surname) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             // Prepare and execute the INSERT statement
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1, newUser.getuserId());
             preparedStatement.setString(2, newUser.getemail());
-            preparedStatement.setString(3, newUser.getusername());
-            preparedStatement.setString(4, newUser.getPasswordHash());
-            preparedStatement.setInt(5, newUser.getFailedLoginAttempt());
-            preparedStatement.setBoolean(6, newUser.getaccountLocked());
+            preparedStatement.setString(3, newUser.getPasswordHash());
+            preparedStatement.setInt(4, newUser.getFailedLoginAttempt());
+            preparedStatement.setBoolean(5, newUser.getaccountLocked());
+            preparedStatement.setString(6, newUser.getForename());
+            preparedStatement.setString(7, newUser.getSurname());
 
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println(rowsAffected + " row(s) inserted successfully.");
@@ -47,7 +53,6 @@ public class TestOperations {
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
-                        ", username='" + resultSet.getString("username") + "'" +
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed login attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account locked='" + resultSet.getBoolean("account_locked") + "'" +
@@ -70,11 +75,11 @@ public class TestOperations {
             System.out.println("<=================== GET ALL Current Users ====================>");
             ArrayList users = new ArrayList<User>();
             while (resultSet.next()) {
-                User newUser = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"),resultSet.getString("usertype"));
+
+                User newUser = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"),resultSet.getString("usertype"));
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
-                        ", username='" + resultSet.getString("username") + "'" +
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed login attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account locked='" + resultSet.getBoolean("account_locked") + "'" +
@@ -91,20 +96,19 @@ public class TestOperations {
         }
     }
 
-    // Get a user by username
-    public void getUserByusername(String username, Connection connection) throws SQLException {
+    // Get a user by forename
+    public void getUserByforename(String forename, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            String selectSQL = "SELECT * FROM Users WHERE forename=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, forename);
             ResultSet resultSet = preparedStatement.executeQuery();
-            System.out.println("<==================== User BY username =====================>");
+            System.out.println("<==================== User BY forename =====================>");
             if (resultSet.next()) {
 
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
-                        ", username='" + resultSet.getString("username") + "'" +
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed_login_attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account_locked='" + resultSet.getBoolean("account_locked") + "'" +
@@ -112,7 +116,7 @@ public class TestOperations {
                         ", surname='" + resultSet.getString("surname") + "'" +
                         "}");
             } else {
-                System.out.println("User with username " + username + " not found.");
+                System.out.println("User with forename " + forename + " not found.");
             }
             System.out.println("<=======================================================>");
         } catch (SQLException e) {
@@ -121,19 +125,18 @@ public class TestOperations {
         }
     }
 
-    public User getUser(String username, Connection connection) throws SQLException {
+    public User getUser(String email, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            String selectSQL = "SELECT * FROM Users WHERE email=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
-            System.out.println("<==================== User BY username =====================>");
+            System.out.println("<==================== User BY Email =====================>");
             if (resultSet.next()) {
-                User user = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("username"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"), resultSet.getString("usertype"));
+                User user = new User(resultSet.getString("userId"), resultSet.getString("email"),resultSet.getString("password_hash"), resultSet.getInt("failed_login_attempts"), resultSet.getBoolean("account_locked"), resultSet.getString("forename"),resultSet.getString("surname"), resultSet.getString("usertype"));
                 System.out.println("{" +
                         "userId='" + resultSet.getString("userId") + "'" +
                         ", email='" + resultSet.getString("email") + "'" +
-                        ", username='" + resultSet.getString("username") + "'" +
                         ", passwordHash='" + resultSet.getString("password_hash") + "'" +
                         ", failed_login_attempts='" + resultSet.getInt("failed_login_attempts") + "'" +
                         ", account_locked='" + resultSet.getBoolean("account_locked") + "'" +
@@ -142,7 +145,7 @@ public class TestOperations {
                         "}");
                 return user;
             } else {
-                System.out.println("User with username " + username + " not found.");
+                System.out.println("User with email " + email + " not found.");
                 return null;
             }
             
@@ -152,14 +155,13 @@ public class TestOperations {
         }
     }
 
-    public String getForenameByUsername(String username, Connection connection) throws SQLException {
+    public String getForenameByEmail(String email, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            String selectSQL = "SELECT * FROM Users WHERE email=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-
                 return resultSet.getString("forename");
             } else {
                 return "Not Found";
@@ -170,11 +172,11 @@ public class TestOperations {
         }
     }
 
-    public String getSurnameByUsername(String username, Connection connection) throws SQLException {
+    public String getSurnameByEmail(String email, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE username=?";
+            String selectSQL = "SELECT * FROM Users WHERE forename=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
 
@@ -188,36 +190,21 @@ public class TestOperations {
         }
     }
 
-    public String getEmailByUsername(String username, Connection connection) throws SQLException {
-        try {
-            String selectSQL = "SELECT * FROM Users WHERE username=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString("email");
-            } else {
-                return "Not Found";
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;// Re-throw the exception to signal an error.
-        }
-    }
 
     // Update an existing book in the database
     public void updateUser(User newUser, Connection connection) throws SQLException {
         try {
-            String updateSQL = "UPDATE Users SET email=?, username=?,"+
-            "password_hash=?, failed_login_attempts=?, account_locked=? WHERE userId=?";
+            String updateSQL = "UPDATE Users SET email=?,"+
+            "password_hash=?, failed_login_attempts=?, account_locked=?, forename=?, surname=? WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, newUser.getemail());
-            preparedStatement.setString(2, newUser.getusername());
-            preparedStatement.setString(3, newUser.getPasswordHash());
-            preparedStatement.setInt(4, newUser.getFailedLoginAttempt());
-            preparedStatement.setBoolean(5, newUser.getaccountLocked());
-            preparedStatement.setString(6, newUser.getuserId());
+            preparedStatement.setString(2, newUser.getPasswordHash());
+            preparedStatement.setInt(3, newUser.getFailedLoginAttempt());
+            preparedStatement.setBoolean(4, newUser.getaccountLocked());
+            preparedStatement.setString(7, newUser.getuserId());
+            preparedStatement.setString(5, newUser.getForename());
+            preparedStatement.setString(6, newUser.getSurname());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -232,21 +219,21 @@ public class TestOperations {
         }
     }
 
-    public void updateEmailUsername(String username, String email, Connection connection) throws SQLException {
+    public void updateEmailforename(String forename, String email, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET email=?" +
-            "WHERE username=?";
+            "WHERE forename=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, username);
+            preparedStatement.setString(2, forename);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + username);
+                System.out.println("No rows were updated for userId: " + forename);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -254,21 +241,21 @@ public class TestOperations {
         }
     }
 
-    public void updateFNameUsername(String username, String fname, Connection connection) throws SQLException {
+    public void updateFNameByEmail(String email, String fname, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET forename=?" +
-            "WHERE username=?";
+            "WHERE email=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, fname);
-            preparedStatement.setString(2, username);
+            preparedStatement.setString(2, email);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + username);
+                System.out.println("No rows were updated for userId: " + email);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -276,21 +263,21 @@ public class TestOperations {
         }
     }
 
-    public void updateSNameUsername(String username, String sname, Connection connection) throws SQLException {
+    public void updateSNameByEmail(String email, String sname, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET surname=?" +
-            "WHERE username=?";
+            "WHERE email=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, sname);
-            preparedStatement.setString(2, username);
+            preparedStatement.setString(2, email);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + username);
+                System.out.println("No rows were updated for userId: " + email);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -316,6 +303,44 @@ public class TestOperations {
             e.printStackTrace();
             throw e;// Re-throw the exception to signal an error.
         }
+    }
+
+    public Order[] getAllOrdersByUser (String userId, Connection connection) throws SQLException {
+        try{
+            String selectSQL = "SELECT * FROM Orders WHERE userId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Order> orderList = new ArrayList<>();
+            if (resultSet.next()) {
+               
+                Order order = new Order(resultSet.getInt("orderID"),
+                                        resultSet.getString("userID"), 
+                                        resultSet.getDate("issueDate"),
+                                        resultSet.getDouble("totalCost"), 
+                                        resultSet.getString("status"));
+                
+                System.out.println("{" +
+                        "OrderId='" + resultSet.getInt("orderID") + "'" +
+                        ", userID='" + resultSet.getString("userID") + "'" +
+                        ", DATE='" + resultSet.getDate("issueDate") + "'" +
+                        ", cost='" +resultSet.getDouble("totalCost") + "'" +
+                        ",status'" + resultSet.getString("status") + "'" +
+                        "}");
+                orderList.add(order);
+
+                
+            } else {
+                System.out.println("");
+            }
+
+            return orderList.toArray(new Order[0] );
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw e;
+        }
+
+        
     }
 
     public static void main(String[] args) {
