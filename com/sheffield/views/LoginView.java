@@ -11,13 +11,15 @@
     import java.util.Arrays;
 
     public class LoginView extends JFrame {
-        private JTextField usernameField;
+        private JTextField emailField;
         private JPasswordField passwordField;
+        private static LoginView instance;
         public LoginView (Connection connection) throws SQLException {
             // Create the JFrame in the constructor
             this.setTitle("Train of Sheffield");
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             this.setSize(320, 170);
+            instance = this;
 
             // Create a JPanel to hold the components
             JPanel panel = new JPanel();
@@ -27,12 +29,12 @@
             panel.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
 
-            // Create JLabels for username and password
-            JLabel usernameLabel = new JLabel("  Username:");
+            // Create JLabels for email and password
+            JLabel emailLabel = new JLabel("  Email:");
             JLabel passwordLabel = new JLabel("  Password:");
 
-            // Create JTextFields for entering username and password
-            usernameField = new JTextField(20);
+            // Create JTextFields for entering email and password
+            emailField = new JTextField(20);
             passwordField = new JPasswordField(20);
 
             // Create a JButton for the login action
@@ -52,9 +54,9 @@
             gbc.insets = new Insets(0, 0, 0, 0);
             // panel.add(new JLabel());
             gbc.gridy = 1;
-            panel.add(usernameLabel, gbc);
+            panel.add(emailLabel, gbc);
             gbc.gridx = 1;
-            panel.add(usernameField, gbc);
+            panel.add(emailField, gbc);
             gbc.gridy = 2;
             panel.add(passwordField, gbc);
             gbc.gridx = 0;
@@ -73,31 +75,30 @@
             this.getContentPane().add(panel);
             this.pack();
             
-            
-
-            
 
             // Create an ActionListener for the login button
             loginButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String username = usernameField.getText();
+                    String email = emailField.getText();
                     char[] passwordChars = passwordField.getPassword();
-                    System.out.println(username);
+                    System.out.println(email);
                     System.out.println(new String(passwordChars));
                     DatabaseOperations databaseOperations = new DatabaseOperations();
-                    System.out.println(databaseOperations.verifyLogin(connection, username, passwordChars));
+                    System.out.println(databaseOperations.verifyLogin(connection, email, passwordChars));
                     // Secure disposal of the password
                     Arrays.fill(passwordChars, '\u0000');
 
                 }
             });
 
+
+
             // Create an ActionListener for the register button
             registerButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    dispose();
+                    setVisible(false);
                     RegisterView registerView = null;
                     try {
                         registerView = new RegisterView(connection);
@@ -109,5 +110,9 @@
                     System.out.println("New User, opening register view");
                 }
             });
+        }
+
+        public static LoginView getInstance() {
+            return instance;
         }
     }

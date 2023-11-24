@@ -19,13 +19,13 @@ import com.sheffield.views.UserMainView;
 
 public class DatabaseOperations {
 
-    public String verifyLogin(Connection connection, String username, char[] enteredPassword) {
+    public String verifyLogin(Connection connection, String email, char[] enteredPassword) {
         
         try{
             //Query to fetch information
-            String sql = "SELECT userId, password_hash, failed_login_attempts, " + "account_locked FROM Users WHERE username = ?";
+            String sql = "SELECT userId, password_hash, failed_login_attempts, " + "account_locked FROM Users WHERE email = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
+            statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()){
@@ -52,13 +52,13 @@ public class DatabaseOperations {
 
                         UserMainView userMainView = null;
                         try {
-                            userMainView = new UserMainView(connection, testOperations.getUser(username, connection));
+                            userMainView = new UserMainView(connection, testOperations.getUser(email, connection));
                             userMainView.setVisible(true);
             
                         } catch (Throwable t) {
                             throw new RuntimeException(t);
                         }
-                        return "Login successful for user: "+ username;
+                        return "Login successful for user: "+ email;
                     } else {
                         //Incorrect pass
                         failedLoginAttempts ++;
