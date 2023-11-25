@@ -8,9 +8,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import com.sheffield.model.order.Order;
+import com.sheffield.model.order.OrderLine;
 import com.sheffield.model.user.User;
+import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 
 public class OrderDetailsView extends JFrame {
@@ -19,7 +23,7 @@ public class OrderDetailsView extends JFrame {
     private JButton products;
     private JTable basketTable;
     private Object[][] data;
-    public OrderDetailsView (Connection connection, User user) throws SQLException {
+    public OrderDetailsView (Connection connection, Order order) throws SQLException {
 
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,13 +41,15 @@ public class OrderDetailsView extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
+       
 
-
-        TestOperations testOperations = new TestOperations();
+        OrderOperations orderOperations = new OrderOperations();
          try {
-            Order[] userOrders = testOperations.getAllOrdersByUser(user.getuserId(), connection);
-
-            String[] columnNames = {"OrderID", "Date"};
+            OrderLine[] userOrders = orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection);
+            Arrays.sort(userOrders, Comparator.comparing(OrderLine::getOrderLineID));
+            System.out.println(userOrders.length);
+             System.out.println("this works");
+            String[] columnNames = {"OrderLineID", "Product Code", "Brand", "Product Name", "Quantity", "Line Cost"};
             DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -51,9 +57,13 @@ public class OrderDetailsView extends JFrame {
             }
             };
            
-            for (Order order: userOrders){
-            Object[] ordersForTable = {order.getOrderID(), order.getIssueDate()};
-            model.addRow(ordersForTable);
+            
+            for (OrderLine orderLine: userOrders){
+                Object[] ordersForTable = {orderLine.getOrderLineID(), orderOperations.getProductCode(orderLine.getProductID(), connection),
+                                            orderOperations.getProductBrand(orderLine.getProductID(), connection),
+                                            orderOperations.getProductName(orderLine.getProductID(), connection),
+                                            orderLine.getQuantity(), orderLine.getLineCost()};
+                model.addRow(ordersForTable);
             }
 
              basketTable = new JTable(model);
@@ -62,14 +72,7 @@ public class OrderDetailsView extends JFrame {
           
         }
 
-        
-
-        
-
-        
-
-
-       
+     
 
         basketTable.setCellSelectionEnabled(false);
         basketTable.setRowSelectionAllowed(false);

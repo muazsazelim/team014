@@ -8,51 +8,50 @@ public class OrderLine {
     private double lineCost;
     // needs validatiom to be done
     public OrderLine(int orderLineID, int orderID, int productID, int quantity, double lineCost){
-        this.setLineCost(lineCost);
+        this.setOrderLineID(orderLineID);      
         this.setOrderID(orderID);
-        this.setOrderLineID(orderLineID);
         this.setProductID(productID);
         this.setQuantity(quantity);
-
+        this.setLineCost(lineCost);
     }
 
-    private int getOrderLineID(){
+    public int getOrderLineID(){
         return orderLineID;
     }
 
-    private int getOrderID(){
+    public int getOrderID(){
         return orderID;
     }
 
-    private int getProductID(){
+    public int getProductID(){
         return productID;
     }
 
-    private int getQuantity(){
+    public int getQuantity(){
         return quantity;
     }
 
-    private double getLineCost(){
+    public double getLineCost(){
         return lineCost;
     }
 
-    private void setOrderLineID(int orderLineID){
+    public void setOrderLineID(int orderLineID){
         this.orderLineID = orderLineID;
     }
 
-    private void setOrderID(int orderID){
+    public void setOrderID(int orderID){
         this.orderID = orderID;
     }
 
-    private void setProductID(int productID){
+    public void setProductID(int productID){
         this.productID = productID;
     }
 
-    private void setQuantity(int quantity){
+    public void setQuantity(int quantity){
         this.quantity = quantity;
     }
 
-    private void setLineCost(double lineCost){
+    public void setLineCost(double lineCost){
         this.lineCost = lineCost;
     }
 }

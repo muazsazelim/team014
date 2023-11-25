@@ -10,7 +10,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
-import com.sheffield.util.TestOperations;
+import com.sheffield.util.OrderOperations;
+
 
 
 
@@ -42,11 +43,11 @@ public class UserOrderView extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
-
-        TestOperations testOperations = new TestOperations();
+        // need to replace with selection from cataloge table
+        OrderOperations orderOperations = new OrderOperations();
 
         try {
-            Order[] userOrders = testOperations.getAllOrdersByUser(user.getuserId(), connection);
+            Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
 
             String[] columnNames = {"OrderID", "Date"};
             DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
