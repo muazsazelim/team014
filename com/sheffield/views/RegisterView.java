@@ -128,7 +128,7 @@ public class RegisterView extends JFrame {
                     
                     if (!inputForename.isEmpty() && !inputSurname.isEmpty() && !inputEmail.isEmpty() && !password.isEmpty()){
                         if (password.equals(confirmPassword)) {
-                            User newUser = new User(UniqueUserIDGenerator.generateUniqueUserID(), inputEmail, HashedPasswordGenerator.hashPassword(inputPassword), 0, false, inputForename, inputSurname);
+                            User newUser = new User(UniqueUserIDGenerator.generateUniqueUserID(), inputEmail, HashedPasswordGenerator.hashPassword(inputPassword), 0, false, inputForename, inputSurname, "customer");
                             databaseOperations.insertUser(newUser, connection);
                             System.out.println("New User created");
                             System.out.println(newUser);
