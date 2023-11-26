@@ -1,13 +1,14 @@
 package com.sheffield.views;
 
 import javax.swing.*;
+
+import com.sheffield.model.user.User;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import com.sheffield.model.user.User;
 
 
 public class UserMainView extends JFrame {

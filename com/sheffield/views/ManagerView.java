@@ -8,8 +8,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import com.sheffield.util.TestOperations;
 import com.sheffield.model.user.User;
+import com.sheffield.util.TestOperations;
 
 
 public class ManagerView extends JFrame {
