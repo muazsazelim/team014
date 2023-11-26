@@ -7,11 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.sheffield.model.Address;
 import com.sheffield.model.DatabaseConnectionHandler;
-import com.sheffield.model.order.Order;
-//import com.sheffield.model.DatabaseOperations;
 import com.sheffield.model.user.User;
+import com.sheffield.model.order.Order;
 
 
 
@@ -208,6 +207,88 @@ public class TestOperations {
         }
     }
 
+    public void insertAddress(Address newAddress, Connection connection) throws SQLException {
+        try {
+            // Create an SQL INSERT statement
+            String insertSQL = "INSERT INTO Address (houseNumber, roadName, cityName, postcode) VALUES (?, ?, ?, ?)";
+
+            // Prepare and execute the INSERT statement
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setString(1, newAddress.getHouseNumber());
+            preparedStatement.setString(2, newAddress.getRoadName());
+            preparedStatement.setString(3, newAddress.getCityName());
+            preparedStatement.setString(4, newAddress.getPostcode());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println(rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Re-throw the exception to signal an error.
+        }
+    }
+
+    public Address getAddress(String userID, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users INNER JOIN Address ON Users.houseID=Address.houseID WHERE userID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, userID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Address userAddress = new Address(resultSet.getInt("houseID"), resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"));
+                System.out.println(userAddress.toString());
+                return userAddress;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public int addressExists(String houseNumber, String postcode, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Address WHERE houseNumber=? AND postcode=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, houseNumber);
+            preparedStatement.setString(2, postcode);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("houseID");
+            } else {
+                return -1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void updateAddress(Address address, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Address SET houseNumber=?,"+
+            "roadName=?, cityName=?, postcode=? WHERE houseID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, address.getHouseNumber());
+            preparedStatement.setString(2, address.getRoadName());
+            preparedStatement.setString(3, address.getCityName());
+            preparedStatement.setString(4, address.getPostcode());
+            preparedStatement.setInt(5, address.getHouseId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for houseId: " + address.getHouseId());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
 
     // Update an existing book in the database
     public void updateUser(User newUser, Connection connection) throws SQLException {
@@ -283,11 +364,31 @@ public class TestOperations {
 
     public void updateSName(String userID, String sname, Connection connection) throws SQLException {
         try {
-            String updateSQL = "UPDATE Users SET surname=?" +
-            "WHERE userID=?";
+            String updateSQL = "UPDATE Users SET surname=? WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, sname);
+            preparedStatement.setString(2, userID);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + userID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public void updateUserAddress(String userID, int houseID, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Users SET houseID=? WHERE userID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setInt(1, houseID);
             preparedStatement.setString(2, userID);
 
             int rowsAffected = preparedStatement.executeUpdate();
