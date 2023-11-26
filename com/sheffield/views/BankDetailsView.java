@@ -1,12 +1,9 @@
 package com.sheffield.views;
 
-import com.sheffield.util.HashedPasswordGenerator;
 import com.sheffield.util.TestOperations; // remove this later
-import com.sheffield.util.UniqueUserIDGenerator;
 import com.sheffield.model.DatabaseConnectionHandler; // remove this later
 import com.sheffield.model.DatabaseOperations; // use this instead
 import com.sheffield.model.user.BankDetails;
-import com.sheffield.model.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,13 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class BankDetailsView extends JFrame {
-    private JTextField bankCardNameField;
-    private JTextField holderNameField;
-    private JTextField bankCardNumberField;
-    private JTextField expiryDateField;
-    private JTextField securityCodeField;
+    private JTextField bankCardNameField = new JTextField(20);
+    private JTextField holderNameField = new JTextField(20);
+    private JTextField bankCardNumberField = new JTextField(20);
+    private JTextField expiryDateField = new JTextField(20);
+    private JTextField securityCodeField = new JTextField(20);
     public BankDetailsView(Connection connection) throws SQLException {
         // Create the JFrame in the constructor
         this.setTitle("Bank Details Update");
@@ -56,10 +54,12 @@ public class BankDetailsView extends JFrame {
         panel.add(introLabel2, gbc);
         gbc.gridy = 8;
         panel.add(submitButton, gbc);
+        gbc.gridy = 7;
+        panel.add(errorFillLabel, gbc);
 
         //Concise way to write 
         String[] labels = {"Bank Name:", "Card Holder Name:", "Card Number:", "Expiry Date (MM/YY):", "Security Code:"};
-        JTextField[] fields = {bankCardNameField, holderNameField, bankCardNumberField, expiryDateField, securityCodeField};
+        JTextField[] fields = {bankCardNumberField, bankCardNameField, holderNameField, expiryDateField, securityCodeField};
 
         gbc.gridwidth= 1;
         int row = 2;
@@ -74,7 +74,6 @@ public class BankDetailsView extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = row++;
         gbc.gridwidth = 2;
-        field = new JTextField(20);
         panel.add(field, gbc);
         gbc.gridwidth = 1;
         }
@@ -92,25 +91,33 @@ public class BankDetailsView extends JFrame {
                 //Inserting new user if the details are valid
                 try{
                     TestOperations databaseOperations = new TestOperations();
-                    String inputCardNumber= bankCardNumberField.getText();
-                    String inputCardName = bankCardNameField.getText();
-                    String inputHolderName = holderNameField.getText();
-                    String inputExpDate = expiryDateField.getText();
-                    String inputSecCode = securityCodeField.getText();
-                    
-                    if (!inputCardNumber.isEmpty() && !inputCardName.isEmpty() && !inputHolderName.isEmpty() && !inputExpDate.isEmpty() && !inputSecCode.isEmpty()){
-                        //dialog upon valid card
-                        BankDetails newBankDetails = new BankDetails(inputCardNumber, inputCardName, inputHolderName, inputExpDate, inputSecCode);
-                        //databaseOperations.insertUser(newBankDetails, connection);
-                        System.out.println("New Bank details created");
-                        System.out.println(newBankDetails); //hide this later
-                        dispose(); //dialog here
-                    } else {
+                    ArrayList<String> inputList = new ArrayList<>();
+                    boolean listNotNull = true;
+                    for (JTextField field1 : fields) {
+                        if (field1 == null){
+                            listNotNull= false;
+                        }else{
+                            System.out.println(field1.getText().length());
+                            inputList.add(field1.getText()) ;
+                        }
+                    }
+                    if (listNotNull){
+                        if (!inputList.get(0).isEmpty() && !inputList.get(1).isEmpty() && !inputList.get(2).isEmpty() && !inputList.get(3).isEmpty() && !inputList.get(4).isEmpty()){
+                            //dialog upon valid card
+                            BankDetails newBankDetails = new BankDetails(inputList.get(2), inputList.get(0), inputList.get(1), inputList.get(3), inputList.get(4));
+                            databaseOperations.insertBankDetails(newBankDetails, connection);
+                            System.out.println("New Bank details created");
+                            System.out.println(newBankDetails); //hide this later
+                            JOptionPane.showMessageDialog(null, "Bank Details submited");
+                            dispose(); //dialog here
+                        } else {
+                            errorFillLabel.setVisible(true);
+                            pack();
+                        }
+                    }else {
                         errorFillLabel.setVisible(true);
                         pack();
                     }
-                    
-
                 }catch (Throwable t) {
                     // Close connection if database crashes.
                     throw new RuntimeException(t);

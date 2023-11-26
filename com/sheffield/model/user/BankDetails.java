@@ -14,9 +14,9 @@ public class BankDetails {
         this.setcardNumber(cardNumber);
         this.setholderName(holderName);
         this.setbankName(bankName);
-        this.setvalidCard(isValidCard());
         this.setcardExpDate(cardExpDate);
         this.setsecCode(secCode);
+        this.setvalidCard(isValidCard());
     }
 
     // Getter and setter methods for the cardNumber attribute with validation
@@ -102,7 +102,7 @@ public class BankDetails {
 
     private boolean isValidCard() {
         // Implement overall card validation logic here (e.g., length, format)
-        return isValidcardNumber(cardNumber) && isValidholderName(holderName) && isValidsecCode(secCode);
+        return isValidcardNumber(this.cardNumber) && isValidholderName(this.holderName) && isValidsecCode(this.secCode);
     }
 
 
