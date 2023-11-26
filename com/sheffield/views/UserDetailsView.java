@@ -7,8 +7,9 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.sheffield.util.TestOperations;
+import com.sheffield.model.Address;
 import com.sheffield.model.user.User;
+import com.sheffield.util.TestOperations;
 
 
 public class UserDetailsView extends JFrame {
@@ -45,6 +46,8 @@ public class UserDetailsView extends JFrame {
         parent.pack();
 
         TestOperations testOperations = new TestOperations();
+        Address userAddress = testOperations.getAddress(user.getuserId(), connection);
+
         try {
             userDetails.removeAll();
             

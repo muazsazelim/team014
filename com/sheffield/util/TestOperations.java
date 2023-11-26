@@ -7,11 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.sheffield.model.Address;
 import com.sheffield.model.DatabaseConnectionHandler;
-import com.sheffield.model.order.Order;
-//import com.sheffield.model.DatabaseOperations;
 import com.sheffield.model.user.User;
+import com.sheffield.model.order.Order;
 
 
 
@@ -201,6 +200,25 @@ public class TestOperations {
                 return resultSet.getString("surname");
             } else {
                 return "Not Found";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public Address getAddress(String userID, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Users INNER JOIN Address ON Users.houseID=Address.houseID WHERE userID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, userID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Address userAddress = new Address(resultSet.getInt("houseID"), resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"));
+                System.out.println(userAddress.toString());
+                return userAddress;
+            } else {
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();

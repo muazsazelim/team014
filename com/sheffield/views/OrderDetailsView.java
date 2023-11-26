@@ -11,9 +11,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
-import com.sheffield.model.user.User;
 import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 

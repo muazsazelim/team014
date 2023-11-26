@@ -8,7 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
-import com.sheffield.model.user.User;
+
+import com.sheffield.model.User;
 import com.sheffield.model.order.Order;
 import com.sheffield.util.OrderOperations;
 
