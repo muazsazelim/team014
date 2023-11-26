@@ -226,6 +226,31 @@ public class TestOperations {
         }
     }
 
+    public void updateAddress(Address address, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Address SET houseNumber=?,"+
+            "roadName=?, cityName=?, postcode=? WHERE houseID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, address.getHouseNumber());
+            preparedStatement.setString(2, address.getRoadName());
+            preparedStatement.setString(3, address.getCityName());
+            preparedStatement.setString(4, address.getPostcode());
+            preparedStatement.setInt(5, address.getHouseId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for houseId: " + address.getHouseId());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
 
     // Update an existing book in the database
     public void updateUser(User newUser, Connection connection) throws SQLException {

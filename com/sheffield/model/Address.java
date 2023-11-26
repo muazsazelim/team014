@@ -19,7 +19,7 @@ public class Address {
 
     // Getter and setter methods for the userId attribute with validation
     public void setHouseId(int houseID) {
-        this.houseId = houseId;
+        this.houseId = houseID;
     }
 
     public int getHouseId() {
