@@ -5,6 +5,7 @@ import com.sheffield.util.TestOperations; // remove this later
 import com.sheffield.util.UniqueUserIDGenerator;
 import com.sheffield.model.DatabaseConnectionHandler; // remove this later
 import com.sheffield.model.DatabaseOperations; // use this instead
+import com.sheffield.model.user.BankDetails;
 import com.sheffield.model.user.User;
 
 import javax.swing.*;
@@ -57,7 +58,7 @@ public class BankDetailsView extends JFrame {
         panel.add(submitButton, gbc);
 
         //Concise way to write 
-        String[] labels = {"Card type:", "Card Holder Name:", "Card Number:", "Expiry Date (MM/YY):", "Security Code:"};
+        String[] labels = {"Bank Name:", "Card Holder Name:", "Card Number:", "Expiry Date (MM/YY):", "Security Code:"};
         JTextField[] fields = {bankCardNameField, holderNameField, bankCardNumberField, expiryDateField, securityCodeField};
 
         gbc.gridwidth= 1;
@@ -89,38 +90,33 @@ public class BankDetailsView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Inserting new user if the details are valid
-                // try{
-                //     TestOperations databaseOperations = new TestOperations();
-                //     String inputForename = forenameField.getText();
-                //     String inputSurname = surnameField.getText();
-                //     char[] inputPassword = passwordField.getPassword();
-                //     String inputEmail = emailField.getText();
-                //     String password = new String(passwordField.getPassword());
-                //     String confirmPassword = new String(passwordreenterField.getPassword());
+                try{
+                    TestOperations databaseOperations = new TestOperations();
+                    String inputCardNumber= bankCardNumberField.getText();
+                    String inputCardName = bankCardNameField.getText();
+                    String inputHolderName = holderNameField.getText();
+                    String inputExpDate = expiryDateField.getText();
+                    String inputSecCode = securityCodeField.getText();
                     
-                //     if (!inputForename.isEmpty() && !inputSurname.isEmpty() && !inputEmail.isEmpty() && !password.isEmpty()){
-                //         if (password.equals(confirmPassword)) {
-                //             User newUser = new User(UniqueUserIDGenerator.generateUniqueUserID(), inputEmail, HashedPasswordGenerator.hashPassword(inputPassword), 0, false, inputForename, inputSurname, "customer");
-                //             databaseOperations.insertUser(newUser, connection);
-                //             System.out.println("New User created");
-                //             System.out.println(newUser);
-                //             LoginView.getInstance().setVisible(true);
-                //             dispose();
-                //         } else {
-                //             System.out.println("Passwords do not match");
-                //             errorLabel.setVisible(true);
-                //             pack();
-                //         }
-                //     } else {
-                //         errorFillLabel.setVisible(true);
-                //         pack();
-                //     }
+                    if (!inputCardNumber.isEmpty() && !inputCardName.isEmpty() && !inputHolderName.isEmpty() && !inputExpDate.isEmpty() && !inputSecCode.isEmpty()){
+                        //dialog upon valid card
+                        BankDetails newBankDetails = new BankDetails(inputCardNumber, inputCardName, inputHolderName, inputExpDate, inputSecCode);
+                        //databaseOperations.insertUser(newBankDetails, connection);
+                        System.out.println("New Bank details created");
+                        System.out.println(newBankDetails); //hide this later
+                        dispose(); //dialog here
+                    } else {
+                        errorFillLabel.setVisible(true);
+                        pack();
+                    }
                     
 
-                // }catch (Throwable t) {
-                //     // Close connection if database crashes.
-                //     throw new RuntimeException(t);
-                // }
+                }catch (Throwable t) {
+                    // Close connection if database crashes.
+                    throw new RuntimeException(t);
+                }
+
+                //end of button action
 
             }
         });
