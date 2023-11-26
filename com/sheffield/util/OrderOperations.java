@@ -1,5 +1,5 @@
 package com.sheffield.util;
-
+import java.util.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,6 +57,7 @@ public class OrderOperations {
             preparedStatement.setInt(1, orderID);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<OrderLine> orderList = new ArrayList<>();
+            
             while(resultSet.next()) {
                
                 System.out.println("this is also working");
@@ -141,5 +142,38 @@ public class OrderOperations {
             e.printStackTrace();
             throw e;
         }        
+    }
+
+    public void insertOrder (Order order, Connection connection){
+        try{
+            String insertSQL = "INSERT INTO Orders (orderId, userId, issueDate, totalCost, status) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            preparedStatement.setInt(1, order.getOrderID());
+            preparedStatement.setString(2, order.getUserID());
+            preparedStatement.setDate(3, new java.sql.Date(order.getIssueDate().getTime()));
+            preparedStatement.setDouble(4, order.getTotalCost());
+            preparedStatement.setObject(5, order.getOrderStatus());
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void insertOrderLine (OrderLine line, Connection connection){
+        try{
+        String insertSQL = "INSERT INTO Order_line (orderLineID, orderID, productID, quantity, lineCost) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+        preparedStatement.setInt(1, line.getOrderLineID());
+        preparedStatement.setInt(2, line.getOrderID());
+        preparedStatement.setInt(3, line.getProductID());
+        preparedStatement.setInt(4, line.getQuantity());
+        preparedStatement.setDouble(5, line.getLineCost());
+
+
+        } catch (SQLException e){
+            e.printStackTrace();
+            
+        }
     }
 }

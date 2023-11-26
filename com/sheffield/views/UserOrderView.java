@@ -18,9 +18,9 @@ import com.sheffield.util.OrderOperations;
 
 
 public class UserOrderView extends JFrame {
-    private JButton userDetails;
+    private JButton confirmOrder;
     private JButton orderHistory;
-    private JButton products;
+    
     private JTable basketTable;
     private Object[][] data;
     
@@ -45,7 +45,7 @@ public class UserOrderView extends JFrame {
         panel.add(titleLabel, BorderLayout.NORTH);
         // need to replace with selection from cataloge table
         OrderOperations orderOperations = new OrderOperations();
-
+       // OrderLine[] orderLineForOrder 
         try {
             Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
 
@@ -103,23 +103,24 @@ public class UserOrderView extends JFrame {
 
         
         // Create buttons that links to other pages from default page
-        userDetails = new JButton("Change Details");
+        confirmOrder = new JButton("Confirm Order");
         orderHistory = new JButton("Order History");
-        products = new JButton("View Products");
+        
 
         // Add components to the panel
-        panel.add(userDetails);
+        panel.add(confirmOrder);
         panel.add(orderHistory);
-        panel.add(products);
+        
 
         this.getContentPane().add(panel, BorderLayout.NORTH);
         this.pack();
 
         // Create an ActionListener for the view buttons
-        userDetails.addActionListener(new ActionListener() {
+        confirmOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to User Details Page");
+                //creates new order for customer
+                // needs the array of orderlines from table and adds them to the table
             }
         });
         
@@ -139,12 +140,7 @@ public class UserOrderView extends JFrame {
             }
         });
 
-        products.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Products Page");
-            }
-        });
+      
 
         
 
