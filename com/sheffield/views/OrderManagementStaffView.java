@@ -50,11 +50,15 @@ public class OrderManagementStaffView extends JFrame {
        // OrderLine[] orderLineForOrder 
         try {
             Order[] userOrders = orderOperations.getAllOrders( connection);
+
             Order[] confirmedOrders = Arrays.stream(userOrders)
                 .filter(order -> order.getOrderStatus() == Order.OrderStatus.CONFIRMED)
                 .toArray(Order[]::new);
+
             Arrays.sort(confirmedOrders, Comparator.comparing(Order::getIssueDate));
+
             String[] columnNames = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details"};
+            
             DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -92,13 +96,12 @@ public class OrderManagementStaffView extends JFrame {
 
             }
             JScrollPane scrollPane = new JScrollPane(basketTable);
-             panel.add(scrollPane, BorderLayout.CENTER);
+            panel.add(scrollPane, BorderLayout.CENTER);
              
 
              
         } catch (SQLException e) {
-            e.printStackTrace();
-          
+            e.printStackTrace();         
         }
 
         
@@ -122,18 +125,16 @@ public class OrderManagementStaffView extends JFrame {
         
       
         JScrollPane scrollPane = new JScrollPane(basketTable);
-
         panel.add(scrollPane, BorderLayout.CENTER);
-
         this.setVisible(true);
 
         
-        // Create buttons that links to other pages from default page
+        
         archivedOrders = new JButton("Archived Orders");
         orderHistory = new JButton("Order History");
         products = new JButton("View Products");
 
-        // Add components to the panel
+        
         panel.add(archivedOrders);
         panel.add(orderHistory);
         panel.add(products);
@@ -141,7 +142,7 @@ public class OrderManagementStaffView extends JFrame {
         this.getContentPane().add(panel, BorderLayout.NORTH);
         this.pack();
 
-        // Create an ActionListener for the view buttons
+       
         archivedOrders.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -180,6 +181,7 @@ public class OrderManagementStaffView extends JFrame {
 
     private boolean isBlockedOrder(Order order){
 
+        
         return false;
     }
 

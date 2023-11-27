@@ -231,4 +231,25 @@ public class OrderOperations {
             throw e;
         }      
     }
+
+    public int getQuantitybyProductID(int productID, Connection connection) throws SQLException{
+
+        try{
+            String selectSQL = "SELECT Quantity FROM Inventory WHERE orderId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setInt(1, productID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+           
+            if(resultSet.next()) {               
+               return resultSet.getInt("Quantity");               
+            }else{
+                return 0;
+            }
+           
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw e;
+        }      
+        
+    }
 }
