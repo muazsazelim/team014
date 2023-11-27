@@ -31,19 +31,84 @@ public class UserMainView extends JFrame {
         JButton userDetails;
         JButton orderHistory;
         JButton products;
+        JButton staff;
+        JButton manager;
+
         userDetails = new JButton("Change Details");
         orderHistory = new JButton("Order History");
         products = new JButton("View Products");
 
-        JButton staff = new JButton("Staff");
-        JButton manager = new JButton("Manager");
-
-        // Add components to the panel
         panel.add(userDetails);
         panel.add(orderHistory);
         panel.add(products);
-        panel.add(staff);
-        panel.add(manager);
+        
+        if (user.getUserType().equals("staff")){
+            staff = new JButton("Staff");
+            panel.add(staff);
+
+            staff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Staff Page");
+
+                dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection);
+                    staffView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+            });
+
+        }
+        if (user.getUserType().equals("manager")){
+            staff = new JButton("Staff");
+            manager = new JButton("Manager");
+
+            panel.add(staff);
+            panel.add(manager);
+
+            staff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Staff Page");
+
+                dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection);
+                    staffView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+            });
+
+            manager.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Manager Page");
+
+                dispose();
+                ManagerView managerView = null;
+                try {
+                    managerView = new ManagerView(connection);
+                    managerView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+            });
+
+        }
+        
+
+        
 
         this.getContentPane().add(panel, BorderLayout.NORTH);
         this.pack();
@@ -86,40 +151,6 @@ public class UserMainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Products Page");
-            }
-        });
-
-        staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Staff Page");
-
-                dispose();
-                StaffView staffView = null;
-                try {
-                    staffView = new StaffView(connection);
-                    staffView.setVisible(true);
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
-        manager.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Manager Page");
-
-                dispose();
-                ManagerView managerView = null;
-                try {
-                    managerView = new ManagerView(connection);
-                    managerView.setVisible(true);
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
             }
         });
 
