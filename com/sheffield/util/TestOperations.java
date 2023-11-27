@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.sheffield.model.Address;
 import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.user.BankDetails;
 import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
 
@@ -466,7 +467,26 @@ public class TestOperations {
         }
     }
 
-    
+    public void insertBankDetails(BankDetails newBankDetails, Connection connection) throws SQLException {
+        try {
+            // Create an SQL INSERT statement
+            String insertSQL = "INSERT INTO Bank_Details (cardNumber, bankName, holderName, cardExpDate, secCode) VALUES (?, ?, ?, ?, ?)";
+
+            // Prepare and execute the INSERT statement
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setString(1, newBankDetails.getcardNumber());
+            preparedStatement.setString(2, newBankDetails.getbankName());
+            preparedStatement.setString(3, newBankDetails.getholderName());
+            preparedStatement.setString(4, newBankDetails.getcardExpDate());
+            preparedStatement.setString(5, newBankDetails.getsecCode());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println(rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Re-throw the exception to signal an error.
+        }
+    }
 
    
 
