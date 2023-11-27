@@ -130,7 +130,17 @@ public class UserDetailsView extends JFrame {
                         updatePostcode.setText("");
                     }   
                 
-                    testOperations.updateAddress(updatedAddress,connection);
+                    int addressID = testOperations.addressExists(updatedAddress.getHouseNumber(), updatedAddress.getPostcode(), connection);
+                    if (addressID == -1) {
+                        testOperations.insertAddress(updatedAddress, connection);
+                        testOperations.updateUserAddress(user.getuserId(),testOperations.addressExists(updatedAddress.getHouseNumber(), updatedAddress.getPostcode(), connection), connection);
+                    } else {
+                        testOperations.updateUserAddress(user.getuserId(),addressID, connection);
+                        testOperations.updateAddress(updatedAddress,connection);
+                    }
+                    
+
+                    //testOperations.updateAddress(updatedAddress,connection);
                     updatedAddress = testOperations.getAddress(user.getuserId(), connection);
 
                     userhNumber.setText("House Number - "+updatedAddress.getHouseNumber());
