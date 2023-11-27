@@ -13,6 +13,40 @@ import com.sheffield.model.order.OrderLine;
 
 public class OrderOperations {
 
+    public Order[] getAllOrders(Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Orders";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Order> orderList = new ArrayList<>();
+            System.out.println("<=================== GET ALL Orders ====================>");
+            while (resultSet.next()) {
+                // Print each book's information in the specified format
+
+                Order order = new Order(resultSet.getInt("orderID"),
+                                        resultSet.getString("userId"), 
+                                        resultSet.getDate("issueDate"),
+                                        resultSet.getDouble("totalCost"), 
+                                        resultSet.getString("status"));
+                System.out.println("{" +
+                        "OrderId='" + resultSet.getInt("OrderID") + "'" +
+                        ", userID='" + resultSet.getString("UserID") + "'" +
+                        ", DATE='" + resultSet.getDate("IssueDate") + "'" +
+                        ", cost='" +resultSet.getDouble("TotalCost") + "'" +
+                        ",status'" + resultSet.getString("Status") + "'" +
+                        "}");
+                orderList.add(order);
+                
+            }
+
+            System.out.println("<======================================================>");
+            return orderList.toArray(new Order[orderList.size()] );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
     public Order[] getAllOrdersByUser (String userId, Connection connection) throws SQLException {
         try{
             String selectSQL = "SELECT * FROM Orders WHERE userId=?";
@@ -57,7 +91,7 @@ public class OrderOperations {
             preparedStatement.setInt(1, orderID);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<OrderLine> orderList = new ArrayList<>();
-            
+
             while(resultSet.next()) {
                
                 System.out.println("this is also working");
@@ -144,7 +178,7 @@ public class OrderOperations {
         }        
     }
 
-    public void insertOrder (Order order, Connection connection){
+    public void insertOrder (Order order, Connection connection) throws SQLException{
         try{
             String insertSQL = "INSERT INTO Orders (orderId, userId, issueDate, totalCost, status) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
@@ -156,10 +190,11 @@ public class OrderOperations {
             preparedStatement.setObject(5, order.getOrderStatus());
         } catch (SQLException e){
             e.printStackTrace();
+            throw e;
         }
     }
 
-    public void insertOrderLine (OrderLine line, Connection connection){
+    public void insertOrderLine (OrderLine line, Connection connection) throws SQLException{
         try{
         String insertSQL = "INSERT INTO Order_line (orderLineID, orderID, productID, quantity, lineCost) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
@@ -173,7 +208,27 @@ public class OrderOperations {
 
         } catch (SQLException e){
             e.printStackTrace();
+            throw e;
             
         }
+    }
+
+    public String getUserIDbyOrderID(int orderID, Connection connection) throws SQLException{
+         try{
+            String selectSQL = "SELECT userId FROM Orders WHERE orderId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setInt(1, orderID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+           
+            if(resultSet.next()) {               
+               return resultSet.getString("userId");               
+            }else{
+                return "Not Found";
+            }
+           
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw e;
+        }      
     }
 }
