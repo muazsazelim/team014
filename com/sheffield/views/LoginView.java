@@ -32,6 +32,9 @@
             // Create JLabels for email and password
             JLabel emailLabel = new JLabel("  Email:");
             JLabel passwordLabel = new JLabel("  Password:");
+            JLabel errorFillLabel = new JLabel("Please fill all the field");
+            errorFillLabel.setForeground(Color.RED);
+            errorFillLabel.setVisible(false);
 
             // Create JTextFields for entering email and password
             emailField = new JTextField(20);
@@ -69,6 +72,8 @@
             gbc.gridy = 6;
             gbc.insets = new Insets(10, 0, 0, 0);
             panel.add(registerLabel, gbc);
+            gbc.gridy = 5;
+            panel.add(errorFillLabel, gbc);
             gbc.gridy = 8;
             panel.add(registerButton, gbc);
 
@@ -84,10 +89,16 @@
                     char[] passwordChars = passwordField.getPassword();
                     System.out.println(email);
                     System.out.println(new String(passwordChars));
-                    DatabaseOperations databaseOperations = new DatabaseOperations();
-                    System.out.println(databaseOperations.verifyLogin(connection, email, passwordChars));
-                    // Secure disposal of the password
-                    Arrays.fill(passwordChars, '\u0000');
+                    if (!email.isEmpty() && !(passwordChars == null) && !(passwordChars.length == 0)){
+                        DatabaseOperations databaseOperations = new DatabaseOperations();
+                        System.out.println(databaseOperations.verifyLogin(connection, email, passwordChars));
+                        // Secure disposal of the password
+                        Arrays.fill(passwordChars, '\u0000');
+                    } else{
+                        errorFillLabel.setVisible(true);
+                        pack();
+                    }
+                    
 
                 }
             });
