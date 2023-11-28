@@ -19,12 +19,14 @@ public class InventoryView extends JFrame {
         this.setSize(320, 320);
 
         JPanel panel = new JPanel(new BorderLayout());
-        this.add(panel);
+        JPanel header = new JPanel(new BorderLayout());
+        this.add(header, BorderLayout.PAGE_START);
+        this.add(panel, BorderLayout.CENTER);
 
         JLabel titleLabel = new JLabel("Inventory");
         titleLabel.setFont(new Font("Default", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(titleLabel, BorderLayout.NORTH);
+        header.add(titleLabel, BorderLayout.PAGE_START);
 
         JButton managerPage;
         managerPage = new JButton("Manager Page");
@@ -32,9 +34,11 @@ public class InventoryView extends JFrame {
         staffPage = new JButton("Staff Page");
         JButton editPage;
         editPage = new JButton("Edit Inventory");
+        JButton newItem;
+        newItem = new JButton("Add New Item");
 
-        panel.add(managerPage);
-        panel.add(staffPage);
+        header.add(managerPage, BorderLayout.LINE_START);
+        header.add(staffPage, BorderLayout.LINE_END);
 
         managerPage.addActionListener(new ActionListener() {
             @Override
@@ -87,7 +91,23 @@ public class InventoryView extends JFrame {
             }
         });
 
-        this.getContentPane().setLayout(new BorderLayout());
+        newItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to New Item View");
+
+                dispose();
+                NewItemView newItemView = null;
+                try {
+                    newItemView = new NewItemView(connection);
+                    newItemView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         try {
@@ -135,6 +155,7 @@ public class InventoryView extends JFrame {
             panel.add(sp);
 
             panel.add(editPage);
+            panel.add(newItem);
             panel.setSize(320, 280);
 
             this.setVisible(true);

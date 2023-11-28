@@ -14,40 +14,108 @@ import java.sql.SQLException;
 public class UserMainView extends JFrame {
     
     public UserMainView (Connection connection, User user) throws SQLException {
-        // Create the JFrame in the constructor
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320,320);
+
+        JFrame parent = this;
+        parent.setTitle("Train of Sheffield");
+        parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        parent.getContentPane().setLayout(new BorderLayout());
+        parent.setVisible(true);
+        parent.setSize(720,600);
+
 
         // Create a JPanel to hold the components
-        JPanel panel = new JPanel();
-        this.add(panel);
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
 
-        this.getContentPane().setLayout(new BorderLayout());
-        panel.setLayout(new GridLayout(0,1));
+        parent.add(contentPanel, BorderLayout.CENTER);
+
+        JPanel navigation = new JPanel();
+        navigation.setLayout(new GridLayout(0,1));
+
+
+        contentPanel.add(navigation, BorderLayout.CENTER);
+
 
         // Create buttons that links to other pages from default page
 
         JButton userDetails;
         JButton orderHistory;
         JButton products;
+        JButton staff;
+        JButton manager;
+
         userDetails = new JButton("Change Details");
         orderHistory = new JButton("Order History");
         products = new JButton("View Products");
 
-        JButton staff = new JButton("Staff");
-        JButton manager = new JButton("Manager");
+        navigation.add(userDetails);
+        navigation.add(orderHistory);
+        navigation.add(products);
+        
+        if (user.getUserType().equals("staff")){
+            staff = new JButton("Staff");
+            navigation.add(staff);
 
-        // Add components to the panel
-        panel.add(userDetails);
-        panel.add(orderHistory);
-        panel.add(products);
-        panel.add(staff);
-        panel.add(manager);
+            staff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Staff Page");
 
-        this.getContentPane().add(panel, BorderLayout.NORTH);
-        this.pack();
+                dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection);
+                    staffView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+            });
 
+        }
+        if (user.getUserType().equals("manager")){
+            staff = new JButton("Staff");
+            manager = new JButton("Manager");
+
+            navigation.add(staff);
+            navigation.add(manager);
+
+            staff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Staff Page");
+
+                dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection);
+                    staffView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+            });
+
+            manager.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Manager Page");
+
+                dispose();
+                ManagerView managerView = null;
+                try {
+                    managerView = new ManagerView(connection);
+                    managerView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+            });
+
+        }
         // Create an ActionListener for the view buttons
         userDetails.addActionListener(new ActionListener() {
             @Override
@@ -86,40 +154,6 @@ public class UserMainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Products Page");
-            }
-        });
-
-        staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Staff Page");
-
-                dispose();
-                StaffView staffView = null;
-                try {
-                    staffView = new StaffView(connection);
-                    staffView.setVisible(true);
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
-        manager.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Manager Page");
-
-                dispose();
-                ManagerView managerView = null;
-                try {
-                    managerView = new ManagerView(connection);
-                    managerView.setVisible(true);
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
             }
         });
 
