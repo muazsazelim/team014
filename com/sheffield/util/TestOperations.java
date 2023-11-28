@@ -155,11 +155,11 @@ public class TestOperations {
         }
     }
 
-    public String getEmail(String userID, Connection connection) throws SQLException {
+    public String getEmail(String userId, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE userID=?";
+            String selectSQL = "SELECT * FROM Users WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, userID);
+            preparedStatement.setString(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
 
@@ -173,11 +173,11 @@ public class TestOperations {
         }
     }
 
-    public String getForename(String userID, Connection connection) throws SQLException {
+    public String getForename(String userId, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE userID=?";
+            String selectSQL = "SELECT * FROM Users WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, userID);
+            preparedStatement.setString(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getString("forename");
@@ -190,11 +190,11 @@ public class TestOperations {
         }
     }
 
-    public String getSurname(String userID, Connection connection) throws SQLException {
+    public String getSurname(String userId, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users WHERE userID=?";
+            String selectSQL = "SELECT * FROM Users WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, userID);
+            preparedStatement.setString(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
 
@@ -219,7 +219,7 @@ public class TestOperations {
             preparedStatement.setString(2, newAddress.getRoadName());
             preparedStatement.setString(3, newAddress.getCityName());
             preparedStatement.setString(4, newAddress.getPostcode());
-            preparedStatement.setString(5, newAddress.getUserId());
+            preparedStatement.setString(5, newAddress.getuserId());
 
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println(rowsAffected + " row(s) inserted successfully.");
@@ -229,14 +229,14 @@ public class TestOperations {
         }
     }
 
-    public Address getAddress(String userID, Connection connection) throws SQLException {
+    public Address getAddress(String userId, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Address WHERE userID=?";
+            String selectSQL = "SELECT * FROM Address WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-            preparedStatement.setString(1, userID);
+            preparedStatement.setString(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Address userAddress = new Address(resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"), resultSet.getString(userID));
+                Address userAddress = new Address(resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"), resultSet.getString(userId));
                 System.out.println(userAddress.toString());
                 return userAddress;
             } else {
@@ -276,14 +276,14 @@ public class TestOperations {
             preparedStatement.setString(2, address.getRoadName());
             preparedStatement.setString(3, address.getCityName());
             preparedStatement.setString(4, address.getPostcode());
-            preparedStatement.setString(5, address.getUserId());
+            preparedStatement.setString(5, address.getuserId());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + address.getUserId());
+                System.out.println("No rows were updated for userId: " + address.getuserId());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -320,21 +320,21 @@ public class TestOperations {
         }
     }
 
-    public void updateEmail(String userID, String email, Connection connection) throws SQLException {
+    public void updateEmail(String userId, String email, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET email=?" +
-            "WHERE userID=?";
+            "WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, userID);
+            preparedStatement.setString(2, userId);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + userID);
+                System.out.println("No rows were updated for userId: " + userId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -342,21 +342,21 @@ public class TestOperations {
         }
     }
 
-    public void updateFName(String userID, String fname, Connection connection) throws SQLException {
+    public void updateFName(String userId, String fname, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET forename=?" +
-            "WHERE userID=?";
+            "WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, fname);
-            preparedStatement.setString(2, userID);
+            preparedStatement.setString(2, userId);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + userID);
+                System.out.println("No rows were updated for userId: " + userId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -364,20 +364,20 @@ public class TestOperations {
         }
     }
 
-    public void updateSName(String userID, String sname, Connection connection) throws SQLException {
+    public void updateSName(String userId, String sname, Connection connection) throws SQLException {
         try {
-            String updateSQL = "UPDATE Users SET surname=? WHERE userID=?";
+            String updateSQL = "UPDATE Users SET surname=? WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, sname);
-            preparedStatement.setString(2, userID);
+            preparedStatement.setString(2, userId);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + userID);
+                System.out.println("No rows were updated for userId: " + userId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -385,20 +385,20 @@ public class TestOperations {
         }
     }
 
-    public void updateUserAddress(String userID, int houseID, Connection connection) throws SQLException {
+    public void updateUserAddress(String userId, int houseID, Connection connection) throws SQLException {
         try {
-            String updateSQL = "UPDATE Users SET houseID=? WHERE userID=?";
+            String updateSQL = "UPDATE Users SET houseID=? WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setInt(1, houseID);
-            preparedStatement.setString(2, userID);
+            preparedStatement.setString(2, userId);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + userID);
+                System.out.println("No rows were updated for userId: " + userId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -427,20 +427,20 @@ public class TestOperations {
         }
     }
 
-    public void demoteUser(String userID, Connection connection) throws SQLException {
+    public void demoteUser(String userId, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Users SET usertype='customer'" +
-            "WHERE userID=?";
+            "WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
-            preparedStatement.setString(1, userID);
+            preparedStatement.setString(1, userId);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + userID);
+                System.out.println("No rows were updated for userId: " + userId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -499,7 +499,7 @@ public class TestOperations {
 
             // // Adding a user to the database.
             /*
-            User user1 = new User(UniqueUserIDGenerator.generateUniqueUserID(), "shawnspencer@example.com", "ShawnSpencer", "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0, false);
+            User user1 = new User(UniqueuserIdGenerator.generateUniqueuserId(), "shawnspencer@example.com", "ShawnSpencer", "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0, false);
             databaseOperations.insertUser(user1, databaseConnectionHandler.getConnection());
             */
 
