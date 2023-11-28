@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.sheffield.model.Address;
 import com.sheffield.model.order.Order;
+import com.sheffield.model.order.OrderLine;
 import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 
@@ -47,6 +48,9 @@ public class OrderManagementStaffView extends JFrame {
 
         OrderOperations orderOperations = new OrderOperations();
         TestOperations testOperations = new TestOperations();
+
+        JComboBox<String> comboBox = new JComboBox<>();
+        
        // OrderLine[] orderLineForOrder 
         try {
             Order[] userOrders = orderOperations.getAllOrders( connection);
@@ -67,8 +71,8 @@ public class OrderManagementStaffView extends JFrame {
             };
 
             basketTable = new JTable(model);
-                JComboBox<String> comboBox = new JComboBox<>();
-                    if (isBlockedOrder(confirmedOrders[0])){
+                
+                    if (isBlockedOrder(confirmedOrders[0], connection)){
                         comboBox.addItem("CONFIRMED");
                         comboBox.addItem("DELETE");
                     
@@ -88,13 +92,47 @@ public class OrderManagementStaffView extends JFrame {
                 Object[] ordersForTable = {order.getOrderID(), order.getIssueDate(), testOperations.getForename(userIDforSearch, connection),
                                         testOperations.getSurname(userIDforSearch, connection),
                                         testOperations.getEmail(userIDforSearch, connection),
-                                        addressDisplay, order.getTotalCost(), order.getOrderStatus(), "needs check valid bank details function"};
+                                        addressDisplay, order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
                 
                     
 
                 model.addRow(ordersForTable);
 
             }
+
+            basketTable.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int column = basketTable.columnAtPoint(e.getPoint());
+                    int row = basketTable.rowAtPoint(e.getPoint());
+                    System.out.println(row);
+                    if (column == 0) { 
+                        dispose();
+                        OrderDetailsView orderDetailsView = null;
+                        try {
+                            
+                            Order order = confirmedOrders[row];
+                            orderDetailsView = new OrderDetailsView(connection, order);
+                            orderDetailsView.setVisible(true);
+                            
+                             
+                        } catch (SQLException i) {
+                            i.printStackTrace();
+                           
+                        }
+                    }
+                }
+            });
+
+            comboBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if ("DELETE".equals(comboBox.getSelectedItem())){
+                        model.removeRow(0);
+
+                    }
+                }
+            });
             JScrollPane scrollPane = new JScrollPane(basketTable);
             panel.add(scrollPane, BorderLayout.CENTER);
              
@@ -110,17 +148,6 @@ public class OrderManagementStaffView extends JFrame {
         basketTable.setRowSelectionAllowed(false);
         basketTable.setColumnSelectionAllowed(false);
 
-
-        basketTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int column = basketTable.columnAtPoint(e.getPoint());
-                int row = basketTable.rowAtPoint(e.getPoint());
-                if (column == 0) { // Column index
-                    showOrderDetailsPopup(row);
-                }
-            }
-        });
 
         
       
@@ -141,6 +168,10 @@ public class OrderManagementStaffView extends JFrame {
 
         this.getContentPane().add(panel, BorderLayout.NORTH);
         this.pack();
+
+        
+
+        
 
        
         archivedOrders.addActionListener(new ActionListener() {
@@ -167,22 +198,27 @@ public class OrderManagementStaffView extends JFrame {
         
 
     }
-    // orderDetails needs to get orderline  product code & brand & product name & quantity & derived line cost & total cost &staus
-    private void showOrderDetailsPopup(int row) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        String orderDetails = "Order Details:\n " ;
-              //  "Order ID: " + data[row][0] + "\n " +
-              //  "Product Name: " + data[row][1] + "\n " +
-              //  "Quantity: " + data[row][2];
-        JMenuItem menuItem = new JMenuItem(orderDetails);
-        popupMenu.add(menuItem);
-        popupMenu.show(basketTable, basketTable.getCellRect(row, 0, true).x, basketTable.getCellRect(row, 0, true).y);
-    }
+    
 
-    private boolean isBlockedOrder(Order order){
-
+    private boolean isBlockedOrder(Order order, Connection connection) throws SQLException{
+        System.out.println("blocked funciton");
+        OrderOperations orderOperations = new OrderOperations();
+        try{
+            for (OrderLine orderLine : orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection)) {
+                int stockQuantity = orderOperations.getQuantitybyProductID(orderLine.getProductID(), connection);
+                if (stockQuantity - orderLine.getQuantity()< 0){
+                    System.out.println(stockQuantity - orderLine.getQuantity());
+                    return true;
+                }
+            }
+            return false;
+            
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw e;
+        }
         
-        return false;
+        
     }
 
     

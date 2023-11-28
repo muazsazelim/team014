@@ -235,7 +235,7 @@ public class OrderOperations {
     public int getQuantitybyProductID(int productID, Connection connection) throws SQLException{
 
         try{
-            String selectSQL = "SELECT Quantity FROM Inventory WHERE orderId=?";
+            String selectSQL = "SELECT Quantity FROM Inventory WHERE productID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
             preparedStatement.setInt(1, productID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -252,4 +252,27 @@ public class OrderOperations {
         }      
         
     }
+
+    
+    public void deleteOrder(int orderId, Connection connection) throws SQLException{
+        try {
+            String deleteSQL = "DELETE FROM Orders WHERE orderID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL);
+            preparedStatement.setInt(1, orderId);
+    
+            int rowsAffected = preparedStatement.executeUpdate();
+    
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) deleted successfully.");
+            } else {
+                System.out.println("No rows were deleted for userId: " + orderId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+        
+    }
+   
+
 }

@@ -230,7 +230,7 @@ public class TestOperations {
 
     public Address getAddress(String userID, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users INNER JOIN Address ON Users.houseID=Address.houseID WHERE userID=?";
+            String selectSQL = "SELECT * FROM Users INNER JOIN Address ON Users.houseNumber=Address.houseNumber WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
             preparedStatement.setString(1, userID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -486,6 +486,30 @@ public class TestOperations {
             e.printStackTrace();
             throw e; // Re-throw the exception to signal an error.
         }
+    }
+
+    public boolean isUserHaveBankDetails (String userId, Connection connection) throws SQLException{
+         try {
+            String selectSQL = "SELECT cardNumber FROM Users WHERE userId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String result = resultSet.getString("cardNumber");
+                
+                if(result != null){
+                   
+                    return true;
+                }else{return false;}
+                
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+       
     }
 
    
