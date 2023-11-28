@@ -3,6 +3,7 @@ package com.sheffield.views;
 import com.sheffield.util.HashedPasswordGenerator;
 import com.sheffield.util.TestOperations; // remove this later
 import com.sheffield.util.UniqueUserIDGenerator;
+import com.sheffield.model.Address;
 import com.sheffield.model.DatabaseConnectionHandler; // remove this later
 import com.sheffield.model.DatabaseOperations; // use this instead
 import com.sheffield.model.user.User;
@@ -114,12 +115,14 @@ public class RegisterView extends JFrame {
                     String password = new String(passwordField.getPassword());
                     String confirmPassword = new String(passwordreenterField.getPassword());
                     
-                    if (!inputForename.isEmpty() && !inputSurname.isEmpty() && !inputEmail.isEmpty() && !password.isEmpty()){
+                    if (!inputForename.isEmpty() && !inputSurname.isEmpty() && !inputEmail.isEmpty() && !password.isEmpty() && !(houseNumberField.getText().isEmpty()) && !(roadNameField.getText().isEmpty()) && !(cityNameField.getText().isEmpty()) && !(postcodeField.getText().isEmpty())){
                         if (password.equals(confirmPassword)) {
                             User newUser = new User(UniqueUserIDGenerator.generateUniqueUserID(), inputEmail, HashedPasswordGenerator.hashPassword(inputPassword), 0, false, inputForename, inputSurname, "customer");
                             databaseOperations.insertUser(newUser, connection);
                             System.out.println("New User created");
                             System.out.println(newUser);
+                            Address newAddress = new Address(houseNumberField.getText(), roadNameField.getText(), cityNameField.getText(), postcodeField.getText());
+                            databaseOperations.insertAddress(newAddress, connection);
                             LoginView.getInstance().setVisible(true);
                             dispose();
                         } else {

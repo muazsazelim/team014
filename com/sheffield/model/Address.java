@@ -9,8 +9,8 @@ public class Address {
 
     // Constructor to initialize a User object with its attributes
 
-    public Address(int houseID, String houseNumber, String roadName, String cityName, String postcode) {
-        this.setHouseId(houseID);
+    public Address(String houseNumber, String roadName, String cityName, String postcode) {
+        //this.setHouseId(houseID); //houseID auto increment
         this.setHouseNumber(houseNumber);
         this.setRoadName(roadName);
         this.setCityName(cityName);
