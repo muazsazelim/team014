@@ -83,6 +83,7 @@ public class OrderHistoryView extends JFrame {
                     OrderDetailsView orderDetailsView = null;
                     try {
                         Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
+                        Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
                         Order order = userOrders[row];
                         orderDetailsView = new OrderDetailsView(connection, order);
                         orderDetailsView.setVisible(true);

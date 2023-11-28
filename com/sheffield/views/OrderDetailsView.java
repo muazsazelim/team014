@@ -44,6 +44,7 @@ public class OrderDetailsView extends JFrame {
        
 
         OrderOperations orderOperations = new OrderOperations();
+        TestOperations testOperations = new TestOperations();
          try {
             OrderLine[] userOrders = orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection);
             Arrays.sort(userOrders, Comparator.comparing(OrderLine::getOrderLineID));
@@ -123,7 +124,20 @@ public class OrderDetailsView extends JFrame {
         orderHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Order History Page");
+                System.out.println("Went to User Details Page");
+
+                dispose();
+                OrderHistoryView userDetailsView = null;
+                try {
+                    String userID = orderOperations.getUserIDbyOrderID(order.getOrderID(), connection);
+                    String userEmail = testOperations. getEmail(userID, connection);
+                    User user = testOperations.getUser(userEmail, connection);
+                    userDetailsView = new OrderHistoryView(connection, user);
+                    userDetailsView.setVisible(true);
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
             }
         });
 
