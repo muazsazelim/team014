@@ -231,11 +231,7 @@ public class TestOperations {
 
     public Address getAddress(String userId, Connection connection) throws SQLException {
         try {
-<<<<<<< HEAD
-            String selectSQL = "SELECT * FROM Users INNER JOIN Address ON Users.houseNumber=Address.houseNumber WHERE userID=?";
-=======
             String selectSQL = "SELECT * FROM Address WHERE userId=?";
->>>>>>> 5d594b6b94506df528ad004495f6cc0e8efb6745
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
             preparedStatement.setString(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -527,7 +523,7 @@ public class TestOperations {
 
             // // Adding a user to the database.
             /*
-            User user1 = new User(UniqueuserIdGenerator.generateUniqueuserId(), "shawnspencer@example.com", "ShawnSpencer", "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0, false);
+            User user1 = new User(UniqueUserIDGenerator.generateUniqueUserID(), "shawnspencer@example.com", "ShawnSpencer", "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0, false);
             databaseOperations.insertUser(user1, databaseConnectionHandler.getConnection());
             */
 

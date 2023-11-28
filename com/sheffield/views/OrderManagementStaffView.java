@@ -21,8 +21,10 @@ import java.util.Comparator;
 public class OrderManagementStaffView extends JFrame {
     private JButton archivedOrders;
     private JButton orderHistory;
-    private JButton products;
+    private JButton fufill;
     private JTable basketTable;
+    private JTable archivedTable;
+    private JButton delete;
     
 
     public OrderManagementStaffView (Connection connection) throws SQLException {
@@ -33,10 +35,12 @@ public class OrderManagementStaffView extends JFrame {
 
  
         JPanel panel = new JPanel();
+        JPanel container = new JPanel();
         this.add(panel);
 
         this.getContentPane().setLayout(new BorderLayout());
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        
        // panel.setLayout(new GridLayout(0,1));
 
         JLabel titleLabel = new JLabel("Order Mangement");
@@ -50,6 +54,15 @@ public class OrderManagementStaffView extends JFrame {
         TestOperations testOperations = new TestOperations();
 
         JComboBox<String> comboBox = new JComboBox<>();
+
+        String[] columnNames = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details"};
+            
+            DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return row ==0 && column == statusIndex; 
+            }
+            };
         
        // OrderLine[] orderLineForOrder 
         try {
@@ -61,14 +74,7 @@ public class OrderManagementStaffView extends JFrame {
 
             Arrays.sort(confirmedOrders, Comparator.comparing(Order::getIssueDate));
 
-            String[] columnNames = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details"};
             
-            DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return row ==0 && column == statusIndex; 
-            }
-            };
 
             basketTable = new JTable(model);
                 
@@ -88,11 +94,11 @@ public class OrderManagementStaffView extends JFrame {
                 int orderIdForSearch = order.getOrderID();
                 String userIDforSearch = orderOperations.getUserIDbyOrderID(orderIdForSearch, connection);
                 Address address = testOperations.getAddress(userIDforSearch, connection);
-                String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
+               // String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
                 Object[] ordersForTable = {order.getOrderID(), order.getIssueDate(), testOperations.getForename(userIDforSearch, connection),
                                         testOperations.getSurname(userIDforSearch, connection),
                                         testOperations.getEmail(userIDforSearch, connection),
-                                        addressDisplay, order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
+                                        "addressDisplay", order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
                 
                     
 
@@ -124,17 +130,18 @@ public class OrderManagementStaffView extends JFrame {
                 }
             });
 
-            comboBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if ("DELETE".equals(comboBox.getSelectedItem())){
-                        model.removeRow(0);
-
-                    }
-                }
-            });
+            
             JScrollPane scrollPane = new JScrollPane(basketTable);
             panel.add(scrollPane, BorderLayout.CENTER);
+
+            DefaultTableModel modelArchive = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+            };
+
+            archivedTable = new JTable(modelArchive);
              
 
              
@@ -142,42 +149,54 @@ public class OrderManagementStaffView extends JFrame {
             e.printStackTrace();         
         }
 
-        
 
         basketTable.setCellSelectionEnabled(false);
         basketTable.setRowSelectionAllowed(false);
         basketTable.setColumnSelectionAllowed(false);
-
-
-        
+    
       
         JScrollPane scrollPane = new JScrollPane(basketTable);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Confirmed Orders"));
         panel.add(scrollPane, BorderLayout.CENTER);
         this.setVisible(true);
 
         
+        JScrollPane scrollPane2 = new JScrollPane(archivedTable);
+        scrollPane2.setBorder(BorderFactory.createTitledBorder("Archived Orders"));
+        panel.add(scrollPane2, BorderLayout.CENTER);
+        this.setVisible(true);
+       
         
-        archivedOrders = new JButton("Archived Orders");
         orderHistory = new JButton("Order History");
-        products = new JButton("View Products");
+        fufill = new JButton("View Products");
+        delete = new JButton("Delete");
 
         
-        panel.add(archivedOrders);
+        panel.add(delete);
         panel.add(orderHistory);
-        panel.add(products);
+        panel.add(fufill);
 
         this.getContentPane().add(panel, BorderLayout.NORTH);
         this.pack();
 
-        
-
-        
 
        
-        archivedOrders.addActionListener(new ActionListener() {
+        delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("went to Archived Page");
+                if ("DELETE".equals(basketTable.getValueAt(0, statusIndex))){
+                    int orderId = Integer.valueOf(basketTable.getValueAt(0,0).toString()) ;
+                    try {
+                        orderOperations.deleteOrder(orderId, connection);
+                    } catch (SQLException e1) {
+                       
+                        e1.printStackTrace();
+                    }
+                    model.removeRow(0);
+                    System.out.println("deleted order");
+                        
+
+                }
             }
         });
         
@@ -188,10 +207,13 @@ public class OrderManagementStaffView extends JFrame {
             }
         });
 
-        products.addActionListener(new ActionListener() {
+        fufill.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Products Page");
+                if ("FULFILL".equals(basketTable.getValueAt(0, statusIndex))){                       
+                        System.out.println("fulfilled order");
+                }
+                
             }
         });
 
