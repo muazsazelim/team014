@@ -230,12 +230,12 @@ public class TestOperations {
 
     public Address getAddress(String userID, Connection connection) throws SQLException {
         try {
-            String selectSQL = "SELECT * FROM Users INNER JOIN Address ON Users.houseID=Address.houseID WHERE userID=?";
+            String selectSQL = "SELECT * FROM Address WHERE userID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
             preparedStatement.setString(1, userID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Address userAddress = new Address(resultSet.getInt("houseID"), resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"));
+                Address userAddress = new Address(resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"), resultSet.getString(userID));
                 System.out.println(userAddress.toString());
                 return userAddress;
             } else {
@@ -268,21 +268,21 @@ public class TestOperations {
     public void updateAddress(Address address, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Address SET houseNumber=?,"+
-            "roadName=?, cityName=?, postcode=? WHERE houseID=?";
+            "roadName=?, cityName=?, postcode=? WHERE userId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setString(1, address.getHouseNumber());
             preparedStatement.setString(2, address.getRoadName());
             preparedStatement.setString(3, address.getCityName());
             preparedStatement.setString(4, address.getPostcode());
-            preparedStatement.setInt(5, address.getHouseId());
+            preparedStatement.setString(5, address.getUserId());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for houseId: " + address.getHouseId());
+                System.out.println("No rows were updated for userId: " + address.getUserId());
             }
         } catch (SQLException e) {
             e.printStackTrace();
