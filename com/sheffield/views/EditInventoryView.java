@@ -34,7 +34,7 @@ public class EditInventoryView extends JFrame {
         JTextField txtQuantity;
         JLabel lblQuantity;
 
-        lblQuantity = new JLabel("Enter Quantity");
+        lblQuantity = new JLabel("Enter Amount to Add");
         txtQuantity = new JTextField();
         txtQuantity.setToolTipText("Product Quantity");
         txtQuantity.selectAll();
@@ -48,41 +48,67 @@ public class EditInventoryView extends JFrame {
         saveData.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String productID;
-                String quantity;
-                productID = txtPID.getText().strip();
-                quantity = txtQuantity.getText().strip();
                 try {
-                    if (!productID.equals("") && !quantity.equals("")) {
-                        try {
-                            int pIDInt = Integer.parseInt(productID);
-                            Integer.parseInt(quantity);
-                            if (pIDInt > 0 && pIDInt < 14) {
-                                Statement stmt = connection.createStatement();
-                                String query = "UPDATE Inventory SET Quantity = " + quantity + " WHERE ProductID = "
-                                        + productID;
-                                stmt.executeUpdate(query);
-
-                                txtPID.setText("");
-                                txtQuantity.setText("");
-
-                                JOptionPane.showMessageDialog(panel, "Inventory Updated");
-                            } else {
-
-                                JOptionPane.showMessageDialog(panel, "Product did not exists");
-                            }
-                        } catch (NumberFormatException n) {
-
-                            JOptionPane.showMessageDialog(panel, "Please Enter Only Number");
-
-                        }
-                    } else {
-
-                        JOptionPane.showMessageDialog(panel, "Empty Input");
+                    String productID;
+                    String quantity;
+                    int totalProducts = 0;
+                    String totalProductID = "SELECT COUNT(*) From Inventory";
+                    PreparedStatement tPID = connection.prepareStatement(totalProductID);
+                    ResultSet tProductID = tPID.executeQuery();
+                    while (tProductID.next()) {
+                        totalProducts = tProductID.getInt(1);
                     }
-                } catch (Exception s) {
-                    s.printStackTrace();
+                    productID = txtPID.getText().strip();
+                    quantity = txtQuantity.getText().strip();
+                    try {
+                        if (!productID.equals("") && !quantity.equals("")) {
+                            try {
+                                int pIDInt = Integer.parseInt(productID);
 
+                                Integer.parseInt(quantity);
+                                if (pIDInt > 0 && pIDInt < totalProducts + 1) {
+
+                                    String newQ = "SELECT Quantity FROM Inventory WHERE ProductID = " + pIDInt;
+                                    PreparedStatement nQ = connection.prepareStatement(newQ);
+                                    ResultSet newQuan = nQ.executeQuery();
+                                    int currentQuantity = 0;
+                                    int totalQuantity = 0;
+                                    while (newQuan.next()) {
+                                        currentQuantity = newQuan.getInt(1);
+                                    }
+
+                                    int newQuantity = Integer.parseInt(quantity);
+                                    totalQuantity = currentQuantity + newQuantity;
+
+                                    Statement stmt = connection.createStatement();
+                                    String query = "UPDATE Inventory SET Quantity = " + totalQuantity
+                                            + " WHERE ProductID = "
+                                            + productID;
+                                    stmt.executeUpdate(query);
+
+                                    txtPID.setText("");
+                                    txtQuantity.setText("");
+
+                                    JOptionPane.showMessageDialog(panel, "Inventory Updated");
+                                } else {
+
+                                    JOptionPane.showMessageDialog(panel, "Product did not exists");
+                                }
+                            } catch (NumberFormatException n) {
+
+                                JOptionPane.showMessageDialog(panel, "Please Enter Only Number");
+
+                            }
+                        } else {
+
+                            JOptionPane.showMessageDialog(panel, "Empty Input");
+                        }
+                    } catch (Exception s) {
+                        s.printStackTrace();
+
+                    }
+                } catch (SQLException w) {
+                    w.printStackTrace();
                 }
 
             }
