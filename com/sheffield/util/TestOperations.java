@@ -219,7 +219,7 @@ public class TestOperations {
             preparedStatement.setString(2, newAddress.getRoadName());
             preparedStatement.setString(3, newAddress.getCityName());
             preparedStatement.setString(4, newAddress.getPostcode());
-            preparedStatement.setString(5, newAddress.getuserId());
+            preparedStatement.setString(5, newAddress.getUserId());
 
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println(rowsAffected + " row(s) inserted successfully.");
@@ -236,7 +236,7 @@ public class TestOperations {
             preparedStatement.setString(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Address userAddress = new Address(resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"), resultSet.getString(userId));
+                Address userAddress = new Address(resultSet.getString("houseNumber"), resultSet.getString("roadName"), resultSet.getString("cityName"),  resultSet.getString("postcode"), resultSet.getString("userId"));
                 System.out.println(userAddress.toString());
                 return userAddress;
             } else {
@@ -276,14 +276,14 @@ public class TestOperations {
             preparedStatement.setString(2, address.getRoadName());
             preparedStatement.setString(3, address.getCityName());
             preparedStatement.setString(4, address.getPostcode());
-            preparedStatement.setString(5, address.getuserId());
+            preparedStatement.setString(5, address.getUserId());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + address.getuserId());
+                System.out.println("No rows were updated for userId: " + address.getUserId());
             }
         } catch (SQLException e) {
             e.printStackTrace();
