@@ -211,7 +211,7 @@ public class TestOperations {
     public void insertAddress(Address newAddress, Connection connection) throws SQLException {
         try {
             // Create an SQL INSERT statement
-            String insertSQL = "INSERT INTO Address (houseNumber, roadName, cityName, postcode) VALUES (?, ?, ?, ?)";
+            String insertSQL = "INSERT INTO Address (houseNumber, roadName, cityName, postcode, userId) VALUES (?, ?, ?, ?, ?)";
 
             // Prepare and execute the INSERT statement
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
@@ -219,6 +219,7 @@ public class TestOperations {
             preparedStatement.setString(2, newAddress.getRoadName());
             preparedStatement.setString(3, newAddress.getCityName());
             preparedStatement.setString(4, newAddress.getPostcode());
+            preparedStatement.setString(5, newAddress.getUserId());
 
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println(rowsAffected + " row(s) inserted successfully.");
