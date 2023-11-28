@@ -15,11 +15,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class RegisterView extends JFrame {
-    private JTextField forenameField;
-    private JTextField surnameField;
-    private JTextField emailField;
-    private JPasswordField passwordField;
-    private JPasswordField passwordreenterField;
+    private JTextField forenameField = new JTextField(20);
+    private JTextField surnameField = new JTextField(20);
+    private JTextField emailField = new JTextField(20);
+    private JPasswordField passwordField = new JPasswordField(20);
+    private JPasswordField passwordreenterField = new JPasswordField(20);
+    private JTextField houseNumberField = new JTextField(20);
+    private JTextField roadNameField = new JTextField(20);
+    private JTextField postcodeField = new JTextField(20);
+    private JTextField cityNameField = new JTextField(20);
     public RegisterView (Connection connection) throws SQLException {
         // Create the JFrame in the constructor
         this.setTitle("Train of Sheffield");
@@ -35,11 +39,6 @@ public class RegisterView extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Create JLabels for username and password
-        JLabel forenameLabel = new JLabel("Forename:");
-        JLabel surnameLabel = new JLabel("Surname:");
-        JLabel passwordLabel = new JLabel("  New Password:");
-        JLabel passwordreenterLabel = new JLabel("  Re-enter Password:");
-        JLabel emailLabel = new JLabel("  Email:");
         JLabel errorLabel = new JLabel("Passwords do not match");
         JLabel errorLabel2 = new JLabel("Please fill all the field");
         errorLabel.setForeground(Color.RED);
@@ -47,20 +46,10 @@ public class RegisterView extends JFrame {
         errorLabel2.setForeground(Color.RED);
         errorLabel2.setVisible(false);
 
-        // Create JTextFields for entering username and password
-        forenameField = new JTextField(20);
-        surnameField = new JTextField(20);
-        emailField = new JTextField(20);
-        emailLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        passwordField = new JPasswordField(20);
-        passwordreenterField = new JPasswordField(20);
-
         // Create a JButton for the register action
 
         JLabel regLabel1 = new JLabel("  Welcome to Train of Sheffield");
         regLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-        forenameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        surnameLabel.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel regLabel2 = new JLabel(" where your past journeys are your future destinations.");
         JButton registerButton = new JButton("Register");
 
@@ -70,44 +59,43 @@ public class RegisterView extends JFrame {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         panel.add(regLabel1, gbc);
-        // panel.add(new JLabel());
-        gbc.gridy = 1;
-        gbc.insets = new Insets(0,0,10,0);
-        panel.add(regLabel2, gbc);
-        gbc.gridy = 2;
-        gbc.gridwidth = 1;
-        panel.add(emailLabel, gbc);
-        gbc.gridx = 1;
-        panel.add(emailField, gbc);
-        gbc.gridy = 3;
-        panel.add(passwordField, gbc);
-        gbc.gridx = 0;
-        panel.add(passwordLabel, gbc);
-        gbc.gridy = 4;
-        gbc.gridx = 1;
-        panel.add(passwordreenterField, gbc);
-        gbc.gridx = 0;
-        panel.add(passwordreenterLabel, gbc);
-
-        gbc.gridy = 5;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(0,0,0,0);
-        gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(forenameLabel, gbc);
-        gbc.gridy = 7;
-        panel.add(surnameLabel, gbc);
-        gbc.gridy = 9;
+        gbc.gridy = 1;
+        panel.add(regLabel2, gbc);
+        gbc.insets = new Insets(10, 0, 0, 0);
+        gbc.gridy = 22;
         panel.add(errorLabel, gbc);
-        gbc.gridy = 10;
+        gbc.gridy = 23;
         panel.add(errorLabel2, gbc);
-        gbc.gridy = 11;
-        gbc.insets = new Insets(0, 10, 10, 10);
+        gbc.gridy = 24;
         panel.add(registerButton, gbc);
-        gbc.gridy = 6;
-        panel.add(forenameField, gbc);
-        gbc.gridy = 8;
-        panel.add(surnameField, gbc);
+
+
+        //copy pasta start
+        String[] labels = {"Email:", "New Password:", "Re-enter password:", "Forename:", "Surname:", "House Number:", "Road Name:", "City Name:", "Postcode:"};
+        JTextField[] fields = {emailField, passwordField, passwordreenterField, forenameField, surnameField, houseNumberField, roadNameField, cityNameField, postcodeField};
+
+        gbc.gridwidth= 2;
+        int row = 2;
+        for (String label : labels) {
+        //gbc.gridx = 0;
+        row += 2;
+        gbc.gridy = row;
+        JLabel insertLabel = new JLabel(label);
+        insertLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(insertLabel, gbc);
+        }
+        
+        gbc.insets = new Insets(0, 5, 0, 5);
+        row = 3;
+        for (JTextField field : fields) {
+        //gbc.gridx = 1;
+        row+=2;
+        gbc.gridy = row;
+        panel.add(field, gbc);
+        }
+
+        // end of organising
         this.getContentPane().add(panel);
         this.pack();
         
