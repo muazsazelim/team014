@@ -1,7 +1,7 @@
 package com.sheffield.model;
 
 public class Address {
-    private int houseId;
+    private String userId; //foreign key
     private String houseNumber;
     private String roadName;
     private String cityName;
@@ -9,21 +9,21 @@ public class Address {
 
     // Constructor to initialize a User object with its attributes
 
-    public Address(String houseNumber, String roadName, String cityName, String postcode) {
-        //this.setHouseId(houseID); //houseID auto increment
+    public Address(String houseNumber, String roadName, String cityName, String postcode, String userId) {
         this.setHouseNumber(houseNumber);
         this.setRoadName(roadName);
         this.setCityName(cityName);
         this.setPostcode(postcode);
+        this.setUserId(userId);
     }
 
     // Getter and setter methods for the userId attribute with validation
-    public void setHouseId(int houseID) {
-        this.houseId = houseID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public int getHouseId() {
-        return houseId;
+    public String getUserId() {
+        return userId;
     }
 
     public void setHouseNumber(String houseNumber) {
@@ -63,7 +63,7 @@ public class Address {
     @Override
     public String toString() {
         return "{ " +
-            " houseId='" + getHouseId() + "'" +
+            " userId='" + getUserId() + "'" +
             ", houseNumber='" + getHouseNumber() + "'" +
             ", roadName ='" + getRoadName() + "'" +
             ", cityName ='" + getCityName() + "'" +

@@ -121,7 +121,7 @@ public class RegisterView extends JFrame {
                             databaseOperations.insertUser(newUser, connection);
                             System.out.println("New User created");
                             System.out.println(newUser);
-                            Address newAddress = new Address(houseNumberField.getText(), roadNameField.getText(), cityNameField.getText(), postcodeField.getText());
+                            Address newAddress = new Address(houseNumberField.getText(), roadNameField.getText(), cityNameField.getText(), postcodeField.getText(), newUser.getuserId());
                             databaseOperations.insertAddress(newAddress, connection);
                             LoginView.getInstance().setVisible(true);
                             dispose();
