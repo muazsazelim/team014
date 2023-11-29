@@ -12,21 +12,26 @@ import com.sheffield.model.user.User;
 import com.sheffield.util.TestOperations;
 
 
-public class UserDetailsView extends JFrame {
+public class UserDetailsView extends JPanel {
 
     public UserDetailsView (Connection connection, User user) throws SQLException {
-        // Create the JFrame in the constructor
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320,320);
+
+        // JFrame parent = this;
+        // parent.setTitle("Train of Sheffield");
+        // parent.getContentPane().setLayout(new BorderLayout());
+        // parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // parent.setVisible(true);
+        // parent.setSize(720,600);
 
         // Create a JPanel to hold the components
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+        //parent.add(contentPanel, BorderLayout.CENTER);
+
         JPanel panel = new JPanel();
-        this.add(panel);
+        contentPanel.add(panel, BorderLayout.CENTER);
 
-        JFrame parent = this;
 
-        parent.getContentPane().setLayout(new BorderLayout());
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         
@@ -41,9 +46,6 @@ public class UserDetailsView extends JFrame {
         panel.add(changeDetails);
         panel.add(userDetails);
         
-
-        parent.getContentPane().add(panel, BorderLayout.NORTH);
-        parent.pack();
 
         TestOperations testOperations = new TestOperations();
         Address userAddress = testOperations.getAddress(user.getuserId(), connection);
@@ -160,9 +162,7 @@ public class UserDetailsView extends JFrame {
         });
 
         panel.revalidate();
-        panel.repaint();
-        parent.pack();
-            
+        panel.repaint();    
 
 
     }
