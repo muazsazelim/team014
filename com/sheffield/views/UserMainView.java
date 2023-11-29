@@ -58,9 +58,9 @@ public class UserMainView extends JPanel {
                 try {
                     staffView = new StaffView(connection);
 
-                    contentPanel.removeAll();
-                    contentPanel.add(staffView, BorderLayout.CENTER);
-                    contentPanel.revalidate();
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
                     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
@@ -86,9 +86,9 @@ public class UserMainView extends JPanel {
                     staffView = new StaffView(connection);
 
                     
-                    contentPanel.removeAll();
-                    contentPanel.add(staffView, BorderLayout.CENTER);
-                    contentPanel.revalidate();
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
 
 
                 } catch (Throwable t) {
@@ -106,9 +106,9 @@ public class UserMainView extends JPanel {
                 try {
                     managerView = new ManagerView(connection);
                     
-                    contentPanel.removeAll();
-                    contentPanel.add(managerView, BorderLayout.CENTER);
-                    contentPanel.revalidate();
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(managerView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
@@ -128,9 +128,9 @@ public class UserMainView extends JPanel {
                 try {
                     userDetailsView = new UserDetailsView(connection, user);
                     //userDetailsView.setVisible(true);
-                    contentPanel.removeAll();
-                    contentPanel.add(userDetailsView, BorderLayout.CENTER);
-                    contentPanel.revalidate();
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(userDetailsView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
@@ -146,9 +146,9 @@ public class UserMainView extends JPanel {
                 try {
                     orderHistoryView = new OrderHistoryView(connection, user);
 
-                    contentPanel.removeAll();
-                    contentPanel.add(orderHistoryView, BorderLayout.CENTER);
-                    contentPanel.revalidate();
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(orderHistoryView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
                     
     
                 } catch (Throwable t) {

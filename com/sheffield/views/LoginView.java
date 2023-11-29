@@ -11,26 +11,16 @@ import javax.swing.*;
     import java.sql.SQLException;
     import java.util.Arrays;
 
-    public class LoginView extends JFrame {
+    public class LoginView extends JPanel {
         private JTextField emailField;
         private JPasswordField passwordField;
         private static LoginView instance;
         public LoginView (Connection connection) throws SQLException {
 
 
-            JFrame parent = this;
-            parent.setTitle("Train of Sheffield");
-            parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            parent.getContentPane().setLayout(new BorderLayout());
-            parent.setVisible(true);
-            parent.setSize(720,600);
-
-
             // Create a JPanel to hold the components
-            JPanel contentPanel = new JPanel();
+            JPanel contentPanel = this;
             contentPanel.setLayout(new BorderLayout());
-
-            parent.add(contentPanel, BorderLayout.CENTER);
 
             instance = this;
 
@@ -110,9 +100,9 @@ import javax.swing.*;
                             try {
                                 userMainView = new UserMainView(connection, testOperations.getUser(email, connection));
 
-                                contentPanel.removeAll();
-                                contentPanel.add(userMainView, BorderLayout.CENTER);
-                                contentPanel.revalidate();
+                                TrainsOfSheffield.getPanel().removeAll();
+                                TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                                TrainsOfSheffield.getPanel().revalidate();
 
                             } catch (Throwable t) {
                                 throw new RuntimeException(t);
@@ -139,7 +129,9 @@ import javax.swing.*;
                     RegisterView registerView = null;
                     try {
                         registerView = new RegisterView(connection);
-                        registerView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(registerView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
         
                     } catch (Throwable t) {
                         throw new RuntimeException(t);
