@@ -68,7 +68,7 @@ public class Order {
     public enum OrderStatus {
         PENDING,
         CONFIRMED,
-        FUFILLED
+        FULFILLED
     }
 
     

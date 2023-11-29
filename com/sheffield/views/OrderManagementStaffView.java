@@ -211,7 +211,7 @@ public class OrderManagementStaffView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if ("FULFILL".equals(basketTable.getValueAt(0, statusIndex))){                       
-                        System.out.println("fulfilled order");
+                        
                 }
                 
             }

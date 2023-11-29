@@ -47,6 +47,28 @@ public class OrderOperations {
         }
     }
 
+    public void updateOrderStatusToFulfilled (int orderId, Connection connection){
+        try {
+            String updateSQL = "UPDATE Orders SET status=? WHERE orderId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, "fufilled");
+            preparedStatement.setInt(2, orderId);
+            
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: " + address.getUserId());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
     public Order[] getAllOrdersByUser (String userId, Connection connection) throws SQLException {
         try{
             String selectSQL = "SELECT * FROM Orders WHERE userId=?";
