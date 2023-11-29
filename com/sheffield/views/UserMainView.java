@@ -11,23 +11,16 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 
-public class UserMainView extends JFrame {
+public class UserMainView extends JPanel {
     
     public UserMainView (Connection connection, User user) throws SQLException {
 
-        JFrame parent = this;
-        parent.setTitle("Train of Sheffield");
-        parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        parent.getContentPane().setLayout(new BorderLayout());
-        parent.setVisible(true);
-        parent.setSize(720,600);
 
 
         // Create a JPanel to hold the components
-        JPanel contentPanel = new JPanel();
+        JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
 
-        parent.add(contentPanel, BorderLayout.CENTER);
 
         JPanel navigation = new JPanel();
         navigation.setLayout(new GridLayout(0,1));
@@ -61,12 +54,14 @@ public class UserMainView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Staff Page");
 
-                dispose();
                 StaffView staffView = null;
                 try {
                     staffView = new StaffView(connection);
-                    staffView.setVisible(true);
-    
+
+                    contentPanel.removeAll();
+                    contentPanel.add(staffView, BorderLayout.CENTER);
+                    contentPanel.revalidate();
+                    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -86,12 +81,16 @@ public class UserMainView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Staff Page");
 
-                dispose();
                 StaffView staffView = null;
                 try {
                     staffView = new StaffView(connection);
-                    staffView.setVisible(true);
-    
+
+                    
+                    contentPanel.removeAll();
+                    contentPanel.add(staffView, BorderLayout.CENTER);
+                    contentPanel.revalidate();
+
+
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
