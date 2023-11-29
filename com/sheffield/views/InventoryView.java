@@ -34,8 +34,6 @@ public class InventoryView extends JFrame {
         staffPage = new JButton("Staff Page");
         JButton editPage;
         editPage = new JButton("Add quantity");
-        JButton newItem;
-        newItem = new JButton("Add New Item");
 
         header.add(managerPage, BorderLayout.LINE_START);
         header.add(staffPage, BorderLayout.LINE_END);
@@ -91,23 +89,6 @@ public class InventoryView extends JFrame {
             }
         });
 
-        newItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to New Item View");
-
-                dispose();
-                NewItemView newItemView = null;
-                try {
-                    newItemView = new NewItemView(connection);
-                    newItemView.setVisible(true);
-
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         try {
@@ -155,7 +136,6 @@ public class InventoryView extends JFrame {
             panel.add(sp);
 
             panel.add(editPage);
-            panel.add(newItem);
             panel.setSize(320, 280);
 
             this.setVisible(true);
