@@ -14,7 +14,7 @@ import com.sheffield.util.TestOperations;
 
 public class ManagerView extends JPanel {
 
-    public ManagerView (Connection connection) throws SQLException {
+    public ManagerView (Connection connection, User user) throws SQLException {
        
 
         // Create a JPanel to hold the components
@@ -37,9 +37,17 @@ public class ManagerView extends JPanel {
         managerView = new JLabel("Manager View");
 
         // Add components to the panel
-        contentPanel.add(managerView, BorderLayout.NORTH);
-        contentPanel.add(panel, BorderLayout.CENTER);
-        contentPanel.add(staffList, BorderLayout.SOUTH);
+        JPanel managerPromo = new JPanel();
+        managerPromo.setLayout(new BorderLayout());
+
+        managerPromo.add(managerView, BorderLayout.NORTH);
+        managerPromo.add(panel,BorderLayout.CENTER);
+
+        contentPanel.add(managerPromo, BorderLayout.NORTH);
+        contentPanel.add(staffList, BorderLayout.CENTER);
+        // contentPanel.add(staffList, BorderLayout.SOUTH);
+        JButton backButton = new JButton("Back");
+        contentPanel.add(backButton, BorderLayout.SOUTH);
 
 
         JTextField promote = new JTextField();
@@ -65,6 +73,26 @@ public class ManagerView extends JPanel {
                 } 
             }
         });
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to User Main View");
+
+                //dispose();
+                UserMainView userMainView = null;
+                try {
+                    userMainView = new UserMainView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
 
         addStaff(staffList,getStaff(testOperations.getAllUsersObj(connection)), connection, new TestOperations());
 
@@ -98,6 +126,7 @@ public class ManagerView extends JPanel {
                     testOperations.demoteUser(user.getuserId(), connection); 
                     addStaff(staffPanel,getStaff(testOperations.getAllUsersObj(connection)), connection, new TestOperations());
                     staffPanel.revalidate();
+                    staffPanel.repaint();
                     
                 } catch (SQLException error) {
                     System.out.println("SQL Error");;
@@ -110,6 +139,27 @@ public class ManagerView extends JPanel {
         System.out.println(staff);
 
     }
+    /*
+    backButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Went to User Main View");
+
+            //dispose();
+            UserMainView userMainView = null;
+            try {
+                userMainView = new UserMainView(connection, user);
+                //userDetailsView.setVisible(true);
+                TrainsOfSheffield.getPanel().removeAll();
+                TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                TrainsOfSheffield.getPanel().revalidate();
+
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        }
+    });
+    */
     
 }
 

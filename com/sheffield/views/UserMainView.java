@@ -104,7 +104,7 @@ public class UserMainView extends JPanel {
 
                 ManagerView managerView = null;
                 try {
-                    managerView = new ManagerView(connection);
+                    managerView = new ManagerView(connection, user);
                     
                     TrainsOfSheffield.getPanel().removeAll();
                     TrainsOfSheffield.getPanel().add(managerView, BorderLayout.CENTER);

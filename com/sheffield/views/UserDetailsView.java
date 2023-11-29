@@ -90,6 +90,9 @@ public class UserDetailsView extends JPanel {
         JButton updateButton = new JButton("Update");
         userDetails.add(updateButton);
 
+        JButton backButton = new JButton("Back");
+        userDetails.add(backButton);
+
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -158,6 +161,26 @@ public class UserDetailsView extends JPanel {
                 userDetails.repaint();
 
 
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to User Main View");
+
+                //dispose();
+                UserMainView userMainView = null;
+                try {
+                    userMainView = new UserMainView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
             }
         });
 
