@@ -122,11 +122,14 @@ public class UserMainView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to User Details Page");
 
-                dispose();
+                //dispose();
                 UserDetailsView userDetailsView = null;
                 try {
                     userDetailsView = new UserDetailsView(connection, user);
-                    userDetailsView.setVisible(true);
+                    //userDetailsView.setVisible(true);
+                    contentPanel.removeAll();
+                    contentPanel.add(userDetailsView, BorderLayout.CENTER);
+                    contentPanel.revalidate();
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
