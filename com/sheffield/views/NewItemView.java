@@ -13,6 +13,14 @@ public class NewItemView extends JFrame {
         this.setSize(320, 320);
 
         JPanel panel = new JPanel(new BorderLayout());
-        this.add(panel);
+        JPanel header = new JPanel(new BorderLayout());
+        this.add(header, BorderLayout.PAGE_START);
+        this.add(panel, BorderLayout.CENTER);
+
+        JLabel titleLabel = new JLabel("Add New Item");
+        titleLabel.setFont(new Font("Default", Font.BOLD, 18));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        header.add(titleLabel, BorderLayout.PAGE_START);
+
     }
 }

@@ -2,12 +2,18 @@ package com.sheffield.views;
 
 import javax.swing.*;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
 import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.order.OrderLine;
+import com.sheffield.util.OrderOperations;
 
 import java.sql.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProductsView extends JFrame {
 
@@ -34,6 +40,24 @@ public class ProductsView extends JFrame {
         JButton mainPage;
         mainPage = new JButton("Back to Main Page");
 
+        JButton inventoryButton = new JButton("Go to Inventory");
+        inventoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Inventory View");
+
+                dispose();
+                InventoryView inventoryView = null;
+                try {
+                    inventoryView = new InventoryView(connection);
+                    inventoryView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
         panel.add(Box.createVerticalStrut(20));
 
         String productsql = "";
@@ -43,7 +67,7 @@ public class ProductsView extends JFrame {
         if (n == 1) {
             productsql = "SELECT * FROM Track_Pack";
             productsql1 = "SELECT * FROM Product WHERE trackPackID IS NOT NULL";
-            title = "Track Pieces";
+            title = "Track Packs";
         } else if (n == 2) {
             productsql = "SELECT * FROM Track_Piece";
             productsql1 = "SELECT * FROM Product WHERE trackPieceID IS NOT NULL";
@@ -51,19 +75,19 @@ public class ProductsView extends JFrame {
         } else if (n == 3) {
             productsql = "SELECT * FROM Locomotive";
             productsql1 = "SELECT * FROM Product WHERE locomotiveID IS NOT NULL";
-            title = "Track Pieces";
+            title = "Locomotives";
         } else if (n == 4) {
             productsql = "SELECT * FROM Train_Set";
             productsql1 = "SELECT * FROM Product WHERE trainSetID IS NOT NULL";
-            title = "Track Pieces";
+            title = "Track Sets";
         } else if (n == 5) {
             productsql = "SELECT * FROM Rolling_Stock";
             productsql1 = "SELECT * FROM Product WHERE rollingStockID IS NOT NULL";
-            title = "Track Pieces";
+            title = "Rolling Stocks";
         } else {
             productsql = "SELECT * FROM Controller";
             productsql1 = "SELECT * FROM Product WHERE controllerID IS NOT NULL";
-            title = "Track Pieces";
+            title = "Controllers";
         }
 
         JLabel titleLabel = new JLabel(title);
@@ -71,6 +95,7 @@ public class ProductsView extends JFrame {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         header.add(titleLabel, BorderLayout.PAGE_START);
         header.add(mainPage, BorderLayout.LINE_END);
+        header.add(inventoryButton, BorderLayout.LINE_START);
 
         PreparedStatement productStatement = connection.prepareStatement(productsql);
         ResultSet products = productStatement.executeQuery();
@@ -83,6 +108,7 @@ public class ProductsView extends JFrame {
         Float retailPrice;
         String gaugeType;
         String productCode;
+        int productID;
 
         JLabel productNameLabel;
         JLabel brandNameLabel;
@@ -96,14 +122,24 @@ public class ProductsView extends JFrame {
 
         JButton addOrder = new JButton();
 
+        JLabel selectQuantity;
+
         int i = 0;
 
+        List<String> pIDs = new ArrayList<>();
+        List<Float> prices = new ArrayList<>();
+
         while (products.next() && products2.next()) {
+            final int final_i = i;
             productName = products2.getString("productName");
             brandName = products2.getString("brandName");
             retailPrice = products2.getFloat("retailPrice");
             gaugeType = products2.getString("gaugeType");
             productCode = products2.getString("productCo");
+            productID = products2.getInt("productID");
+
+            pIDs.add(Integer.toString(productID));
+            prices.add(retailPrice);
 
             productNameLabel = new JLabel(productName);
             productNameLabel.setFont(new Font("Default", Font.BOLD, 16));
@@ -113,28 +149,65 @@ public class ProductsView extends JFrame {
             productCodeLabel = new JLabel("Product Code: " + productCode);
 
             panel.add(productNameLabel);
+            panel.add(Box.createVerticalStrut(10));
             panel.add(brandNameLabel);
             panel.add(retailLabel);
             panel.add(gaugeLabel);
             panel.add(productCodeLabel);
 
+            panel.add(Box.createVerticalStrut(10));
+
             combos[i] = new JComboBox<>(quan);
+            selectQuantity = new JLabel("Please enter quantity: ");
 
             addOrder = new JButton("Add to Order");
 
+            panel.add(selectQuantity);
+
+            panel.add(Box.createVerticalStrut(10));
             panel.add(combos[i]);
 
             panel.add(addOrder);
 
-            panel.add(Box.createVerticalStrut(10));
+            panel.add(Box.createVerticalStrut(30));
 
-            final int final_i = i;
-
+            // add item to order
             addOrder.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Button for item number " + final_i);
-                    System.out.println("Quantity " + combos[final_i].getSelectedItem());
+                    // System.out.println("Button for item number " + final_i);
+                    // System.out.println("Quantity " + combos[final_i].getSelectedItem());
+
+                    String orderProductID = pIDs.get(final_i);
+
+                    int orderQuantity = Integer.valueOf(String.valueOf(combos[final_i].getSelectedItem()));
+
+                    Float price = prices.get(final_i);
+
+                    Float totalPrice = orderQuantity * price;
+
+                    // temporary orderID
+                    int orderID = 7;
+
+                    int orderLineID = 0;
+                    try {
+                        String orderLineQuery = "SELECT COUNT(*) FROM Order_Line";
+                        PreparedStatement orderLineStatement = connection.prepareStatement(orderLineQuery);
+                        ResultSet orderLineResultSet = orderLineStatement.executeQuery();
+
+                        while (orderLineResultSet.next()) {
+                            int maxOrderLine = orderLineResultSet.getInt(1);
+                        }
+
+                        OrderLine orderLine = new OrderLine(orderLineID, orderID, Integer.parseInt(orderProductID),
+                                orderQuantity, totalPrice);
+                        OrderOperations orderOperations = new OrderOperations();
+
+                        orderOperations.addOrderLine(orderLine, connection);
+                        JOptionPane.showMessageDialog(panel, "Item(s) added to order");
+                    } catch (SQLException w) {
+                        System.out.println("Cannot insert order line");
+                    }
 
                 }
             });

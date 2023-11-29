@@ -33,7 +33,7 @@ public class InventoryView extends JFrame {
         JButton staffPage;
         staffPage = new JButton("Staff Page");
         JButton editPage;
-        editPage = new JButton("Edit Inventory");
+        editPage = new JButton("Add quantity");
         JButton newItem;
         newItem = new JButton("Add New Item");
 
@@ -113,7 +113,7 @@ public class InventoryView extends JFrame {
         try {
             JTable j;
             String selectAll = "SELECT * FROM Inventory";
-            String productName = "SELECT productName FROM Product, Inventory WHERE Inventory.ProductID = Product.productID";
+            String productName = "SELECT * FROM Product, Inventory WHERE Inventory.ProductID = Product.productID";
             String productID = "SELECT ProductID FROM Inventory";
             PreparedStatement preparedStatement = connection.prepareStatement(selectAll);
             PreparedStatement preparedStatement2 = connection.prepareStatement(productName);
@@ -127,8 +127,8 @@ public class InventoryView extends JFrame {
 
             while (resultSet.next() && resultSet2.next() && resultSet3.next()) {
                 String pName = resultSet2.getString("productName");
-                String pQuantity = Integer.toString(resultSet.getInt("Quantity"));
-                String pID = Integer.toString(resultSet3.getInt("ProductID"));
+                String pQuantity = Integer.toString(resultSet2.getInt("Quantity"));
+                String pID = Integer.toString(resultSet2.getInt("ProductID"));
 
                 String[] data = { pID, pName, pQuantity };
 

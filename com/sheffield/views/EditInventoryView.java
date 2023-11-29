@@ -5,6 +5,9 @@ import java.sql.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class EditInventoryView extends JFrame {
     public EditInventoryView(Connection connection) throws SQLException {
@@ -51,24 +54,24 @@ public class EditInventoryView extends JFrame {
                 try {
                     String productID;
                     String quantity;
-                    int totalProducts = 0;
-                    String totalProductID = "SELECT COUNT(*) From Inventory";
+                    String totalProductID = "SELECT * From Product";
                     PreparedStatement tPID = connection.prepareStatement(totalProductID);
                     ResultSet tProductID = tPID.executeQuery();
+                    List<String> pIDs = new ArrayList<>();
                     while (tProductID.next()) {
-                        totalProducts = tProductID.getInt(1);
+                        pIDs.add(Integer.toString(tProductID.getInt("productID")));
                     }
                     productID = txtPID.getText().strip();
                     quantity = txtQuantity.getText().strip();
                     try {
                         if (!productID.equals("") && !quantity.equals("")) {
                             try {
-                                int pIDInt = Integer.parseInt(productID);
+                                Integer.parseInt(productID);
 
                                 Integer.parseInt(quantity);
-                                if (pIDInt > 0 && pIDInt < totalProducts + 1) {
+                                if (pIDs.contains(productID)) {
 
-                                    String newQ = "SELECT Quantity FROM Inventory WHERE ProductID = " + pIDInt;
+                                    String newQ = "SELECT Quantity FROM Inventory WHERE ProductID = " + productID;
                                     PreparedStatement nQ = connection.prepareStatement(newQ);
                                     ResultSet newQuan = nQ.executeQuery();
                                     int currentQuantity = 0;
