@@ -3,8 +3,10 @@ package com.sheffield.views;
 import javax.swing.*;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
+import com.mysql.cj.xdevapi.PreparableStatement;
 import com.sheffield.model.DatabaseConnectionHandler;
 import com.sheffield.model.order.OrderLine;
+import com.sheffield.model.user.User;
 import com.sheffield.util.OrderOperations;
 
 import java.sql.*;
@@ -14,6 +16,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import java.util.Date;
 
 public class ProductsView extends JFrame {
 
@@ -27,7 +31,7 @@ public class ProductsView extends JFrame {
      * 6 - controller
      */
 
-    public ProductsView(Connection connection, int n) throws SQLException {
+    public ProductsView(Connection connection, int n, User user) throws SQLException {
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(320, 500);
@@ -171,12 +175,9 @@ public class ProductsView extends JFrame {
 
             panel.add(Box.createVerticalStrut(30));
 
-            // add item to order
             addOrder.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // System.out.println("Button for item number " + final_i);
-                    // System.out.println("Quantity " + combos[final_i].getSelectedItem());
 
                     String orderProductID = pIDs.get(final_i);
 
@@ -187,19 +188,54 @@ public class ProductsView extends JFrame {
                     Float totalPrice = orderQuantity * price;
 
                     // temporary orderID
-                    int orderID = 7;
+                    int orderID = 6;
 
-                    int orderLineID = 0;
                     try {
                         String orderLineQuery = "SELECT COUNT(*) FROM Order_Line";
+                        String orderQ = "SELECT * FROM Orders WHERE userId = '" + user.getuserId()
+                                + "' AND status = 'pending'";
+
                         PreparedStatement orderLineStatement = connection.prepareStatement(orderLineQuery);
                         ResultSet orderLineResultSet = orderLineStatement.executeQuery();
 
-                        while (orderLineResultSet.next()) {
-                            int maxOrderLine = orderLineResultSet.getInt(1);
+                        PreparedStatement orderLineStatement2 = connection.prepareStatement(orderQ);
+                        ResultSet orderLineResultSet2 = orderLineStatement2.executeQuery();
+
+                        int currOrderID = 0;
+                        while (orderLineResultSet2.next()) {
+                            currOrderID = orderLineResultSet2.getInt("orderID");
                         }
 
-                        OrderLine orderLine = new OrderLine(orderLineID, orderID, Integer.parseInt(orderProductID),
+                        if (currOrderID == 0) {
+                            String addOrderQ = "INSERT INTO Orders (userId, issueDate, totalCost, status) VALUES (?, CURRENT_TIMESTAMP,?, ?)";
+                            PreparedStatement addO = connection.prepareStatement(addOrderQ);
+                            addO.setString(1, user.getuserId());
+                            // addO.setDate(2, (java.sql.Date) d);
+                            addO.setDouble(2, 0.00);
+                            addO.setString(3, "pending");
+
+                            addO.executeUpdate();
+
+                            String newOI = "SELECT COUNT(*) FROM Orders";
+                            PreparedStatement newOIS = connection.prepareStatement(newOI);
+                            ResultSet newOIII = newOIS.executeQuery();
+                            int newOrderID1 = 0;
+                            while (newOIII.next()) {
+                                newOrderID1 = newOIII.getInt(1);
+                            }
+
+                            orderID = newOrderID1 + 1;
+
+                        } else {
+                            orderID = currOrderID;
+                        }
+
+                        int maxOrderLine = 0;
+                        while (orderLineResultSet.next()) {
+                            maxOrderLine = orderLineResultSet.getInt(1);
+                        }
+
+                        OrderLine orderLine = new OrderLine(maxOrderLine + 1, orderID, Integer.parseInt(orderProductID),
                                 orderQuantity, totalPrice);
                         OrderOperations orderOperations = new OrderOperations();
 
@@ -230,7 +266,11 @@ public class ProductsView extends JFrame {
             try {
                 databaseConnectionHandler.openConnection();
 
-                pv = new ProductsView(databaseConnectionHandler.getConnection(), 3);
+                User user1 = new User("a496d669-8275-4e66-9c46-37f5d828ee34", "jurihan@test.com",
+                        "3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a", 0,
+                        false, "Juri", "Han", "customer");
+
+                pv = new ProductsView(databaseConnectionHandler.getConnection(), 3, user1);
                 pv.setVisible(true);
 
             } catch (Throwable t) {
