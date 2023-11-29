@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class RegisterView extends JFrame {
+public class RegisterView extends JPanel {
     private JTextField forenameField = new JTextField(20);
     private JTextField surnameField = new JTextField(20);
     private JTextField emailField = new JTextField(20);
@@ -26,17 +26,20 @@ public class RegisterView extends JFrame {
     private JTextField postcodeField = new JTextField(20);
     private JTextField cityNameField = new JTextField(20);
     public RegisterView (Connection connection) throws SQLException {
-        // Create the JFrame in the constructor
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 400);
+
+
+        // Create a JPanel to hold the components
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+
 
         // Create a JPanel to hold the components
         JPanel panel = new JPanel();
-        this.add(panel);
+        panel.setLayout(new GridBagLayout());
+
+        contentPanel.add(panel, BorderLayout.CENTER);
 
         // Set a layout manager for the panel (e.g., GridLayout)
-        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Create JLabels for username and password
@@ -97,8 +100,6 @@ public class RegisterView extends JFrame {
         }
 
         // end of organising
-        this.getContentPane().add(panel);
-        this.pack();
         
 
         // Create an ActionListener for the register button
@@ -123,16 +124,25 @@ public class RegisterView extends JFrame {
                             System.out.println(newUser);
                             Address newAddress = new Address(houseNumberField.getText(), roadNameField.getText(), cityNameField.getText(), postcodeField.getText(), newUser.getuserId());
                             databaseOperations.insertAddress(newAddress, connection);
-                            LoginView.getInstance().setVisible(true);
-                            dispose();
+                            LoginView loginView = null;
+                            try {
+                                loginView = new LoginView(connection);
+                                TrainsOfSheffield.getPanel().removeAll();
+                                TrainsOfSheffield.getPanel().add(loginView, BorderLayout.CENTER);
+                                TrainsOfSheffield.getPanel().revalidate();
+                
+                            } catch (Throwable t) {
+                                throw new RuntimeException(t);
+                            }
                         } else {
                             System.out.println("Passwords do not match");
                             errorLabel.setVisible(true);
-                            pack();
+                            contentPanel.revalidate();
+
                         }
                     } else {
                         errorLabel2.setVisible(true);
-                        pack();
+                        contentPanel.revalidate();
                     }
                     
 

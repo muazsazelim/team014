@@ -19,7 +19,7 @@ import com.sheffield.views.UserMainView;
 
 public class DatabaseOperations {
 
-    public String verifyLogin(Connection connection, String email, char[] enteredPassword) {
+    public boolean verifyLogin(Connection connection, String email, char[] enteredPassword) {
         
         try{
             //Query to fetch information
@@ -36,7 +36,8 @@ public class DatabaseOperations {
 
                 //Chech if user is locked
                 if (accountLocked) {
-                    return "Account is locked. Please contact support";
+                    System.out.println("Account is locked. Please contact support");
+                    return false;
                 } else {
                     //verify pass
                     if (verifyPassword(enteredPassword, storedPasswordHash)) {
@@ -46,19 +47,9 @@ public class DatabaseOperations {
                         statement.setString(1, userId);
                         statement.executeUpdate();
                         
-                        Frame currentFrame = JFrame.getFrames()[0];
-                        currentFrame.dispose();
-                        TestOperations testOperations = new TestOperations();
-
-                        UserMainView userMainView = null;
-                        try {
-                            userMainView = new UserMainView(connection, testOperations.getUser(email, connection));
-                            userMainView.setVisible(true);
-            
-                        } catch (Throwable t) {
-                            throw new RuntimeException(t);
-                        }
-                        return "Login successful for user: "+ email;
+                        
+                        System.out.println("Login successful for user: "+ email);
+                        return true;
                     } else {
                         //Incorrect pass
                         failedLoginAttempts ++;
@@ -74,7 +65,8 @@ public class DatabaseOperations {
                         }
                         statement.executeUpdate();
 
-                        return "Incorrect password. Failed login attempts: " + failedLoginAttempts;
+                        System.out.println("Incorrect password. Failed login attempts: " + failedLoginAttempts);
+                        return false;
                     }
                 }
             }
@@ -83,7 +75,8 @@ public class DatabaseOperations {
             e.printStackTrace();
         }
 
-        return "User Not Found.";
+        System.out.println("User Not Found.");
+        return false;
     }
 
     private static boolean verifyPassword(char[] enteredPassword, String storedPasswordHash) {

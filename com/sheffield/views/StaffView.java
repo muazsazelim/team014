@@ -10,33 +10,33 @@ import java.sql.SQLException;
 import com.sheffield.util.TestOperations;
 
 
-public class StaffView extends JFrame {
+public class StaffView extends JPanel {
 
     public StaffView (Connection connection) throws SQLException {
-        // Create the JFrame in the constructor
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320,320);
+
+        
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+
+ 
 
         // Create a JPanel to hold the components
         JPanel panel = new JPanel();
-        this.add(panel);
-
-        JFrame parent = this;
-
-        parent.getContentPane().setLayout(new BorderLayout());
         panel.setLayout(new GridLayout(0,1));
+
+
+        contentPanel.add(panel, BorderLayout.CENTER);
 
         
         // Create buttons that links to other pages from default page
-        JLabel staffView;
-        staffView = new JLabel("Staff View");
+        JLabel staffView = new JLabel();
+        staffView.setText("Staff View");
+        staffView.setHorizontalAlignment(JLabel.CENTER);
+        staffView.setVerticalAlignment(JLabel.TOP);
+
 
         // Add components to the panel
         panel.add(staffView);
-
-        parent.getContentPane().add(panel, BorderLayout.NORTH);
-        parent.pack();
 
     }
     

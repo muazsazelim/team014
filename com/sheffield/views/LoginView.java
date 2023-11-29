@@ -1,8 +1,9 @@
     package com.sheffield.views;
 
     import com.sheffield.model.DatabaseOperations;
+import com.sheffield.util.TestOperations;
 
-    import javax.swing.*;
+import javax.swing.*;
     import java.awt.*;
     import java.awt.event.ActionEvent;
     import java.awt.event.ActionListener;
@@ -10,20 +11,22 @@
     import java.sql.SQLException;
     import java.util.Arrays;
 
-    public class LoginView extends JFrame {
+    public class LoginView extends JPanel {
         private JTextField emailField;
         private JPasswordField passwordField;
         private static LoginView instance;
         public LoginView (Connection connection) throws SQLException {
-            // Create the JFrame in the constructor
-            this.setTitle("Train of Sheffield");
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setSize(320, 170);
+
+
+            // Create a JPanel to hold the components
+            JPanel contentPanel = this;
+            contentPanel.setLayout(new BorderLayout());
+
             instance = this;
 
             // Create a JPanel to hold the components
             JPanel panel = new JPanel();
-            this.add(panel);
+            contentPanel.add(panel, BorderLayout.CENTER);
 
             // Set a layout manager for the panel (e.g., GridLayout)
             panel.setLayout(new GridBagLayout());
@@ -77,8 +80,6 @@
             gbc.gridy = 8;
             panel.add(registerButton, gbc);
 
-            this.getContentPane().add(panel);
-            this.pack();
             
 
             // Create an ActionListener for the login button
@@ -91,12 +92,27 @@
                     System.out.println(new String(passwordChars));
                     if (!email.isEmpty() && !(passwordChars == null) && !(passwordChars.length == 0)){
                         DatabaseOperations databaseOperations = new DatabaseOperations();
-                        System.out.println(databaseOperations.verifyLogin(connection, email, passwordChars));
+                        if (databaseOperations.verifyLogin(connection, email, passwordChars)) {
+
+                            TestOperations testOperations = new TestOperations();
+
+                            UserMainView userMainView = null;
+                            try {
+                                userMainView = new UserMainView(connection, testOperations.getUser(email, connection));
+
+                                TrainsOfSheffield.getPanel().removeAll();
+                                TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                                TrainsOfSheffield.getPanel().revalidate();
+
+                            } catch (Throwable t) {
+                                throw new RuntimeException(t);
+                            }
+                        }
                         // Secure disposal of the password
                         Arrays.fill(passwordChars, '\u0000');
                     } else{
                         errorFillLabel.setVisible(true);
-                        pack();
+                        contentPanel.revalidate();
                     }
                     
 
@@ -113,7 +129,9 @@
                     RegisterView registerView = null;
                     try {
                         registerView = new RegisterView(connection);
-                        registerView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(registerView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
         
                     } catch (Throwable t) {
                         throw new RuntimeException(t);
