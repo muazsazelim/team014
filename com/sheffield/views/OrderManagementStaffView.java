@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.Collections;
 
 public class OrderManagementStaffView extends JFrame {
-    private JButton archivedOrders;
+    
     private JButton orderHistory;
     private JButton fufill;
     private JTable basketTable;
@@ -40,7 +40,7 @@ public class OrderManagementStaffView extends JFrame {
 
  
         JPanel panel = new JPanel();
-        JPanel container = new JPanel();
+        
         this.add(panel);
 
         this.getContentPane().setLayout(new BorderLayout());

@@ -47,6 +47,49 @@ public class OrderOperations {
         }
     }
 
+    public void addOrder(Order order, Connection connection) throws SQLException{
+        try {
+            // Create an SQL INSERT statement
+            String insertSQL = "INSERT INTO Orders (orderId, userId, issueDate, totalCost, status) VALUES (?, ?, ?, ?, ?)";
+
+            // Prepare and execute the INSERT statement
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setInt(1, order.getOrderID());
+            preparedStatement.setString(2, order.getUserID());
+            preparedStatement.setDate(3, (java.sql.Date) order.getIssueDate());
+            preparedStatement.setDouble(4, order.getTotalCost());
+            preparedStatement.setString(5, order.getOrderStatus().toString());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println(rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Re-throw the exception to signal an error.
+        }
+    }
+
+    public void addOrderLine(OrderLine orderLine, Connection connection) throws SQLException{
+        try {
+            // Create an SQL INSERT statement
+            String insertSQL = "INSERT INTO Order_Line (orderLineID, orderID, productID, quantity, lineCost) VALUES (?, ?, ?, ?, ?)";
+
+            // Prepare and execute the INSERT statement
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setInt(1, orderLine.getOrderLineID());
+            preparedStatement.setInt(2, orderLine.getOrderID());
+            preparedStatement.setInt(3, orderLine.getProductID());
+            preparedStatement.setInt(4, orderLine.getQuantity());
+            preparedStatement.setDouble(5, orderLine.getLineCost());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println(rowsAffected + " row(s) inserted successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Re-throw the exception to signal an error.
+        }
+    }
+    
+
     public Order getOrder(int orderId, Connection connection) throws SQLException{
          try {
             String selectSQL = "SELECT * FROM Orders WHERE orderId=?";
