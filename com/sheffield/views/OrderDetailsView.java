@@ -17,7 +17,7 @@ import com.sheffield.model.order.OrderLine;
 import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 
-public class OrderDetailsView extends JFrame {
+public class OrderDetailsView extends JPanel {
     private JButton userDetails;
     private JButton orderHistory;
     private JButton products;
@@ -25,16 +25,16 @@ public class OrderDetailsView extends JFrame {
     private Object[][] data;
     public OrderDetailsView (Connection connection, Order order) throws SQLException {
 
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320,320);
 
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
  
         JPanel panel = new JPanel();
-        this.add(panel);
-
-        this.getContentPane().setLayout(new BorderLayout());
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+
+        contentPanel.add(panel, BorderLayout.CENTER);
+
        // panel.setLayout(new GridLayout(0,1));
 
         JLabel titleLabel = new JLabel("Order Details");
@@ -96,58 +96,6 @@ public class OrderDetailsView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(basketTable);
 
         panel.add(scrollPane, BorderLayout.CENTER);
-
-        this.setVisible(true);
-
-        
-        // Create buttons that links to other pages from default page
-        userDetails = new JButton("Change Details");
-        orderHistory = new JButton("Order History");
-        products = new JButton("View Products");
-
-        // Add components to the panel
-        panel.add(userDetails);
-        panel.add(orderHistory);
-        panel.add(products);
-
-        this.getContentPane().add(panel, BorderLayout.NORTH);
-        this.pack();
-
-        // Create an ActionListener for the view buttons
-        userDetails.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("went to Basket Page");
-            }
-        });
-        
-        orderHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to User Details Page");
-
-                dispose();
-                OrderHistoryView userDetailsView = null;
-                try {
-                    String userID = orderOperations.getUserIDbyOrderID(order.getOrderID(), connection);
-                    String userEmail = testOperations. getEmail(userID, connection);
-                    User user = testOperations.getUser(userEmail, connection);
-                    userDetailsView = new OrderHistoryView(connection, user);
-                    userDetailsView.setVisible(true);
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
-        products.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Products Page");
-            }
-        });
-
         
 
     }

@@ -16,7 +16,7 @@ import com.sheffield.model.order.Order;
 import com.sheffield.util.OrderOperations;
 
 
-public class OrderHistoryView extends JFrame {
+public class OrderHistoryView extends JPanel {
     private JButton userDetails;
     private JButton orderHistory;
     private JButton products;
@@ -24,15 +24,17 @@ public class OrderHistoryView extends JFrame {
     private Object[][] data;
     public OrderHistoryView (Connection connection, User user) throws SQLException {
 
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320,320);
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
 
- 
+
         JPanel panel = new JPanel();
-        this.add(panel);
+        contentPanel.add(panel);
 
-        this.getContentPane().setLayout(new BorderLayout());
+        contentPanel.add(panel, BorderLayout.CENTER);
+
+
+
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
        // panel.setLayout(new GridLayout(0,1));
 
@@ -79,14 +81,15 @@ public class OrderHistoryView extends JFrame {
                 int row = basketTable.rowAtPoint(e.getPoint());
                 System.out.println(row);
                 if (column == 0) { 
-                    dispose();
                     OrderDetailsView orderDetailsView = null;
                     try {
                         Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
                         Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
                         Order order = userOrders[row];
                         orderDetailsView = new OrderDetailsView(connection, order);
-                        orderDetailsView.setVisible(true);
+                        contentPanel.removeAll();
+                        contentPanel.add(orderDetailsView, BorderLayout.CENTER);
+                        contentPanel.revalidate();
                         
                          
                     } catch (SQLException i) {
@@ -102,46 +105,6 @@ public class OrderHistoryView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(basketTable);
 
         panel.add(scrollPane, BorderLayout.CENTER);
-
-        this.setVisible(true);
-
-        
-        // Create buttons that links to other pages from default page
-        userDetails = new JButton("Change Details");
-        orderHistory = new JButton("Order History");
-        products = new JButton("View Products");
-
-        // Add components to the panel
-        panel.add(userDetails);
-        panel.add(orderHistory);
-        panel.add(products);
-
-        this.getContentPane().add(panel, BorderLayout.NORTH);
-        this.pack();
-
-        // Create an ActionListener for the view buttons
-        userDetails.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("went to Basket Page");
-            }
-        });
-        
-        orderHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Order History Page");
-            }
-        });
-
-        products.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Products Page");
-            }
-        });
-
-        
 
     }
     

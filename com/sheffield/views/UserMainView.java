@@ -103,11 +103,13 @@ public class UserMainView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Manager Page");
 
-                dispose();
                 ManagerView managerView = null;
                 try {
                     managerView = new ManagerView(connection);
-                    managerView.setVisible(true);
+                    
+                    contentPanel.removeAll();
+                    contentPanel.add(managerView, BorderLayout.CENTER);
+                    contentPanel.revalidate();
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
@@ -140,11 +142,15 @@ public class UserMainView extends JFrame {
         orderHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
+                //dispose();
                 OrderHistoryView orderHistoryView = null;
                 try {
                     orderHistoryView = new OrderHistoryView(connection, user);
-                    orderHistoryView.setVisible(true);
+
+                    contentPanel.removeAll();
+                    contentPanel.add(orderHistoryView, BorderLayout.CENTER);
+                    contentPanel.revalidate();
+                    
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
