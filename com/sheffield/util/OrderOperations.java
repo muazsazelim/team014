@@ -123,7 +123,32 @@ public class OrderOperations {
         }
     }
 
-    public void updateOrderStatusToFulfilled(int orderId, Connection connection) throws SQLException {
+    public void updateQuantity(int orderId, int quantity, Connection connection) throws SQLException{
+        try {
+            String updateSQL = "UPDATE Inventory SET quantity=? WHERE orderId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, orderId);
+            
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: ");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+   
+
+    public void updateOrderStatusToFulfilled (int orderId, Connection connection) throws SQLException{
+
         try {
             String updateSQL = "UPDATE Orders SET status=? WHERE orderId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
