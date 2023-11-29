@@ -4,7 +4,9 @@
 import com.sheffield.util.TestOperations;
 
 import javax.swing.*;
-    import java.awt.*;
+import javax.swing.border.EmptyBorder;
+
+import java.awt.*;
     import java.awt.event.ActionEvent;
     import java.awt.event.ActionListener;
     import java.sql.Connection;
@@ -26,59 +28,78 @@ import javax.swing.*;
 
             // Create a JPanel to hold the components
             JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout());
             contentPanel.add(panel, BorderLayout.CENTER);
 
             // Set a layout manager for the panel (e.g., GridLayout)
+            /*
             panel.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
+            */
 
-            // Create JLabels for email and password
+            JLabel titleLabel = new JLabel();
+            titleLabel.setText("Trains of Sheffield");
+            titleLabel.setHorizontalAlignment(JLabel.CENTER);
+            titleLabel.setFont(new Font("MONOSPACED", Font.BOLD, 24));
+            titleLabel.setBorder(new EmptyBorder(10,10,10,10));
+
+            panel.add(titleLabel, BorderLayout.NORTH);
+
+
             JLabel emailLabel = new JLabel("  Email:");
             JLabel passwordLabel = new JLabel("  Password:");
             JLabel errorFillLabel = new JLabel("Please fill all the field");
             errorFillLabel.setForeground(Color.RED);
             errorFillLabel.setVisible(false);
 
-            // Create JTextFields for entering email and password
             emailField = new JTextField(20);
             passwordField = new JPasswordField(20);
+
+            JPanel loginDetails = new JPanel();
+            loginDetails.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
+            panel.add(loginDetails, BorderLayout.CENTER);
+
+
+
 
             // Create a JButton for the login action
             JButton loginButton = new JButton("Login");
 
-            JLabel loginLabel = new JLabel("  Welcome Back !");
             JLabel registerLabel = new JLabel("  New user? Sign up now!");
             JButton registerButton = new JButton("Register");
 
+            
             // Add components to the panel
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.gridwidth = 1;
             gbc.fill = GridBagConstraints.BOTH;
             gbc.insets = new Insets(0, 0, 10, 0);
-            panel.add(loginLabel, gbc);
             gbc.insets = new Insets(0, 0, 0, 0);
             // panel.add(new JLabel());
             gbc.gridy = 1;
-            panel.add(emailLabel, gbc);
+            loginDetails.add(emailLabel, gbc);
             gbc.gridx = 1;
-            panel.add(emailField, gbc);
+            loginDetails.add(emailField, gbc);
             gbc.gridy = 2;
-            panel.add(passwordField, gbc);
+            loginDetails.add(passwordField, gbc);
             gbc.gridx = 0;
-            panel.add(passwordLabel, gbc);
+            loginDetails.add(passwordLabel, gbc);
             // panel.add(new JLabel());
             gbc.gridy = 4;
             gbc.gridwidth = 2;
             gbc.insets = new Insets(10, 0, 10, 0);
-            panel.add(loginButton, gbc);
+            loginDetails.add(loginButton, gbc);
             gbc.gridy = 6;
             gbc.insets = new Insets(10, 0, 0, 0);
-            panel.add(registerLabel, gbc);
+            loginDetails.add(registerLabel, gbc);
             gbc.gridy = 5;
-            panel.add(errorFillLabel, gbc);
+            loginDetails.add(errorFillLabel, gbc);
             gbc.gridy = 8;
-            panel.add(registerButton, gbc);
+            loginDetails.add(registerButton, gbc);
+            
 
             
 

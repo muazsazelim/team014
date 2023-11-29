@@ -19,6 +19,8 @@ public class TrainsOfSheffield extends JFrame {
         parent.getContentPane().setLayout(new BorderLayout());
         parent.setVisible(true);
         parent.setSize(720,600);
+        ImageIcon image = new ImageIcon("logo.png");
+        parent.setIconImage(image.getImage()); 
 
 
         // Create a JPanel to hold the components
