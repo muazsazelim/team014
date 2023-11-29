@@ -33,9 +33,7 @@ public class InventoryView extends JFrame {
         JButton staffPage;
         staffPage = new JButton("Staff Page");
         JButton editPage;
-        editPage = new JButton("Edit Inventory");
-        JButton newItem;
-        newItem = new JButton("Add New Item");
+        editPage = new JButton("Add quantity");
 
         header.add(managerPage, BorderLayout.LINE_START);
         header.add(staffPage, BorderLayout.LINE_END);
@@ -91,29 +89,12 @@ public class InventoryView extends JFrame {
             }
         });
 
-        newItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to New Item View");
-
-                dispose();
-                NewItemView newItemView = null;
-                try {
-                    newItemView = new NewItemView(connection);
-                    newItemView.setVisible(true);
-
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         try {
             JTable j;
             String selectAll = "SELECT * FROM Inventory";
-            String productName = "SELECT productName FROM Product, Inventory WHERE Inventory.ProductID = Product.productID";
+            String productName = "SELECT * FROM Product, Inventory WHERE Inventory.ProductID = Product.productID";
             String productID = "SELECT ProductID FROM Inventory";
             PreparedStatement preparedStatement = connection.prepareStatement(selectAll);
             PreparedStatement preparedStatement2 = connection.prepareStatement(productName);
@@ -127,8 +108,8 @@ public class InventoryView extends JFrame {
 
             while (resultSet.next() && resultSet2.next() && resultSet3.next()) {
                 String pName = resultSet2.getString("productName");
-                String pQuantity = Integer.toString(resultSet.getInt("Quantity"));
-                String pID = Integer.toString(resultSet3.getInt("ProductID"));
+                String pQuantity = Integer.toString(resultSet2.getInt("Quantity"));
+                String pID = Integer.toString(resultSet2.getInt("ProductID"));
 
                 String[] data = { pID, pName, pQuantity };
 
@@ -155,7 +136,6 @@ public class InventoryView extends JFrame {
             panel.add(sp);
 
             panel.add(editPage);
-            panel.add(newItem);
             panel.setSize(320, 280);
 
             this.setVisible(true);
