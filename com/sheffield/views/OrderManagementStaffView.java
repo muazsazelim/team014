@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import com.sheffield.model.Address;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
+import com.sheffield.model.order.Order.OrderStatus;
 import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 
@@ -15,8 +16,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Collections;
 
 public class OrderManagementStaffView extends JFrame {
     private JButton archivedOrders;
@@ -25,6 +28,8 @@ public class OrderManagementStaffView extends JFrame {
     private JTable basketTable;
     private JTable archivedTable;
     private JButton delete;
+    private OrderOperations orderOperations = new OrderOperations();
+    private TestOperations testOperations = new TestOperations();
     
 
     public OrderManagementStaffView (Connection connection) throws SQLException {
@@ -50,8 +55,7 @@ public class OrderManagementStaffView extends JFrame {
 
         int statusIndex = 7;
 
-        OrderOperations orderOperations = new OrderOperations();
-        TestOperations testOperations = new TestOperations();
+        
 
         JComboBox<String> comboBox = new JComboBox<>();
 
@@ -63,6 +67,15 @@ public class OrderManagementStaffView extends JFrame {
                 return row ==0 && column == statusIndex; 
             }
             };
+
+            DefaultTableModel modelArchive = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+            };
+
+            archivedTable = new JTable(modelArchive);
         
        // OrderLine[] orderLineForOrder 
         try {
@@ -89,22 +102,25 @@ public class OrderManagementStaffView extends JFrame {
                 
                 comboBox.setSelectedItem(confirmedOrders[0].getOrderStatus().toString());
                 basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
-           
-            for (Order order: confirmedOrders){
-                int orderIdForSearch = order.getOrderID();
-                String userIDforSearch = orderOperations.getUserIDbyOrderID(orderIdForSearch, connection);
-                Address address = testOperations.getAddress(userIDforSearch, connection);
-               // String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
-                Object[] ordersForTable = {order.getOrderID(), order.getIssueDate(), testOperations.getForename(userIDforSearch, connection),
-                                        testOperations.getSurname(userIDforSearch, connection),
-                                        testOperations.getEmail(userIDforSearch, connection),
-                                        "addressDisplay", order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
-                
-                    
-
-                model.addRow(ordersForTable);
+                ArrayList<Order> archivedOrders = new ArrayList<>();
+                Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate));
+            for (Order order: userOrders){
+                if (order.getOrderStatus() == OrderStatus.FULFILLED)
+                {
+                    archivedOrders.add(order);
+                }else if (order.getOrderStatus() == OrderStatus.CONFIRMED){
+                    model.addRow(getTableValues(order, connection));
+                }
+                              
 
             }
+
+            Collections.sort(archivedOrders, Comparator.comparing(Order::getIssueDate));
+            for(Order order : archivedOrders){
+                modelArchive.addRow(getTableValues(order, connection));
+            }
+
+
 
             basketTable.addMouseListener(new MouseAdapter() {
                 @Override
@@ -134,14 +150,7 @@ public class OrderManagementStaffView extends JFrame {
             JScrollPane scrollPane = new JScrollPane(basketTable);
             panel.add(scrollPane, BorderLayout.CENTER);
 
-            DefaultTableModel modelArchive = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-            };
-
-            archivedTable = new JTable(modelArchive);
+            
              
 
              
@@ -168,7 +177,7 @@ public class OrderManagementStaffView extends JFrame {
        
         
         orderHistory = new JButton("Order History");
-        fufill = new JButton("View Products");
+        fufill = new JButton("Fulfill");
         delete = new JButton("Delete");
 
         
@@ -211,7 +220,18 @@ public class OrderManagementStaffView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if ("FULFILL".equals(basketTable.getValueAt(0, statusIndex))){                       
-                        
+                        int orderId = Integer.valueOf(basketTable.getValueAt(0,0).toString()) ;
+                    try {
+                        orderOperations.updateOrderStatusToFulfilled(orderId, connection);
+                        model.removeRow(0);
+                        Order order = orderOperations.getOrder(orderId, connection);
+                        modelArchive.addRow(getTableValues(order, connection));
+                        System.out.println("chnged order to fulfilled");
+                    } catch (SQLException e1) {
+                       
+                        e1.printStackTrace();
+                    }
+                    
                 }
                 
             }
@@ -241,6 +261,26 @@ public class OrderManagementStaffView extends JFrame {
         }
         
         
+    }
+
+    private Object[] getTableValues(Order order, Connection connection){
+        int orderIdForSearch = order.getOrderID();
+        String userIDforSearch;
+        Object[] ordersForTable = new Object[9];
+                try {
+                    userIDforSearch = orderOperations.getUserIDbyOrderID(orderIdForSearch, connection);
+                    Address address = testOperations.getAddress(userIDforSearch, connection);
+                    // String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
+                     ordersForTable = new Object[]{order.getOrderID(), order.getIssueDate(), testOperations.getForename(userIDforSearch, connection),
+                                        testOperations.getSurname(userIDforSearch, connection),
+                                        testOperations.getEmail(userIDforSearch, connection),
+                                        "addressDisplay", order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                
+
+        return ordersForTable;
     }
 
     

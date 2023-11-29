@@ -47,12 +47,48 @@ public class OrderOperations {
         }
     }
 
+    public Order getOrder(int orderId, Connection connection) throws SQLException{
+         try {
+            String selectSQL = "SELECT * FROM Orders WHERE orderId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+
+            preparedStatement.setInt(1, orderId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            
+        
+            if (resultSet.next()) {
+                // Print each book's information in the specified format
+
+                Order order = new Order(resultSet.getInt("orderID"),
+                                        resultSet.getString("userId"), 
+                                        resultSet.getDate("issueDate"),
+                                        resultSet.getDouble("totalCost"), 
+                                        resultSet.getString("status"));
+                System.out.println("{" +
+                        "OrderId='" + resultSet.getInt("OrderID") + "'" +
+                        ", userID='" + resultSet.getString("UserID") + "'" +
+                        ", DATE='" + resultSet.getDate("IssueDate") + "'" +
+                        ", cost='" +resultSet.getDouble("TotalCost") + "'" +
+                        ",status'" + resultSet.getString("Status") + "'" +
+                        "}");
+                
+                return order;
+            }else {
+                System.out.println("No order to be found ");
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
     public void updateOrderStatusToFulfilled (int orderId, Connection connection) throws SQLException{
         try {
             String updateSQL = "UPDATE Orders SET status=? WHERE orderId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
-            preparedStatement.setString(1, "fufilled");
+            preparedStatement.setString(1, "fulfilled");
             preparedStatement.setInt(2, orderId);
             
 
