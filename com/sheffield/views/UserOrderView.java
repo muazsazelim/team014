@@ -8,9 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
+import com.sheffield.model.order.OrderLine;
 import com.sheffield.util.OrderOperations;
 
 
@@ -21,12 +23,12 @@ import com.sheffield.util.OrderOperations;
 public class UserOrderView extends JFrame {
     private JButton confirmOrder;
     private JButton orderHistory;
-    
+    private JButton decline;
     private JTable basketTable;
     private Object[][] data;
     
 
-    public UserOrderView (Connection connection, User user) throws SQLException {
+    public UserOrderView (Connection connection, Order order, User user) throws SQLException {
 
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,26 +42,26 @@ public class UserOrderView extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
        // panel.setLayout(new GridLayout(0,1));
 
-        JLabel titleLabel = new JLabel("Basket");
+        JLabel titleLabel = new JLabel("Order Basket");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
         // need to replace with selection from cataloge table
         OrderOperations orderOperations = new OrderOperations();
-       // OrderLine[] orderLineForOrder 
-        try {
-            Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
-
-            String[] columnNames = {"OrderID", "Date"};
-            DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+        String[] columnNames = {"Order Line ID", "Product ID", "Quantity", "Cost"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; 
             }
             };
-           
-            for (Order order: userOrders){
-            Object[] ordersForTable = {order.getOrderID(), order.getIssueDate()};
+       // OrderLine[] orderLineForOrder 
+        try {
+            OrderLine[] orderLines = orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection);
+         
+            for (OrderLine orderline: orderLines){
+            
+            Object[] ordersForTable = {orderline.getOrderLineID(), orderline.getProductID(), orderline.getQuantity(), orderline.getLineCost()};
             model.addRow(ordersForTable);
             }
 
@@ -106,11 +108,12 @@ public class UserOrderView extends JFrame {
         // Create buttons that links to other pages from default page
         confirmOrder = new JButton("Confirm Order");
         orderHistory = new JButton("Order History");
-        
+        decline = new JButton("Decline Order");
 
         // Add components to the panel
         panel.add(confirmOrder);
         panel.add(orderHistory);
+        panel.add(decline);
         
 
         this.getContentPane().add(panel, BorderLayout.NORTH);
@@ -118,6 +121,14 @@ public class UserOrderView extends JFrame {
 
         // Create an ActionListener for the view buttons
         confirmOrder.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //creates new order for customer
+                // needs the array of orderlines from table and adds them to the table
+            }
+        });
+
+        decline.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //creates new order for customer

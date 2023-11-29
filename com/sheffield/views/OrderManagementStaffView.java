@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -224,11 +226,26 @@ public class OrderManagementStaffView extends JFrame {
                     try {
                         orderOperations.updateOrderStatusToFulfilled(orderId, connection);
                         model.removeRow(0);
+
                         Order order = orderOperations.getOrder(orderId, connection);
+                        OrderLine[] orderLines = orderOperations.getAllOrdersLinesByOrder(orderId, connection);
+                        for (OrderLine orderLine : orderLines) {
+
+                            int productId = orderLine.getProductID();
+                            String newQ = "SELECT Quantity FROM Inventory WHERE ProductID = " + productId;
+                                PreparedStatement nQ = connection.prepareStatement(newQ);
+                                ResultSet newQuan = nQ.executeQuery();
+                                int currentQuantity = 0;
+                                if (newQuan.next()) {
+                                    currentQuantity = newQuan.getInt(1);
+                                }                 
+                            int updatedQuantity =  currentQuantity - orderOperations.getQuantitybyProductID(productId, connection);
+                            orderOperations.updateQuantity(orderId, updatedQuantity, connection);
+                            
+                        }
                         modelArchive.addRow(getTableValues(order, connection));
                         System.out.println("chnged order to fulfilled");
-                    } catch (SQLException e1) {
-                       
+                    } catch (SQLException e1) {   
                         e1.printStackTrace();
                     }
                     
