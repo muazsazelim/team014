@@ -100,7 +100,87 @@ import java.awt.*;
             gbc.gridy = 8;
             loginDetails.add(registerButton, gbc);
             
+            /*
 
+            JLabel titleLabel = new JLabel();
+            titleLabel.setText("Trains of Sheffield");
+            titleLabel.setHorizontalAlignment(JLabel.CENTER);
+            titleLabel.setFont(new Font("MONOSPACED", Font.BOLD, 24));
+            titleLabel.setBorder(new EmptyBorder(10,10,10,10));
+
+            panel.add(titleLabel, BorderLayout.NORTH);
+
+
+            JLabel emailLabel = new JLabel("  Email:");
+            emailLabel.setFont(new Font("MONOSPACED", Font.PLAIN, 18));
+
+            JLabel passwordLabel = new JLabel("  Password:");
+            passwordLabel.setFont(new Font("MONOSPACED", Font.PLAIN, 18));
+
+            JLabel errorFillLabel = new JLabel("Please fill all the field");
+            errorFillLabel.setForeground(Color.RED);
+            errorFillLabel.setVisible(false);
+
+            emailField = new JTextField(20);
+            emailField.setFont(new Font("MONOSPACED", Font.PLAIN, 18));
+
+            passwordField = new JPasswordField(20);
+            passwordField.setFont(new Font("MONOSPACED", Font.PLAIN, 18));
+
+
+            JPanel loginContainer = new JPanel();
+            JPanel loginDetails = new JPanel();
+            loginDetails.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+
+            loginContainer.add(loginDetails);
+
+            panel.add(loginContainer, BorderLayout.CENTER);
+
+
+
+
+
+            // Create a JButton for the login action
+            JButton loginButton = new JButton("Login");
+            loginButton.setFont(new Font("MONOSPACED", Font.BOLD, 18));
+
+
+            JLabel registerLabel = new JLabel("  New user? Sign up now!");
+            registerLabel.setFont(new Font("MONOSPACED", Font.PLAIN, 18));
+
+            JButton registerButton = new JButton("Register");
+            registerButton.setFont(new Font("MONOSPACED", Font.BOLD, 18));
+
+
+
+            gbc.ipady = 20;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0,5, 0,5);
+            loginDetails.add(emailLabel, gbc);
+            gbc.gridx = 1;
+            loginDetails.add(emailField, gbc);
+            gbc.gridy = 1;
+            loginDetails.add(passwordField, gbc);
+            gbc.gridx = 0;
+            gbc.insets = new Insets(0,5, 0,5);
+            loginDetails.add(passwordLabel, gbc);
+            gbc.gridy = 2;
+            gbc.gridwidth = 2;
+            gbc.insets = new Insets(10, 0, 0, 0);
+            loginDetails.add(loginButton, gbc);
+            gbc.gridy = 3;
+            gbc.insets = new Insets(10, 0, 0, 0);
+            loginDetails.add(registerLabel, gbc);
+            gbc.gridy = 4;
+            loginDetails.add(errorFillLabel, gbc);
+            gbc.gridy = 5;
+            loginDetails.add(registerButton, gbc);
+            
+
+            */
             
 
             // Create an ActionListener for the login button
