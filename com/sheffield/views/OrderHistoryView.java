@@ -87,9 +87,9 @@ public class OrderHistoryView extends JPanel {
                         Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
                         Order order = userOrders[row];
                         orderDetailsView = new OrderDetailsView(connection, order);
-                        contentPanel.removeAll();
-                        contentPanel.add(orderDetailsView, BorderLayout.CENTER);
-                        contentPanel.revalidate();
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(orderDetailsView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
                         
                          
                     } catch (SQLException i) {
