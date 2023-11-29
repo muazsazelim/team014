@@ -22,7 +22,7 @@ public class OrderDetailsView extends JPanel {
     private JButton orderHistory;
     private JButton products;
     private JTable basketTable;
-    private Object[][] data;
+    
     public OrderDetailsView (Connection connection, Order order) throws SQLException {
 
 
@@ -44,7 +44,7 @@ public class OrderDetailsView extends JPanel {
        
 
         OrderOperations orderOperations = new OrderOperations();
-        TestOperations testOperations = new TestOperations();
+        
          try {
             OrderLine[] userOrders = orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection);
             Arrays.sort(userOrders, Comparator.comparing(OrderLine::getOrderLineID));
@@ -80,16 +80,7 @@ public class OrderDetailsView extends JPanel {
         basketTable.setColumnSelectionAllowed(false);
 
 
-        basketTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int column = basketTable.columnAtPoint(e.getPoint());
-                int row = basketTable.rowAtPoint(e.getPoint());
-                if (column == 0) { // Column index
-                    showOrderDetailsPopup(row);
-                }
-            }
-        });
+        
 
         
       
@@ -99,17 +90,8 @@ public class OrderDetailsView extends JPanel {
         
 
     }
-    // orderDetails needs to get orderline  product code & brand & product name & quantity & derived line cost & total cost &staus
-    private void showOrderDetailsPopup(int row) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        String orderDetails = "Order Details:\n " +
-                "Order ID: " + data[row][0] + "\n " +
-                "Product Name: " + data[row][1] + "\n " +
-                "Quantity: " + data[row][2];
-        JMenuItem menuItem = new JMenuItem(orderDetails);
-        popupMenu.add(menuItem);
-        popupMenu.show(basketTable, basketTable.getCellRect(row, 0, true).x, basketTable.getCellRect(row, 0, true).y);
-    }
+
+   
 
     
     

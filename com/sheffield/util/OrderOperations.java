@@ -47,7 +47,7 @@ public class OrderOperations {
         }
     }
 
-    public void updateOrderStatusToFulfilled (int orderId, Connection connection){
+    public void updateOrderStatusToFulfilled (int orderId, Connection connection) throws SQLException{
         try {
             String updateSQL = "UPDATE Orders SET status=? WHERE orderId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
@@ -61,7 +61,7 @@ public class OrderOperations {
             if (rowsAffected > 0) {
                 System.out.println(rowsAffected + " row(s) updated successfully.");
             } else {
-                System.out.println("No rows were updated for userId: " + address.getUserId());
+                System.out.println("No rows were updated for userId: ");
             }
         } catch (SQLException e) {
             e.printStackTrace();
