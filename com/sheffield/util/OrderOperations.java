@@ -67,6 +67,42 @@ public class OrderOperations {
         }
     }
 
+    public Order getPendingOrderByUserID (String userId, Connection connection) throws SQLException{
+        try {
+            String selectSQL = "SELECT orderID FROM Orders WHERE userId=?, status=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+
+            preparedStatement.setString(1, userId);
+            preparedStatement.setString(2, "pending");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                // Print each book's information in the specified format
+
+                Order order = new Order(resultSet.getInt("orderID"),
+                        resultSet.getString("userId"),
+                        resultSet.getDate("issueDate"),
+                        resultSet.getDouble("totalCost"),
+                        resultSet.getString("status"));
+                System.out.println("{" + "Pending Order" +
+                        "OrderId='" + resultSet.getInt("OrderID") + "'" +
+                        ", userID='" + resultSet.getString("UserID") + "'" +
+                        ", DATE='" + resultSet.getDate("IssueDate") + "'" +
+                        ", cost='" + resultSet.getDouble("TotalCost") + "'" +
+                        ",status'" + resultSet.getString("Status") + "'" +
+                        "}");
+
+                return order;
+            } else {
+                System.out.println("No order to be found ");
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
     public void addOrderLine(OrderLine orderLine, Connection connection) throws SQLException {
         try {
             // Create an SQL INSERT statement
@@ -147,13 +183,13 @@ public class OrderOperations {
 
    
 
-    public void updateOrderStatusToFulfilled (int orderId, Connection connection) throws SQLException{
+    public void updateOrderStatus (int orderId, String status, Connection connection) throws SQLException{
 
         try {
             String updateSQL = "UPDATE Orders SET status=? WHERE orderId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
-            preparedStatement.setString(1, "fulfilled");
+            preparedStatement.setString(1, status);
             preparedStatement.setInt(2, orderId);
 
             int rowsAffected = preparedStatement.executeUpdate();

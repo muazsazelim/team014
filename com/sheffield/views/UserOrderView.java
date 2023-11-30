@@ -14,6 +14,7 @@ import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
 import com.sheffield.util.OrderOperations;
+import com.sheffield.util.TestOperations;
 
 
 
@@ -23,12 +24,11 @@ import com.sheffield.util.OrderOperations;
 public class UserOrderView extends JFrame {
     private JButton confirmOrder;
     private JButton orderHistory;
-    private JButton decline;
     private JTable basketTable;
     private Object[][] data;
     
 
-    public UserOrderView (Connection connection, Order order, User user) throws SQLException {
+    public UserOrderView (Connection connection, User user) throws SQLException {
 
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,6 +48,7 @@ public class UserOrderView extends JFrame {
         panel.add(titleLabel, BorderLayout.NORTH);
         // need to replace with selection from cataloge table
         OrderOperations orderOperations = new OrderOperations();
+        TestOperations testOperations = new TestOperations();
         String[] columnNames = {"Order Line ID", "Product ID", "Quantity", "Cost"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -57,45 +58,21 @@ public class UserOrderView extends JFrame {
             };
        // OrderLine[] orderLineForOrder 
         try {
-            OrderLine[] orderLines = orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection);
+            Order pendingOrder = orderOperations.getPendingOrderByUserID(user.getuserId(), connection);
+            OrderLine[] orderLines = orderOperations.getAllOrdersLinesByOrder(pendingOrder.getOrderID(), connection);
          
-            for (OrderLine orderline: orderLines){
-            
-            Object[] ordersForTable = {orderline.getOrderLineID(), orderline.getProductID(), orderline.getQuantity(), orderline.getLineCost()};
-            model.addRow(ordersForTable);
+            for (OrderLine orderline: orderLines){         
+                Object[] ordersForTable = {orderline.getOrderLineID(), orderline.getProductID(), orderline.getQuantity(), orderline.getLineCost()};
+                model.addRow(ordersForTable);
             }
 
-             basketTable = new JTable(model);
+            basketTable = new JTable(model);
         } catch (SQLException e) {
             e.printStackTrace();
           
         }
 
-        basketTable.getDefaultEditor(Object.class).addCellEditorListener(new CellEditorListener() {
-
-            @Override
-            public void editingStopped(ChangeEvent e) {
-                int row = basketTable.getSelectedRow();
-                int column = basketTable.getSelectedColumn();
-                Object editedValue = basketTable.getValueAt(row, column);
-
-                System.out.println("Cell edited: Row=" + row + ", Column=" + column + ", New Value=" + editedValue);
-
-                data[row][column] = editedValue;
-                
-            }
-
-            @Override
-            public void editingCanceled(ChangeEvent e) {
-                int row = basketTable.getSelectedRow();
-                int column = basketTable.getSelectedColumn();
-               
-                Object originalValue = data[row][column];
-                basketTable.setValueAt(originalValue, row, column);
-            }
-
-
-        });
+    
   
       
         JScrollPane scrollPane = new JScrollPane(basketTable);
@@ -108,12 +85,12 @@ public class UserOrderView extends JFrame {
         // Create buttons that links to other pages from default page
         confirmOrder = new JButton("Confirm Order");
         orderHistory = new JButton("Order History");
-        decline = new JButton("Decline Order");
+        
 
         // Add components to the panel
         panel.add(confirmOrder);
         panel.add(orderHistory);
-        panel.add(decline);
+   
         
 
         this.getContentPane().add(panel, BorderLayout.NORTH);
@@ -123,18 +100,32 @@ public class UserOrderView extends JFrame {
         confirmOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //creates new order for customer
-                // needs the array of orderlines from table and adds them to the table
+                dispose();
+                BankDetailsView bankDetailsView = null;
+                UserMainView userMainView = null;
+                try {
+                    boolean isValidBankDetails = testOperations.isUserHaveBankDetails(user.getuserId(), connection);
+
+                    if(isValidBankDetails){
+                        Order pendingOrder = orderOperations.getPendingOrderByUserID(user.getuserId(), connection);
+                        orderOperations.updateOrderStatus(pendingOrder.getOrderID(), "confirmed", connection);                  
+                        model.setRowCount(0);
+                        userMainView = new UserMainView(connection, user);
+                        userMainView.setVisible(true);
+                    }else{
+                        bankDetailsView = new BankDetailsView(connection);
+                        bankDetailsView.setVisible(true);
+                    }
+                    
+                } catch (SQLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                
             }
         });
 
-        decline.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //creates new order for customer
-                // needs the array of orderlines from table and adds them to the table
-            }
-        });
+        
         
         orderHistory.addActionListener(new ActionListener() {
             @Override
@@ -142,13 +133,13 @@ public class UserOrderView extends JFrame {
                 dispose();
                 OrderHistoryView orderHistoryView = null;
                 try {
-                   orderHistoryView = new OrderHistoryView(connection, user);
+                    orderHistoryView = new OrderHistoryView(connection, user);
                     orderHistoryView.setVisible(true);
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
-                System.out.println("opening order");
+                System.out.println("opening order history");
             }
         });
 
