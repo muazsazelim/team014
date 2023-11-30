@@ -16,11 +16,6 @@ import com.sheffield.model.order.OrderLine;
 import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 
-
-
-
-
-
 public class UserOrderView extends JFrame {
     private JButton confirmOrder;
     private JButton orderHistory;
@@ -46,9 +41,11 @@ public class UserOrderView extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
+
         // need to replace with selection from cataloge table
         OrderOperations orderOperations = new OrderOperations();
         TestOperations testOperations = new TestOperations();
+
         String[] columnNames = {"Order Line ID", "Product ID", "Quantity", "Cost"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -56,7 +53,7 @@ public class UserOrderView extends JFrame {
                 return false; 
             }
             };
-       // OrderLine[] orderLineForOrder 
+
         try {
             Order pendingOrder = orderOperations.getPendingOrderByUserID(user.getuserId(), connection);
             OrderLine[] orderLines = orderOperations.getAllOrdersLinesByOrder(pendingOrder.getOrderID(), connection);
