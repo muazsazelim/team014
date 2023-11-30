@@ -248,7 +248,7 @@ public class TestOperations {
         }
     }
 
-    public int addressExists(String houseNumber, String postcode, Connection connection) throws SQLException {
+    public boolean addressExists(String houseNumber, String postcode, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT * FROM Address WHERE houseNumber=? AND postcode=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
@@ -256,9 +256,9 @@ public class TestOperations {
             preparedStatement.setString(2, postcode);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt("houseID");
+                return true;
             } else {
-                return -1;
+                return false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -385,26 +385,6 @@ public class TestOperations {
         }
     }
 
-    public void updateUserAddress(String userId, int houseID, Connection connection) throws SQLException {
-        try {
-            String updateSQL = "UPDATE Users SET houseID=? WHERE userId=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
-
-            preparedStatement.setInt(1, houseID);
-            preparedStatement.setString(2, userId);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println(rowsAffected + " row(s) updated successfully.");
-            } else {
-                System.out.println("No rows were updated for userId: " + userId);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;// Re-throw the exception to signal an error.
-        }
-    }
 
     public void promoteUserByEmail(String email, Connection connection) throws SQLException {
         try {
