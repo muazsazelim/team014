@@ -113,7 +113,7 @@ public class UserOrderView extends JFrame {
                         userMainView = new UserMainView(connection, user);
                         userMainView.setVisible(true);
                     }else{
-                        bankDetailsView = new BankDetailsView(connection);
+                        bankDetailsView = new BankDetailsView(connection, user);
                         bankDetailsView.setVisible(true);
                     }
                     

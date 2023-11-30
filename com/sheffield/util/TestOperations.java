@@ -448,11 +448,11 @@ public class TestOperations {
         }
     }
 
-    public void insertBankDetails(BankDetails newBankDetails, Connection connection) throws SQLException {
+    public void insertBankDetails(BankDetails newBankDetails, Connection connection, User user) throws SQLException {
         try {
             // Create an SQL INSERT statement
             String insertSQL = "INSERT INTO Bank_Details (cardNumber, bankName, holderName, cardExpDate, secCode) VALUES (?, ?, ?, ?, ?)";
-
+            String insertSQL2 = "INSERT INTO Users (cardNumber) VALUES (?) WHERE userId = ?";
             // Prepare and execute the INSERT statement
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1, newBankDetails.getcardNumber());
@@ -461,8 +461,16 @@ public class TestOperations {
             preparedStatement.setString(4, newBankDetails.getcardExpDate());
             preparedStatement.setString(5, newBankDetails.getsecCode());
 
+
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println(rowsAffected + " row(s) inserted successfully.");
+
+            //Insert into Users
+            PreparedStatement preparedStatement2 = connection.prepareStatement(insertSQL2);
+            preparedStatement2.setString(1, newBankDetails.getcardNumber());
+            preparedStatement2.setString(2, user.getuserId());
+            int rowsAffected2 = preparedStatement2.executeUpdate();
+            System.out.println(rowsAffected2 + " row(s) inserted successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
             throw e; // Re-throw the exception to signal an error.

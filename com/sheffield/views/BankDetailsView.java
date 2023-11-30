@@ -4,6 +4,7 @@ import com.sheffield.util.TestOperations; // remove this later
 import com.sheffield.model.DatabaseConnectionHandler; // remove this later
 import com.sheffield.model.DatabaseOperations; // use this instead
 import com.sheffield.model.user.BankDetails;
+import com.sheffield.model.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,7 @@ public class BankDetailsView extends JFrame {
     private JTextField bankCardNumberField = new JTextField(20);
     private JTextField expiryDateField = new JTextField(20);
     private JTextField securityCodeField = new JTextField(20);
-    public BankDetailsView(Connection connection) throws SQLException {
+    public BankDetailsView(Connection connection, User user) throws SQLException {
         // Create the JFrame in the constructor
         this.setTitle("Bank Details Update");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,7 +106,7 @@ public class BankDetailsView extends JFrame {
                         if (!inputList.get(0).isEmpty() && !inputList.get(1).isEmpty() && !inputList.get(2).isEmpty() && !inputList.get(3).isEmpty() && !inputList.get(4).isEmpty()){
                             //dialog upon valid card
                             BankDetails newBankDetails = new BankDetails(inputList.get(2), inputList.get(0), inputList.get(1), inputList.get(3), inputList.get(4));
-                            databaseOperations.insertBankDetails(newBankDetails, connection);
+                            databaseOperations.insertBankDetails(newBankDetails, connection, user);
                             System.out.println("New Bank details created");
                             System.out.println(newBankDetails); //hide this later
                             JOptionPane.showMessageDialog(null, "Bank Details submited");
