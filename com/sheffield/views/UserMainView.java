@@ -2,6 +2,7 @@ package com.sheffield.views;
 
 import javax.swing.*;
 
+import com.sheffield.model.DatabaseConnectionHandler;
 import com.sheffield.model.user.User;
 
 import java.awt.*;
@@ -10,24 +11,18 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
 public class UserMainView extends JPanel {
-    
-    public UserMainView (Connection connection, User user) throws SQLException {
 
-
+    public UserMainView(Connection connection, User user) throws SQLException {
 
         // Create a JPanel to hold the components
         JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
 
-
         JPanel navigation = new JPanel();
-        navigation.setLayout(new GridLayout(0,1));
-
+        navigation.setLayout(new GridLayout(0, 1));
 
         contentPanel.add(navigation, BorderLayout.CENTER);
-
 
         // Create buttons that links to other pages from default page
 
@@ -44,32 +39,32 @@ public class UserMainView extends JPanel {
         navigation.add(userDetails);
         navigation.add(orderHistory);
         navigation.add(products);
-        
-        if (user.getUserType().equals("staff")){
+
+        if (user.getUserType().equals("staff")) {
             staff = new JButton("Staff");
             navigation.add(staff);
 
             staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Staff Page");
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("Went to Staff Page");
 
-                StaffView staffView = null;
-                try {
-                    staffView = new StaffView(connection);
+                    StaffView staffView = null;
+                    try {
+                        staffView = new StaffView(connection);
 
-                    TrainsOfSheffield.getPanel().removeAll();
-                    TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
-                    TrainsOfSheffield.getPanel().revalidate();
-                    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+
+                    } catch (Throwable t) {
+                        throw new RuntimeException(t);
+                    }
                 }
-            }
             });
 
         }
-        if (user.getUserType().equals("manager")){
+        if (user.getUserType().equals("manager")) {
             staff = new JButton("Staff");
             manager = new JButton("Manager");
 
@@ -77,43 +72,41 @@ public class UserMainView extends JPanel {
             navigation.add(manager);
 
             staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Staff Page");
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("Went to Staff Page");
 
-                StaffView staffView = null;
-                try {
-                    staffView = new StaffView(connection);
+                    StaffView staffView = null;
+                    try {
+                        staffView = new StaffView(connection);
 
-                    
-                    TrainsOfSheffield.getPanel().removeAll();
-                    TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
-                    TrainsOfSheffield.getPanel().revalidate();
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
 
-
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
+                    } catch (Throwable t) {
+                        throw new RuntimeException(t);
+                    }
                 }
-            }
             });
 
             manager.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Manager Page");
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("Went to Manager Page");
 
-                ManagerView managerView = null;
-                try {
-                    managerView = new ManagerView(connection, user);
-                    
-                    TrainsOfSheffield.getPanel().removeAll();
-                    TrainsOfSheffield.getPanel().add(managerView, BorderLayout.CENTER);
-                    TrainsOfSheffield.getPanel().revalidate();
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
+                    ManagerView managerView = null;
+                    try {
+                        managerView = new ManagerView(connection, user);
+
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(managerView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+
+                    } catch (Throwable t) {
+                        throw new RuntimeException(t);
+                    }
                 }
-            }
             });
 
         }
@@ -123,25 +116,25 @@ public class UserMainView extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to User Details Page");
 
-                //dispose();
+                // dispose();
                 UserDetailsView userDetailsView = null;
                 try {
                     userDetailsView = new UserDetailsView(connection, user);
-                    //userDetailsView.setVisible(true);
+                    // userDetailsView.setVisible(true);
                     TrainsOfSheffield.getPanel().removeAll();
                     TrainsOfSheffield.getPanel().add(userDetailsView, BorderLayout.CENTER);
                     TrainsOfSheffield.getPanel().revalidate();
-    
+
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
             }
         });
-        
+
         orderHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //dispose();
+                // dispose();
                 OrderHistoryView orderHistoryView = null;
                 try {
                     orderHistoryView = new OrderHistoryView(connection, user);
@@ -149,8 +142,7 @@ public class UserMainView extends JPanel {
                     TrainsOfSheffield.getPanel().removeAll();
                     TrainsOfSheffield.getPanel().add(orderHistoryView, BorderLayout.CENTER);
                     TrainsOfSheffield.getPanel().revalidate();
-                    
-    
+
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -162,10 +154,24 @@ public class UserMainView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Products Page");
+                DatabaseConnectionHandler databaseConnectionHandler = new DatabaseConnectionHandler();
+                SwingUtilities.invokeLater(() -> {
+                    ProductsView pv = null;
+                    try {
+                        databaseConnectionHandler.openConnection();
+
+                        pv = new ProductsView(databaseConnectionHandler.getConnection(), 3, user);
+                        pv.setVisible(true);
+
+                    } catch (Throwable t) {
+                        databaseConnectionHandler.closeConnection();
+                        throw new RuntimeException(t);
+                    }
+                });
+
             }
         });
 
-
     }
-    
+
 }
