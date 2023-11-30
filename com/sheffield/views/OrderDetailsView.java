@@ -49,7 +49,7 @@ public class OrderDetailsView extends JPanel {
             OrderLine[] userOrders = orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection);
             Arrays.sort(userOrders, Comparator.comparing(OrderLine::getOrderLineID));
             System.out.println(userOrders.length);
-             System.out.println("this works");
+            System.out.println("this works");
             String[] columnNames = {"OrderLineID", "Product Code", "Brand", "Product Name", "Quantity", "Line Cost"};
             DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -63,7 +63,7 @@ public class OrderDetailsView extends JPanel {
                 Object[] ordersForTable = {orderLine.getOrderLineID(), orderOperations.getProductCode(orderLine.getProductID(), connection),
                                             orderOperations.getProductBrand(orderLine.getProductID(), connection),
                                             orderOperations.getProductName(orderLine.getProductID(), connection),
-                                            orderLine.getQuantity(), orderLine.getLineCost()};
+                                            orderLine.getQuantity(), orderLine.getLineCost(), };
                 model.addRow(ordersForTable);
             }
 
@@ -87,6 +87,11 @@ public class OrderDetailsView extends JPanel {
         JScrollPane scrollPane = new JScrollPane(basketTable);
 
         panel.add(scrollPane, BorderLayout.CENTER);
+
+        JScrollPane scrollPane2 = new JScrollPane(basketTable);
+        scrollPane2.setBorder(BorderFactory.createTitledBorder("Order Status: " + order.getOrderStatus()));
+        panel.add(scrollPane2, BorderLayout.CENTER);
+        this.setVisible(true);
         
 
     }

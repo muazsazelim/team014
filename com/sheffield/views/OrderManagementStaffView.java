@@ -224,11 +224,13 @@ public class OrderManagementStaffView extends JFrame {
                 if ("FULFILL".equals(basketTable.getValueAt(0, statusIndex))){                       
                         int orderId = Integer.valueOf(basketTable.getValueAt(0,0).toString()) ;
                     try {
-                        orderOperations.updateOrderStatusToFulfilled(orderId, connection);
+                        orderOperations.updateOrderStatus(orderId, "fulfilled", connection);
                         model.removeRow(0);
 
                         Order order = orderOperations.getOrder(orderId, connection);
                         OrderLine[] orderLines = orderOperations.getAllOrdersLinesByOrder(orderId, connection);
+
+                        //updates the quantity in inventory
                         for (OrderLine orderLine : orderLines) {
 
                             int productId = orderLine.getProductID();
