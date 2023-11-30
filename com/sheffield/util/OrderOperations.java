@@ -67,7 +67,7 @@ public class OrderOperations {
         }
     }
 
-    public Order getPendingOrderByUserID (String userId, Connection connection) throws SQLException{
+    public Order getPendingOrderByUserID(String userId, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT orderID FROM Orders WHERE userId=?, status=?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
@@ -159,14 +159,13 @@ public class OrderOperations {
         }
     }
 
-    public void updateQuantity(int orderId, int quantity, Connection connection) throws SQLException{
+    public void updateQuantity(int orderId, int quantity, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Inventory SET quantity=? WHERE orderId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, orderId);
-            
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -181,9 +180,7 @@ public class OrderOperations {
         }
     }
 
-   
-
-    public void updateOrderStatus (int orderId, String status, Connection connection) throws SQLException{
+    public void updateOrderStatus(int orderId, String status, Connection connection) throws SQLException {
 
         try {
             String updateSQL = "UPDATE Orders SET status=? WHERE orderId=?";
