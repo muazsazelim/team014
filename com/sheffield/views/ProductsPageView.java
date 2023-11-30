@@ -27,14 +27,58 @@ public class ProductsPageView extends JPanel {
         // Create buttons that links to other pages from default page
 
 
-        JButton locomotives;
 
 
+        JButton trackPack = new JButton("Track Packs");
+        JButton trackPiece = new JButton("Track Pieces");
+        JButton locomotives = new JButton("Locomotives");
+        JButton trainSet = new JButton("Train Sets");
+        JButton rollingStock = new JButton("Rolling Stock");
+        JButton controllers = new JButton("Controllers");
 
-        locomotives = new JButton("Locomotives");
 
-
+        navigation.add(trackPack);
+        navigation.add(trackPiece);
         navigation.add(locomotives);
+        navigation.add(trainSet);
+        navigation.add(rollingStock);
+        navigation.add(controllers);
+
+        trackPack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Page");
+                ProductsView productsView = null;
+
+                try {
+                    productsView = new ProductsView(connection, 1,user);
+
+                    productsView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }                
+
+            }
+        });
+
+        trackPiece.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Page");
+                ProductsView productsView = null;
+
+                try {
+                    productsView = new ProductsView(connection, 2,user);
+
+                    productsView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }                
+
+            }
+        });
 
         locomotives.addActionListener(new ActionListener() {
             @Override
@@ -44,6 +88,60 @@ public class ProductsPageView extends JPanel {
 
                 try {
                     productsView = new ProductsView(connection, 3,user);
+
+                    productsView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }                
+
+            }
+        });
+
+        trainSet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Page");
+                ProductsView productsView = null;
+
+                try {
+                    productsView = new ProductsView(connection, 4,user);
+
+                    productsView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }                
+
+            }
+        });
+
+        rollingStock.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Page");
+                ProductsView productsView = null;
+
+                try {
+                    productsView = new ProductsView(connection, 5,user);
+
+                    productsView.setVisible(true);
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }                
+
+            }
+        });
+
+        controllers.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Page");
+                ProductsView productsView = null;
+
+                try {
+                    productsView = new ProductsView(connection, 6,user);
 
                     productsView.setVisible(true);
 
