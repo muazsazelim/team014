@@ -141,9 +141,9 @@ public class BankDetailsView extends JFrame {
             // Open a database connection
             databaseConnectionHandler.openConnection();
 
-            // Create and initialize the LoanTableDisplay view using the database connection
-            BankDetailsView = new BankDetailsView(databaseConnectionHandler.getConnection());
-            BankDetailsView.setVisible(true);
+            // Now it's linked to the current user login. Cannot run from this 'main'
+            //BankDetailsView = new BankDetailsView(databaseConnectionHandler.getConnection(), user);
+            //BankDetailsView.setVisible(true);
 
         } catch (Throwable t) {
             // Close connection if database crashes.
