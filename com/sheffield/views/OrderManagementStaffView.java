@@ -261,7 +261,7 @@ public class OrderManagementStaffView extends JFrame {
     }
     
 
-    private boolean isBlockedOrder(Order order, Connection connection) throws SQLException{
+    public boolean isBlockedOrder(Order order, Connection connection) throws SQLException{
         System.out.println("blocked funciton");
         OrderOperations orderOperations = new OrderOperations();
         try{

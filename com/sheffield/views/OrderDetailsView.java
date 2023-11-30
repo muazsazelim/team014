@@ -79,16 +79,12 @@ public class OrderDetailsView extends JPanel {
         basketTable.setRowSelectionAllowed(false);
         basketTable.setColumnSelectionAllowed(false);
 
-
-        
-
-        
-      
         JScrollPane scrollPane = new JScrollPane(basketTable);
 
         panel.add(scrollPane, BorderLayout.CENTER);
 
         JScrollPane scrollPane2 = new JScrollPane(basketTable);
+        
         scrollPane2.setBorder(BorderFactory.createTitledBorder("Order Status: " + order.getOrderStatus()));
         panel.add(scrollPane2, BorderLayout.CENTER);
         this.setVisible(true);
