@@ -1,6 +1,9 @@
 package com.sheffield.views;
 
 import javax.swing.*;
+
+import com.sheffield.model.user.User;
+
 import java.sql.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -10,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EditInventoryView extends JFrame {
-    public EditInventoryView(Connection connection) throws SQLException {
+    public EditInventoryView(Connection connection, User user) throws SQLException {
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(320, 320);
@@ -131,7 +134,7 @@ public class EditInventoryView extends JFrame {
                 dispose();
                 InventoryView inventoryView = null;
                 try {
-                    inventoryView = new InventoryView(connection);
+                    inventoryView = new InventoryView(connection, user);
                     inventoryView.setVisible(true);
 
                 } catch (Throwable t) {

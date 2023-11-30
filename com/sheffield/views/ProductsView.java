@@ -54,7 +54,7 @@ public class ProductsView extends JFrame {
                 dispose();
                 InventoryView inventoryView = null;
                 try {
-                    inventoryView = new InventoryView(connection);
+                    inventoryView = new InventoryView(connection, user);
                     inventoryView.setVisible(true);
 
                 } catch (Throwable t) {
@@ -84,7 +84,7 @@ public class ProductsView extends JFrame {
         } else if (n == 4) {
             productsql = "SELECT * FROM Train_Set";
             productsql1 = "SELECT * FROM Product WHERE trainSetID IS NOT NULL";
-            title = "Track Sets";
+            title = "Train Sets";
         } else if (n == 5) {
             productsql = "SELECT * FROM Rolling_Stock";
             productsql1 = "SELECT * FROM Product WHERE rollingStockID IS NOT NULL";
