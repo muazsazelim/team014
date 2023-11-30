@@ -2,6 +2,7 @@ package com.sheffield.views;
 
 import javax.swing.*;
 
+import com.mysql.cj.result.DoubleValueFactory;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import com.sheffield.model.DatabaseConnectionHandler;
@@ -241,6 +242,24 @@ public class ProductsView extends JFrame {
 
                         orderOperations.addOrderLine(orderLine, connection);
                         JOptionPane.showMessageDialog(panel, "Item(s) added to order");
+
+                        String orderTotalS = "SELECT * FROM Orders WHERE orderID = " + orderID;
+                        PreparedStatement orderT = connection.prepareStatement(orderTotalS);
+                        ResultSet orderTR = orderT.executeQuery();
+
+                        Double currTotal = 0.00;
+                        while (orderTR.next()) {
+                            currTotal = orderTR.getDouble("totalCost");
+                        }
+
+                        Double totalForOrder = Double.sum(currTotal, totalPrice);
+
+                        String updateOrder = "UPDATE Orders SET totalCost = ? WHERE orderID = ?";
+                        PreparedStatement updateO = connection.prepareStatement(updateOrder);
+                        updateO.setDouble(1, totalForOrder);
+                        updateO.setInt(2, orderID);
+                        updateO.executeUpdate();
+
                     } catch (SQLException w) {
                         System.out.println("Cannot insert order line");
                     }
