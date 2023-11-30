@@ -54,7 +54,7 @@ public class ProductsView extends JFrame {
                 dispose();
                 InventoryView inventoryView = null;
                 try {
-                    inventoryView = new InventoryView(connection);
+                    inventoryView = new InventoryView(connection, user);
                     inventoryView.setVisible(true);
 
                 } catch (Throwable t) {

@@ -10,10 +10,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.user.User;
 
 public class InventoryView extends JFrame {
 
-    public InventoryView(Connection connection) throws SQLException {
+    public InventoryView(Connection connection, User user) throws SQLException {
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(320, 320);
@@ -46,7 +47,7 @@ public class InventoryView extends JFrame {
                 dispose();
                 ManagerView managerView = null;
                 try {
-                    managerView = new ManagerView(connection);
+                    managerView = new ManagerView(connection, user);
                     managerView.setVisible(true);
 
                 } catch (Throwable t) {
@@ -80,7 +81,7 @@ public class InventoryView extends JFrame {
                 dispose();
                 EditInventoryView editInventoryView = null;
                 try {
-                    editInventoryView = new EditInventoryView(connection);
+                    editInventoryView = new EditInventoryView(connection, user);
                     editInventoryView.setVisible(true);
 
                 } catch (Throwable t) {
@@ -147,20 +148,4 @@ public class InventoryView extends JFrame {
 
     }
 
-    public static void main(String[] args) {
-        DatabaseConnectionHandler databaseConnectionHandler = new DatabaseConnectionHandler();
-        SwingUtilities.invokeLater(() -> {
-            InventoryView inven = null;
-            try {
-                databaseConnectionHandler.openConnection();
-
-                inven = new InventoryView(databaseConnectionHandler.getConnection());
-                inven.setVisible(true);
-
-            } catch (Throwable t) {
-                databaseConnectionHandler.closeConnection();
-                throw new RuntimeException(t);
-            }
-        });
-    }
 }
