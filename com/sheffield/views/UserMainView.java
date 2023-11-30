@@ -154,20 +154,17 @@ public class UserMainView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Products Page");
-                DatabaseConnectionHandler databaseConnectionHandler = new DatabaseConnectionHandler();
-                SwingUtilities.invokeLater(() -> {
-                    ProductsView pv = null;
-                    try {
-                        databaseConnectionHandler.openConnection();
+                ProductsPageView productsPageView = null;
+                try {
+                    productsPageView = new ProductsPageView(connection, user);
 
-                        pv = new ProductsView(databaseConnectionHandler.getConnection(), 3, user);
-                        pv.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
 
-                    } catch (Throwable t) {
-                        databaseConnectionHandler.closeConnection();
-                        throw new RuntimeException(t);
-                    }
-                });
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }                
 
             }
         });
