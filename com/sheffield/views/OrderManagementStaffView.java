@@ -359,12 +359,12 @@ public class OrderManagementStaffView extends JPanel {
                 try {
                     userIDforSearch = orderOperations.getUserIDbyOrderID(orderIdForSearch, connection);
                     Address address = testOperations.getAddress(userIDforSearch, connection);
-                    // EVERYONE NEEDS AN ADDRESS OR THIS DONT WORK
-                  //  String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
+                    
+                    String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
                      ordersForTable = new Object[]{order.getOrderID(), order.getIssueDate(), testOperations.getForename(userIDforSearch, connection),
                                         testOperations.getSurname(userIDforSearch, connection),
                                         testOperations.getEmail(userIDforSearch, connection),
-                                        "addressDisplay", order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
+                                        addressDisplay, order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
