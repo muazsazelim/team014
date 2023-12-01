@@ -21,6 +21,7 @@ public class OrderHistoryView extends JPanel {
     private JButton orderHistory;
     private JButton products;
     private JTable basketTable;
+    private JTable blockedTable;
     private Object[][] data;
     public OrderHistoryView (Connection connection, User user) throws SQLException {
 
@@ -74,25 +75,31 @@ public class OrderHistoryView extends JPanel {
 
         //sample data -filter for one customer - needs order no. - date of order(cutomer) -filter for all -  customer detail - email - address (staff)
         OrderOperations orderOperations = new OrderOperations();
-
-        try {
-            System.out.println(user.getuserId());
-            Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
-            Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
-            String[] columnNames = {"OrderID", "Date"};
+        
+        String[] columnNames = {"OrderID", "Date"};
             DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; 
             }
             };
+
+            basketTable = new JTable(model);
+            blockedTable = new JTable(model);
+        
+
+        try {
+            System.out.println(user.getuserId());
+            Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
+            Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
+            
            
             for (Order order: userOrders){
             Object[] ordersForTable = {order.getOrderID(), order.getIssueDate()};
             model.addRow(ordersForTable);
             }
 
-            basketTable = new JTable(model);
+            
         } catch (SQLException e) {
             e.printStackTrace();
           
@@ -115,7 +122,7 @@ public class OrderHistoryView extends JPanel {
                         Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
                         Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
                         Order order = userOrders[row];
-                        orderDetailsView = new OrderDetailsView(connection, order, user);
+                        orderDetailsView = new OrderDetailsView(connection, order, user, false);
                         TrainsOfSheffield.getPanel().removeAll();
                         TrainsOfSheffield.getPanel().add(orderDetailsView, BorderLayout.CENTER);
                         TrainsOfSheffield.getPanel().revalidate();
@@ -132,8 +139,11 @@ public class OrderHistoryView extends JPanel {
         
       
         JScrollPane scrollPane = new JScrollPane(basketTable);
+        JScrollPane scrollPane1 = new JScrollPane(blockedTable);
+        
 
         panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(scrollPane1, BorderLayout.CENTER);
 
         
 

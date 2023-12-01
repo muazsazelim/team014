@@ -6,11 +6,14 @@ import com.mysql.cj.result.DoubleValueFactory;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
 import com.sheffield.model.user.User;
 import com.sheffield.util.OrderOperations;
 
 import java.sql.*;
+import java.sql.Date;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -18,9 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import java.util.Date;
 
-public class ProductsView extends JFrame {
+public class ProductsView extends JPanel {
 
     /*
      * productType
@@ -33,41 +35,89 @@ public class ProductsView extends JFrame {
      */
 
     public ProductsView(Connection connection, int n, User user) throws SQLException {
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 500);
+
+
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+        
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel header = new JPanel(new BorderLayout());
-        this.add(header, BorderLayout.PAGE_START);
-        this.add(panel, BorderLayout.CENTER);
+
+        contentPanel.add(header, BorderLayout.PAGE_START);
+        contentPanel.add(panel, BorderLayout.CENTER);
+        
 
         JButton backButton;
         backButton = new JButton("Back");
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Products Category");
-
-                dispose();
+                System.out.println("Went to Products Category");    
+                ProductsPageView productsPageView = null;
+                try {
+                    productsPageView = new ProductsPageView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+                
             }
         });
 
-        JButton inventoryButton = new JButton("Go to Inventory");
-        inventoryButton.addActionListener(new ActionListener() {
+        JButton basketButton = new JButton("My Cart");
+        basketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Inventory View");
+                System.out.println("Went to Cart Page");
+                UserOrderView userOrderView = null;
 
-                dispose();
-                InventoryView inventoryView = null;
+                // Order userOrder = new Order();
+
                 try {
-                    inventoryView = new InventoryView(connection, user);
-                    inventoryView.setVisible(true);
+                    String getQ = "SELECT * FROM Orders WHERE userId = '" + user.getuserId()
+                            + "' AND status = 'pending'";
+
+                    PreparedStatement getQS = connection.prepareStatement(getQ);
+                    ResultSet getQR = getQS.executeQuery();
+
+                    int orderID = 0;
+                    String userID = "";
+                    Date issueDate = Date.valueOf("2023-11-11");
+                    Double total = 0.00;
+                    String status = "pending";
+
+                    while (getQR.next()) {
+                        orderID = getQR.getInt("orderID");
+                        userID = getQR.getString("userId");
+                        // issueDate = getQR.getDate("issueDate");
+                        total = getQR.getDouble("totalCost");
+                    }
+
+                    if (orderID == 0) {
+                        JOptionPane.showMessageDialog(panel, "Your cart is empty");
+                    } else {
+
+                        Order newOrder = new Order(orderID, userID, issueDate, total, status);
+
+                        
+                        
+                        userOrderView = new UserOrderView(connection, newOrder,user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userOrderView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+       
+                    }
 
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
+
             }
         });
 
@@ -109,10 +159,8 @@ public class ProductsView extends JFrame {
         header.add(titleLabel, BorderLayout.PAGE_START);
         header.add(backButton, BorderLayout.WEST);
 
-        if (!user.getUserType().equals("customer")) {
+        header.add(basketButton, BorderLayout.EAST);
 
-            header.add(inventoryButton, BorderLayout.EAST);
-        }
 
         PreparedStatement productStatement = connection.prepareStatement(productsql);
         ResultSet products = productStatement.executeQuery();
@@ -301,7 +349,7 @@ public class ProductsView extends JFrame {
         }
 
         JScrollPane sp = new JScrollPane(panel);
-        this.add(sp);
+        contentPanel.add(sp);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 

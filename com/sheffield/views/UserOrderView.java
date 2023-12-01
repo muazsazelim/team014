@@ -16,7 +16,7 @@ import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
 import com.sheffield.util.OrderOperations;
 
-public class UserOrderView extends JFrame {
+public class UserOrderView extends JPanel {
     private JButton confirmOrder;
     private JButton orderHistory;
     private JButton decline;
@@ -25,21 +25,15 @@ public class UserOrderView extends JFrame {
 
     public UserOrderView(Connection connection, Order order, User user) throws SQLException {
 
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 320);
-
-        JPanel panel = new JPanel();
-        this.add(panel);
-
-        JPanel contentPanel = new JPanel();
+        
+        JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
 
         JPanel header = new JPanel();
         header.setLayout(new BorderLayout());
 
-        this.getContentPane().setLayout(new BorderLayout());
-        this.getContentPane().add(contentPanel, BorderLayout.CENTER);
+        JPanel panel = new JPanel();
+
 
         contentPanel.add(header, BorderLayout.NORTH);
         contentPanel.add(panel, BorderLayout.CENTER);
@@ -53,20 +47,20 @@ public class UserOrderView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Products Category");
 
-                dispose();
-                /*
-                 * ProductsPageView productsPageView = null;
-                 * try {
-                 * productsPageView = new ProductsPageView(connection, user);
-                 * //userDetailsView.setVisible(true);
-                 * TrainsOfSheffield.getPanel().removeAll();
-                 * TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
-                 * TrainsOfSheffield.getPanel().revalidate();
-                 * 
-                 * } catch (Throwable t) {
-                 * throw new RuntimeException(t);
-                 * }
-                 */
+                //dispose();
+                
+                ProductsPageView productsPageView = null;
+                try {
+                    productsPageView = new ProductsPageView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+                
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+                 
             }
         });
 
@@ -132,24 +126,14 @@ public class UserOrderView extends JFrame {
 
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        this.setVisible(true);
         // Create buttons that links to other pages from default page
         confirmOrder = new JButton("Confirm Order");
-        orderHistory = new JButton("Order History");
-        decline = new JButton("Decline Order");
 
         System.out.println(user.getUserType());
 
         // Add components to the panel
         panel.add(confirmOrder);
-        panel.add(orderHistory);
 
-        if (!user.getUserType().equals("customer")) {
-
-            panel.add(decline);
-        } else {
-            System.out.println("this is customer view only");
-        }
 
         // Create an ActionListener for the view buttons
         confirmOrder.addActionListener(new ActionListener() {
@@ -160,31 +144,7 @@ public class UserOrderView extends JFrame {
             }
         });
 
-        decline.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // creates new order for customer
-                // needs the array of orderlines from table and adds them to the table
-            }
-        });
 
-        orderHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                OrderHistoryView orderHistoryView = null;
-                try {
-                    orderHistoryView = new OrderHistoryView(connection, user);
-                    orderHistoryView.setVisible(true);
-
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-                System.out.println("opening order");
-            }
-        });
-
-        this.pack();
 
     }
 

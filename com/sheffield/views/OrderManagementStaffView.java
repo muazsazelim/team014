@@ -7,6 +7,7 @@ import com.sheffield.model.Address;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
 import com.sheffield.model.order.Order.OrderStatus;
+import com.sheffield.model.user.User;
 import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 
@@ -22,31 +23,60 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Collections;
+import com.sheffield.model.user.User;
 
-public class OrderManagementStaffView extends JFrame {
+
+public class OrderManagementStaffView extends JPanel {
     
     private JButton orderHistory;
     private JButton fufill;
     private JTable basketTable;
     private JTable archivedTable;
+    private JTable blockedTable;
     private JButton delete;
     private OrderOperations orderOperations = new OrderOperations();
     private TestOperations testOperations = new TestOperations();
     
 
-    public OrderManagementStaffView (Connection connection) throws SQLException {
+    public OrderManagementStaffView (Connection connection, User user) throws SQLException {
 
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320,320);
 
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
  
         JPanel panel = new JPanel();
-        
-        this.add(panel);
+        panel.setLayout(new BorderLayout());
 
-        this.getContentPane().setLayout(new BorderLayout());
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
+        contentPanel.add(header, BorderLayout.NORTH);    
+        contentPanel.add(panel, BorderLayout.CENTER);
+
+        JButton backButton = new JButton("Back");
+
+        header.add(backButton, BorderLayout.WEST);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to User Main View");
+
+                //dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
         
        // panel.setLayout(new GridLayout(0,1));
 
@@ -78,6 +108,16 @@ public class OrderManagementStaffView extends JFrame {
             };
 
             archivedTable = new JTable(modelArchive);
+
+            String[] columnNameForBlocked = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details", "Declined"};
+            DefaultTableModel modelBlocked = new DefaultTableModel(columnNameForBlocked, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+            };
+
+            blockedTable = new JTable(modelBlocked);
         
        // OrderLine[] orderLineForOrder 
         try {
@@ -93,7 +133,7 @@ public class OrderManagementStaffView extends JFrame {
 
             basketTable = new JTable(model);
                 
-                    if (isBlockedOrder(confirmedOrders[0], connection)){
+                    if (orderOperations.isBlockedOrder(confirmedOrders[0], connection)){
                         comboBox.addItem("CONFIRMED");
                         comboBox.addItem("DELETE");
                     
@@ -106,12 +146,28 @@ public class OrderManagementStaffView extends JFrame {
                 basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
                 ArrayList<Order> archivedOrders = new ArrayList<>();
                 Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate));
+
+            // Adds data to tables
             for (Order order: userOrders){
+                
                 if (order.getOrderStatus() == OrderStatus.FULFILLED)
                 {
                     archivedOrders.add(order);
+                    
                 }else if (order.getOrderStatus() == OrderStatus.CONFIRMED){
-                    model.addRow(getTableValues(order, connection));
+
+                    if(orderOperations.isBlockedOrder(order, connection)){
+                        System.out.println("is a blocked order");
+                        Object[] tableValues = getTableValues(order, connection);
+                        Object[] newTableValue = new Object[tableValues.length + 1];
+
+                        System.arraycopy(tableValues, 0, newTableValue, 0, tableValues.length);
+                        newTableValue[tableValues.length] = "replace with function to check if user has declined or not";
+                        modelBlocked.addRow(newTableValue);
+                    }else {
+                        model.addRow(getTableValues(order, connection)); }
+                    
+                    
                 }
                               
 
@@ -131,13 +187,16 @@ public class OrderManagementStaffView extends JFrame {
                     int row = basketTable.rowAtPoint(e.getPoint());
                     System.out.println(row);
                     if (column == 0) { 
-                        dispose();
+                        
                         OrderDetailsView orderDetailsView = null;
                         try {
                             
                             Order order = confirmedOrders[row];
-                            orderDetailsView = new OrderDetailsView(connection, order);
-                            orderDetailsView.setVisible(true);
+
+                            orderDetailsView = new OrderDetailsView(connection, order, user, true);
+                            TrainsOfSheffield.getPanel().removeAll();
+                            TrainsOfSheffield.getPanel().add(orderDetailsView, BorderLayout.CENTER);
+                            TrainsOfSheffield.getPanel().revalidate();
                             
                              
                         } catch (SQLException i) {
@@ -149,9 +208,7 @@ public class OrderManagementStaffView extends JFrame {
             });
 
             
-            JScrollPane scrollPane = new JScrollPane(basketTable);
-            panel.add(scrollPane, BorderLayout.CENTER);
-
+            
             
              
 
@@ -164,31 +221,38 @@ public class OrderManagementStaffView extends JFrame {
         basketTable.setCellSelectionEnabled(false);
         basketTable.setRowSelectionAllowed(false);
         basketTable.setColumnSelectionAllowed(false);
-    
+
+        basketTable.setPreferredScrollableViewportSize(new Dimension(100,100));
+        blockedTable.setPreferredScrollableViewportSize(new Dimension(100,100));
+        archivedTable.setPreferredScrollableViewportSize(new Dimension(100,100));
       
         JScrollPane scrollPane = new JScrollPane(basketTable);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Confirmed Orders"));
-        panel.add(scrollPane, BorderLayout.CENTER);
-        this.setVisible(true);
+        panel.add(scrollPane, BorderLayout.NORTH);
+
+        JScrollPane scrollPane3 = new JScrollPane(blockedTable);
+        scrollPane3.setBorder(BorderFactory.createTitledBorder("Blocked Orders"));
+        panel.add(scrollPane3, BorderLayout.CENTER);
 
         
         JScrollPane scrollPane2 = new JScrollPane(archivedTable);
         scrollPane2.setBorder(BorderFactory.createTitledBorder("Archived Orders"));
-        panel.add(scrollPane2, BorderLayout.CENTER);
-        this.setVisible(true);
+        panel.add(scrollPane2, BorderLayout.SOUTH);
+
+        
        
         
-        orderHistory = new JButton("Order History");
         fufill = new JButton("Fulfill");
         delete = new JButton("Delete");
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(delete);
+        buttonPanel.add(fufill);
         
-        panel.add(delete);
-        panel.add(orderHistory);
-        panel.add(fufill);
-
-        this.getContentPane().add(panel, BorderLayout.NORTH);
-        this.pack();
+        
+        
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 
        
@@ -211,12 +275,6 @@ public class OrderManagementStaffView extends JFrame {
             }
         });
         
-        orderHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Order History Page");
-            }
-        });
 
         fufill.addActionListener(new ActionListener() {
             @Override
@@ -261,26 +319,7 @@ public class OrderManagementStaffView extends JFrame {
     }
     
 
-    public boolean isBlockedOrder(Order order, Connection connection) throws SQLException{
-        System.out.println("blocked funciton");
-        OrderOperations orderOperations = new OrderOperations();
-        try{
-            for (OrderLine orderLine : orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection)) {
-                int stockQuantity = orderOperations.getQuantitybyProductID(orderLine.getProductID(), connection);
-                if (stockQuantity - orderLine.getQuantity()< 0){
-                    System.out.println(stockQuantity - orderLine.getQuantity());
-                    return true;
-                }
-            }
-            return false;
-            
-        }catch (SQLException e){
-            e.printStackTrace();
-            throw e;
-        }
-        
-        
-    }
+    
 
     private Object[] getTableValues(Order order, Connection connection){
         int orderIdForSearch = order.getOrderID();

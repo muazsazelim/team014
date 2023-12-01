@@ -32,8 +32,8 @@ public class ProductsPageView extends JPanel {
         JPanel header = new JPanel();
         header.setLayout(new BorderLayout());
 
-        contentPanel.add(navigation, BorderLayout.CENTER);
         contentPanel.add(header, BorderLayout.NORTH);
+        contentPanel.add(navigation, BorderLayout.CENTER);
 
         // Create buttons that links to other pages from default page
 
@@ -55,7 +55,7 @@ public class ProductsPageView extends JPanel {
         navigation.add(controllers);
 
         JButton userOrder = new JButton("My Cart");
-        navigation.add(userOrder);
+        header.add(userOrder, BorderLayout.EAST);
         header.add(backButton, BorderLayout.WEST);
 
         trackPack.addActionListener(new ActionListener() {
@@ -65,10 +65,12 @@ public class ProductsPageView extends JPanel {
                 ProductsView productsView = null;
 
                 try {
-                    productsView = new ProductsView(connection, 1, user);
-
-                    productsView.setVisible(true);
-
+                    productsView = new ProductsView(connection, 1,user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -83,10 +85,12 @@ public class ProductsPageView extends JPanel {
                 ProductsView productsView = null;
 
                 try {
-                    productsView = new ProductsView(connection, 2, user);
-
-                    productsView.setVisible(true);
-
+                    productsView = new ProductsView(connection, 2,user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -101,10 +105,12 @@ public class ProductsPageView extends JPanel {
                 ProductsView productsView = null;
 
                 try {
-                    productsView = new ProductsView(connection, 3, user);
-
-                    productsView.setVisible(true);
-
+                    productsView = new ProductsView(connection, 3,user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -119,10 +125,12 @@ public class ProductsPageView extends JPanel {
                 ProductsView productsView = null;
 
                 try {
-                    productsView = new ProductsView(connection, 4, user);
-
-                    productsView.setVisible(true);
-
+                    productsView = new ProductsView(connection, 4,user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -137,10 +145,12 @@ public class ProductsPageView extends JPanel {
                 ProductsView productsView = null;
 
                 try {
-                    productsView = new ProductsView(connection, 5, user);
-
-                    productsView.setVisible(true);
-
+                    productsView = new ProductsView(connection, 5,user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -155,10 +165,12 @@ public class ProductsPageView extends JPanel {
                 ProductsView productsView = null;
 
                 try {
-                    productsView = new ProductsView(connection, 6, user);
-
-                    productsView.setVisible(true);
-
+                    productsView = new ProductsView(connection, 6,user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -170,7 +182,7 @@ public class ProductsPageView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Cart Page");
-                UserOrderView userO = null;
+                UserOrderView userOrderView = null;
 
                 // Order userOrder = new Order();
 
@@ -200,9 +212,14 @@ public class ProductsPageView extends JPanel {
 
                         Order newOrder = new Order(orderID, userID, issueDate, total, status);
 
-                        userO = new UserOrderView(connection, newOrder, user);
-
-                        userO.setVisible(true);
+                        
+                        
+                        userOrderView = new UserOrderView(connection, newOrder,user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userOrderView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+       
                     }
 
                 } catch (Throwable t) {
