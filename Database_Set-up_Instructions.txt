@@ -1,0 +1,266 @@
+database set-up instructions
+
+CREATE TABLE Users (
+      userId VARCHAR(50) NOT NULL PRIMARY KEY,  -- Generated UUID
+      email VARCHAR(100) NOT NULL,               -- User's email address
+      password_hash VARCHAR(64) NOT NULL,        -- Securely hashed password
+      last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Timestamp of the last login (default to the current timestamp)
+      failed_login_attempts INT DEFAULT 0,       -- Number of failed login attempts (default to 0)
+      account_locked BOOLEAN DEFAULT FALSE      -- Flag to indicate if the account is locked (default to false)
+      forename VARCHAR (50)                       -- User's forename
+      surname VARCHAR (50)                       -- User's surname
+      userType ENUM('customer', 'staff', 'manager') NOT NULL, -- User's Role
+      cardNumber VARCHAR(16)                   -- Card Number if the user want to purchase items
+);
+
+userId	email	password_hash	last_login	failed_login_attempts	account_locked	forename	surname	usertype	cardNumber
+01eca8c1-e203-46cf-b945-05e28fd79a5d	customer4@email.com	58dacfcb79df37c13f5669a1227b8dc4ebe434eb19880214314ba17cffa1ccb3	2023-12-01 08:54:46	0	0	Customer	Four	customer	NULL
+28396137-314a-4bd9-87a3-659c2ae11f53	customer@email.com	efb60e3d8f0cf5c949d4d5be269132b95260ed67f2a4037598a2986c670145c9	2023-12-01 09:06:41	0	0	customer	one	customer	NULL
+9541b373-325e-417d-8bed-6ea1cd359420	testStaff@email.com	3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a	2023-12-01 08:56:58	0	0	Test	Staff	staff	NULL
+f0f9e314-5b47-4f3a-8dcf-55419a8da640	testManager@email.com	3d1ae7ee74752fc7b3808ea93e69bf35e73d7ad8bd759bd53e2204076a87ed7a	2023-12-01 08:58:12	0	0	test	Manager	manager	NULL
+
+
+CREATE TABLE Address (
+houseNumber VARCHAR(10),
+userId VARCHAR(50),
+roadName VARCHAR(50),
+cityName VARCHAR(50),
+postcode VARCHAR(10), -- 
+PRIMARY KEY (houseNumber, postcode),
+FOREIGN KEY (userID) REFERENCES User(userID)
+);
+
+houseNumber	userId	roadName	cityName	postcode
+1	28396137-314a-4bd9-87a3-659c2ae11f53	Test Road	Test City	t14pc
+4	01eca8c1-e203-46cf-b945-05e28fd79a5d	Road 4	Sheffield4	S4T14
+4	9541b373-325e-417d-8bed-6ea1cd359420	test road	test city	T10 1TE
+6	f0f9e314-5b47-4f3a-8dcf-55419a8da640	testingRoad	Testingcity	T12 4TB
+
+
+CREATE TABLE Bank_Details (
+cardNumber VARCHAR(16),
+bankName VARCHAR(50),
+holderName VARCHAR(50),
+cardExpDate VARCHAR(25)
+secCode VARCHAR(3),
+PRIMARY KEY (cardNumber)
+);
+
+CREATE TABLE Order_Line (
+orderLineID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+orderID INT,
+productID INT,
+quantity INT,
+lineCost DECIMAL(10,2),
+PRIMARY KEY (orderLineID, orderID),
+FOREIGN KEY (orderID) REFERENCES Order(orderID)
+);
+
+CREATE TABLE Order (
+orderID INT(10) AUTO_INCREMENT NOT NULL,
+userID INT,
+issueDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+totalCost DECIMAL(10,2),
+status ENUM('pending', 'confirmed', 'fulfilled'),
+declined TINYINT(1), -- 1 = True,
+PRIMARY KEY (orderID, userID),
+FOREIGN KEY (userID) REFERENCES User(userID)
+);
+
+CREATE TABLE Inventory (
+InventoryID INT AUTO_INCREMENT NOT NULL,
+ProductID INT, 
+Quantity INT,
+FOREIGN KEY (ProductID) REFERENCES Products(productID)
+);
+
+InventoryID	ProductID	Quantity
+1	1	5
+2	2	5
+3	3	15
+4	4	20
+5	5	10
+6	6	15
+7	7	20
+8	8	8
+9	9	12
+10	10	12
+11	11	20
+12	12	5
+13	13	25
+14	14	10
+15	15	2
+16	16	4
+17	17	28
+18	18	45
+19	19	10
+20	20	12
+21	21	13
+22	22	8
+
+
+
+CREATE TABLE Product (
+productID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+productName VARCHAR(50),
+brandName VARCHAR(50),
+retailPrice DECIMAL(10,2),
+gaugeType VARCHAR(50),
+trackPackID INT,
+locomotiveID INT,
+trainSetID INT,
+rollingStockID INT,
+controllerID INT,
+productType VARCHAR(50),
+productCode VARCHAR(6) NOT NULL,
+CONSTRAINT chk_productCode CHECK (productCode REGEXP '^[A-D][0-9]{3,5}$')
+);
+
+productID	productName	brandName	retailPrice	gaugeType	trackPackID	trackPieceID	locomotiveID	trainSetID	rollingStockID	controllerID	productType	productCo
+1	Starter Train Set	Peco	8.99	OO Gauge	NULL	NULL	NULL	1	NULL	NULL	Train Set	M000
+2	Regular Train Set	Bachmann	12.99	TT Gauge	NULL	NULL	NULL	1	NULL	NULL	Train Set	M123
+3	Regular Track Pack	Dapol	4.99	N Gauge	1	NULL	NULL	NULL	NULL	NULL	Track Pack	P123
+4	Regular Wagon	Peco	2.99	OO Gauge	NULL	NULL	NULL	NULL	1	NULL	Rolling Stock	S100
+5	Regular Carriage	Graham Farish	3.99	TT Gauge	NULL	NULL	NULL	NULL	2	NULL	Rolling Stock	S200
+6	Standard Controller	Bachmann	7.99	OO Gauge	NULL	NULL	NULL	NULL	NULL	1	Controller	C2244
+7	DCC Controller	Hornby	7.99	N Gauge	NULL	NULL	NULL	NULL	NULL	2	Controller	C2222
+8	Regular Ultimate Train	Hornby	5.99	TT Gauge	NULL	NULL	1	NULL	NULL	NULL	Locomotive	L44444
+9	Regular Train	Hornby	8.99	OO Gauge	NULL	NULL	2	NULL	NULL	NULL	Locomotive	L22222
+10	Bullet Train	Bachmann	3.99	TT Gauge	NULL	NULL	3	NULL	NULL	NULL	Locomotive	L33333
+11	Super Express Train	Graham Farish	9.99	OO Gauge	NULL	NULL	4	NULL	NULL	NULL	Locomotive	L11111
+12	Single Straight Track	Hornby	0.99	TT Gauge	NULL	1	NULL	NULL	NULL	NULL	Track Piece	R1111
+13	Single Curve Track	Graham Farish	0.99	OO Gauge	NULL	2	NULL	NULL	NULL	NULL	Track Piece	R1122
+14	Left-Hand Point Track	Peco	1.49	TT Gauge	NULL	4	NULL	NULL	NULL	NULL	Track Piece	R1130
+15	Double Straight Track	Hornby	1.99	N Gauge	NULL	3	NULL	NULL	NULL	NULL	Track Piece	R1124
+16	Right-hand Point Track	Dapol	1.79	TT Gauge	NULL	5	NULL	NULL	NULL	NULL	Track Piece	R1150
+17	Double Curve Track	Peco	2.19	TT Gauge	NULL	6	NULL	NULL	NULL	NULL	Track Piece	R1178
+18	DCC Elite Controller	Hornby	14.99	N Gauge	NULL	NULL	NULL	NULL	NULL	1	Controller	C2333
+19	Super Save Track Pack	Peco	17.99	OO Gauge	2	NULL	NULL	NULL	NULL	NULL	Track Pack	P155
+20	The Cool Track Pack	Hornby	19.99	TT Gauge	3	NULL	NULL	NULL	NULL	NULL	Track Pack	P170
+21	Ultimate Wagon	Peco	13.99	OO Gauge	NULL	NULL	NULL	NULL	3	NULL	Rolling Stock	S300
+22	Sony Controller	Hornby	2.99	OO Gauge	NULL	NULL	NULL	NULL	NULL	3	Controller	C234
+
+
+
+CREATE TABLE Locomotive (
+locomotiveID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+ERACode VARCHAR(10) 
+DCCCode ENUM('analogue', 'DCC-Ready', 'DCC-Fitted', 'DCC-Sound'),
+);
+
+locomotiveID	ERACode	DCCCode
+1	Era 1-3	analogue
+2	Era 3-8	DCC-Ready
+3	Era 2-7	DCC-Fitted
+4	Era 6-10	DCC-Sound
+
+CREATE TABLE Rolling_Stock (
+rollingstockID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+ERACode VARCHAR(10) -- NEED CONSTRAINT
+rsType VARCHAR(50) -- wagon, carriage, etc
+);
+
+rollingstockID	ERACode	rsType
+1	Era 7-9	wagon
+2	Era 3-6	carriage
+3	Era 8-11	wagon
+
+
+CREATE TABLE Controller (
+controllerID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+digital TINYINT(1) NOT NULL DEFAULT 0, -- 0 = analogue, 1 = digital
+);
+
+controllerID	digital
+1	1
+2	0
+3	1
+
+CREATE TABLE Track_Pack (
+trackPackID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+);
+
+trackPackID
+1
+2
+3
+6
+7
+8
+
+
+CREATE TABLE Track_Link (
+trackLinkID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+trackPackID INT,
+trainPieceID INT,
+quantity INT,
+);
+
+trackLinkID	trackPackID	trackPieceID	quantity
+1	1	1	4
+2	1	2	2
+
+CREATE TABLE Track_Piece (
+trackPieceID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+trackType VARCHAR(50),
+trackRadii VARCHAR(50),
+);
+
+trackPieceID	trackType	trackRadii
+1	Single Straight	NULL
+2	Single Curve	1st radius
+3	Double Straight	NULL
+4	Left-Hand Point	NULL
+5	Right-Hand Point	NULL
+6	Double Curve	2nd radius
+
+
+CREATE TABLE Track_Pack_Link (
+trackPackLinkID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+trackPackID INT,
+trainSetID INT, 
+quantity INT,
+);
+
+trackPackLinkID	trackPackID	trainSetID	quantity
+1	1	1	1
+
+
+CREATE TABLE Train_Set (
+trainSetID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+ERACode VARCHAR(10), -- NEED CONSTRAINT
+controllerID INT,
+FOREIGN KEY (controllerID) REFERENCES Controller(controllerID),
+);
+
+trainSetID	ERACode	controllerID
+1	Era 1	2
+2	Era 2	1
+
+
+CREATE TABLE Rolling_Stock_Link (
+rollingStockLinkID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+rollingStockID INT,
+trainSetID INT, 
+quantity INT,
+FOREIGN KEY (rollingStockID) REFERENCES Rolling_Stock(rollingStockID),
+FOREIGN KEY (trainSetID) REFERENCES Train_Set(trainSetID)
+);
+
+rollingStockLinkID	rollingStockID	trainSetID	quantity
+1	1	1	2
+2	2	1	1
+
+
+CREATE TABLE Locomotive_Link (
+locomotiveLinkID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+locomotiveID INT,
+trainSetID INT, 
+quantity INT,
+FOREIGN KEY (locomotiveID) REFERENCES Locomotive(locomotiveID),
+FOREIGN KEY (trainSetID) REFERENCES Train_Set(trainSetID)
+);
+
+locomotiveLinkID	locomotiveID	trainSetID	quantity
+1	1	1	1
+
