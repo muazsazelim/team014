@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Collections;
+import com.sheffield.model.user.User;
 
-public class OrderManagementStaffView extends JFrame {
+
+public class OrderManagementStaffView extends JPanel {
     
     private JButton orderHistory;
     private JButton fufill;
@@ -38,17 +40,43 @@ public class OrderManagementStaffView extends JFrame {
 
     public OrderManagementStaffView (Connection connection, User user) throws SQLException {
 
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320,320);
 
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
  
         JPanel panel = new JPanel();
-        
-        this.add(panel);
-
-        this.getContentPane().setLayout(new BorderLayout());
         panel.setLayout(new BorderLayout());
+
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
+        contentPanel.add(header, BorderLayout.NORTH);    
+        contentPanel.add(panel, BorderLayout.CENTER);
+
+        JButton backButton = new JButton("Back");
+
+        header.add(backButton, BorderLayout.WEST);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to User Main View");
+
+                //dispose();
+                StaffView staffView = null;
+                try {
+                    staffView = new StaffView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
         
        // panel.setLayout(new GridLayout(0,1));
 
@@ -159,13 +187,17 @@ public class OrderManagementStaffView extends JFrame {
                     int row = basketTable.rowAtPoint(e.getPoint());
                     System.out.println(row);
                     if (column == 0) { 
-                        dispose();
+                        
                         OrderDetailsView orderDetailsView = null;
                         try {
                             
                             Order order = confirmedOrders[row];
-                            orderDetailsView = new OrderDetailsView(connection, order, user);
-                            orderDetailsView.setVisible(true);                           
+
+                            orderDetailsView = new OrderDetailsView(connection, order, user, true);
+                            TrainsOfSheffield.getPanel().removeAll();
+                            TrainsOfSheffield.getPanel().add(orderDetailsView, BorderLayout.CENTER);
+                            TrainsOfSheffield.getPanel().revalidate();
+                            
                              
                         } catch (SQLException i) {
                             i.printStackTrace();
@@ -193,36 +225,30 @@ public class OrderManagementStaffView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(basketTable);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Confirmed Orders"));
         panel.add(scrollPane, BorderLayout.NORTH);
-        this.setVisible(true);
 
         JScrollPane scrollPane3 = new JScrollPane(blockedTable);
         scrollPane3.setBorder(BorderFactory.createTitledBorder("Blocked Orders"));
         panel.add(scrollPane3, BorderLayout.CENTER);
-        this.setVisible(true);
 
         
         JScrollPane scrollPane2 = new JScrollPane(archivedTable);
         scrollPane2.setBorder(BorderFactory.createTitledBorder("Archived Orders"));
         panel.add(scrollPane2, BorderLayout.SOUTH);
-        this.setVisible(true);
 
         
        
         
-        orderHistory = new JButton("Order History");
         fufill = new JButton("Fulfill");
         delete = new JButton("Delete");
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
         buttonPanel.add(delete);
-        buttonPanel.add(orderHistory);
         buttonPanel.add(fufill);
         
         
-        this.getContentPane().add(panel, BorderLayout.NORTH);  
-        this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        this.pack();
+        
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 
        
@@ -244,7 +270,14 @@ public class OrderManagementStaffView extends JFrame {
                 }
             }
         });
-       
+        
+        orderHistory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Order History Page");
+            }
+        });
+
         fufill.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

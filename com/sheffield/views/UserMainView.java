@@ -19,9 +19,21 @@ public class UserMainView extends JPanel {
         JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
 
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
+        JButton logOutButton;
+        logOutButton = new JButton("Log Out");
+        header.add(logOutButton, BorderLayout.WEST);
+
+
+
+
+
         JPanel navigation = new JPanel();
         navigation.setLayout(new GridLayout(0, 1));
 
+        contentPanel.add(header, BorderLayout.NORTH);
         contentPanel.add(navigation, BorderLayout.CENTER);
 
         // Create buttons that links to other pages from default page
@@ -31,17 +43,15 @@ public class UserMainView extends JPanel {
         JButton products;
         JButton staff;
         JButton manager;
-        JButton logOutButton;
+     
 
         userDetails = new JButton("Change Details");
         orderHistory = new JButton("Order History");
         products = new JButton("View Products");
-        logOutButton = new JButton("Log Out");
 
         navigation.add(userDetails);
         navigation.add(orderHistory);
         navigation.add(products);
-        navigation.add(logOutButton);
 
         if (user.getUserType().equals("staff")) {
             staff = new JButton("Staff");

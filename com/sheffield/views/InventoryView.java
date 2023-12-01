@@ -12,73 +12,62 @@ import java.awt.event.ActionEvent;
 import com.sheffield.model.DatabaseConnectionHandler;
 import com.sheffield.model.user.User;
 
-public class InventoryView extends JFrame {
+public class InventoryView extends JPanel {
 
     public InventoryView(Connection connection, User user) throws SQLException {
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 320);
+
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel header = new JPanel(new BorderLayout());
-        this.add(header, BorderLayout.PAGE_START);
-        this.add(panel, BorderLayout.CENTER);
+        contentPanel.add(header, BorderLayout.NORTH);
+        contentPanel.add(panel, BorderLayout.CENTER);
 
         JLabel titleLabel = new JLabel("Inventory");
         titleLabel.setFont(new Font("Default", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         header.add(titleLabel, BorderLayout.PAGE_START);
 
-        JButton managerPage;
-        managerPage = new JButton("Manager Page");
-        JButton staffPage;
-        staffPage = new JButton("Staff Page");
+        JButton backButton;
+        backButton = new JButton("Back");
+
         JButton editPage;
         editPage = new JButton("Add quantity");
 
-        header.add(managerPage, BorderLayout.LINE_START);
-        header.add(staffPage, BorderLayout.LINE_END);
+        header.add(backButton, BorderLayout.WEST);
 
-        managerPage.addActionListener(new ActionListener() {
+
+        backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Manager View");
+                System.out.println("Went to User Main View");
 
-                dispose();
-                ManagerView managerView = null;
-                try {
-                    managerView = new ManagerView(connection, user);
-                    managerView.setVisible(true);
-
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
-        staffPage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Staff View");
-
-                dispose();
+                
                 StaffView staffView = null;
                 try {
                     staffView = new StaffView(connection, user);
-                    staffView.setVisible(true);
-
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
+                
             }
         });
+
+        
 
         editPage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Edit Inventory View");
 
-                dispose();
+                //dispose();
                 EditInventoryView editInventoryView = null;
                 try {
                     editInventoryView = new EditInventoryView(connection, user);
@@ -139,7 +128,6 @@ public class InventoryView extends JFrame {
             panel.add(editPage);
             panel.setSize(320, 280);
 
-            this.setVisible(true);
 
         } catch (SQLException e) {
             e.printStackTrace();

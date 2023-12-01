@@ -23,7 +23,7 @@ public class OrderDetailsView extends JPanel {
     private JButton products;
     private JTable basketTable;
     
-    public OrderDetailsView (Connection connection, Order order, User user) throws SQLException {
+    public OrderDetailsView (Connection connection, Order order, User user, boolean staff) throws SQLException {
 
 
         JPanel contentPanel = this;
@@ -103,12 +103,21 @@ public class OrderDetailsView extends JPanel {
 
                 //dispose();
                 OrderHistoryView orderHistoryView = null;
+                OrderManagementStaffView orderManagementStaffView = null;
                 try {
-                    orderHistoryView = new OrderHistoryView(connection, user);
-                    //userDetailsView.setVisible(true);
-                    TrainsOfSheffield.getPanel().removeAll();
-                    TrainsOfSheffield.getPanel().add(orderHistoryView, BorderLayout.CENTER);
-                    TrainsOfSheffield.getPanel().revalidate();
+                    if (staff) {
+                        orderManagementStaffView = new OrderManagementStaffView(connection, user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(orderManagementStaffView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+                    } else {
+                        orderHistoryView = new OrderHistoryView(connection, user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(orderHistoryView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+                    }
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);

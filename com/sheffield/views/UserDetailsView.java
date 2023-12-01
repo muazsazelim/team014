@@ -98,6 +98,9 @@ public class UserDetailsView extends JPanel {
         JButton backButton = new JButton("Back");
         header.add(backButton, BorderLayout.WEST);
 
+        JButton viewBankDetailsButton = new JButton("Bank Details");
+        header.add(viewBankDetailsButton, BorderLayout.EAST);
+
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -180,6 +183,40 @@ public class UserDetailsView extends JPanel {
                     TrainsOfSheffield.getPanel().removeAll();
                     TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
                     TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
+        viewBankDetailsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("view Bank details");
+
+                //dispose();
+                EditBankDetailsView userMainView = null;
+                try {
+                    if (testOperations.isUserHaveBankDetails(user.getuserId(), connection)){
+                        userMainView = new EditBankDetailsView(connection, user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+                    }else{
+                        JOptionPane.showMessageDialog(null, "You have no bank details saved in the system");
+                        System.out.println("Went to User Details Page");
+
+                        // dispose();
+                        UserDetailsView userDetailsView = null;
+                        userDetailsView = new UserDetailsView(connection, user);
+                        // userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userDetailsView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+                    }
+                    
     
                 } catch (Throwable t) {
                     throw new RuntimeException(t);

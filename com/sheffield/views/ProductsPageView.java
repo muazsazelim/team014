@@ -32,8 +32,8 @@ public class ProductsPageView extends JPanel {
         JPanel header = new JPanel();
         header.setLayout(new BorderLayout());
 
-        contentPanel.add(navigation, BorderLayout.CENTER);
         contentPanel.add(header, BorderLayout.NORTH);
+        contentPanel.add(navigation, BorderLayout.CENTER);
 
         // Create buttons that links to other pages from default page
 
@@ -55,7 +55,7 @@ public class ProductsPageView extends JPanel {
         navigation.add(controllers);
 
         JButton userOrder = new JButton("My Cart");
-        navigation.add(userOrder);
+        header.add(userOrder, BorderLayout.EAST);
         header.add(backButton, BorderLayout.WEST);
 
         trackPack.addActionListener(new ActionListener() {

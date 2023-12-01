@@ -177,7 +177,7 @@ public class OrderHistoryView extends JPanel {
                         Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
                         Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
                         Order order = userOrders[row];
-                        orderDetailsView = new OrderDetailsView(connection, order, user);
+                        orderDetailsView = new OrderDetailsView(connection, order, user, false);
                         TrainsOfSheffield.getPanel().removeAll();
                         TrainsOfSheffield.getPanel().add(orderDetailsView, BorderLayout.CENTER);
                         TrainsOfSheffield.getPanel().revalidate();
