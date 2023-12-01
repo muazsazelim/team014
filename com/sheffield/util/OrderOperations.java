@@ -551,4 +551,22 @@ public class OrderOperations {
 
     }
 
+    public void deleteOrderLine(int orderLineId, Connection connection) throws SQLException{
+        try {
+            String deleteSQL = "DELETE FROM Order_Line WHERE orderLineID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL);
+            preparedStatement.setInt(1, orderLineId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) deleted successfully.");
+            } else {
+                System.out.println("No rows were deleted for userId: " + orderLineId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
 }
