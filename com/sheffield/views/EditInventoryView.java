@@ -15,17 +15,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EditInventoryView extends JFrame {
+public class EditInventoryView extends JPanel {
     public EditInventoryView(Connection connection, User user) throws SQLException {
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.getContentPane().setLayout(new BorderLayout());
-        this.setSize(720, 600);
+        
 
-        JPanel contentPanel = new JPanel();
+        JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
-
-        this.add(contentPanel, BorderLayout.CENTER);
 
         JPanel panel = new JPanel(new GridLayout(0,2));
 
@@ -161,11 +156,12 @@ public class EditInventoryView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Inventory View");
 
-                dispose();
                 InventoryView inventoryView = null;
                 try {
                     inventoryView = new InventoryView(connection, user);
-                    inventoryView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(inventoryView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
 
                 } catch (Throwable t) {
                     throw new RuntimeException(t);

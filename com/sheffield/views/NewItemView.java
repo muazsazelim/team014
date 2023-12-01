@@ -12,20 +12,17 @@ import java.awt.event.ActionEvent;
 import com.sheffield.model.DatabaseConnectionHandler;
 import com.sheffield.model.user.User;
 
-public class NewItemView extends JFrame {
+public class NewItemView extends JPanel {
 
-    public NewItemView(Connection connection) throws SQLException { // add user
+    public NewItemView(Connection connection, User user) throws SQLException { // add user
 
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 320);
-
-        this.setLayout(new BorderLayout());
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel header = new JPanel(new BorderLayout());
-        this.add(header, BorderLayout.NORTH);
-        this.add(panel, BorderLayout.CENTER);
+        contentPanel.add(header, BorderLayout.NORTH);
+        contentPanel.add(panel, BorderLayout.CENTER);
 
         JLabel titleLabel = new JLabel("Add New Item");
         titleLabel.setFont(new Font("Default", Font.BOLD, 18));
@@ -249,6 +246,31 @@ public class NewItemView extends JFrame {
             }
         });
 
+        JButton back = new JButton("Back to Inventory");
+        panel.add(back);
+
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Inventory View");
+
+                
+                InventoryView inventoryView = null;
+                try {
+                    inventoryView = new InventoryView(connection, user);
+                    
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(inventoryView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+                    
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+                
+            }
+        });
+
     }
 
     public static void main(String[] args) {
@@ -258,7 +280,7 @@ public class NewItemView extends JFrame {
             try {
                 databaseConnectionHandler.openConnection();
 
-                nv = new NewItemView(databaseConnectionHandler.getConnection());
+                //nv = new NewItemView(databaseConnectionHandler.getConnection());
                 nv.setVisible(true);
 
             } catch (Throwable t) {
