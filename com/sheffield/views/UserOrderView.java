@@ -32,7 +32,44 @@ public class UserOrderView extends JFrame {
         JPanel panel = new JPanel();
         this.add(panel);
 
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
+
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
         this.getContentPane().setLayout(new BorderLayout());
+        this.getContentPane().add(contentPanel, BorderLayout.CENTER);
+
+        contentPanel.add(header, BorderLayout.NORTH);
+        contentPanel.add(panel, BorderLayout.CENTER);
+
+        JButton backButton = new JButton("Back");
+
+        header.add(backButton, BorderLayout.WEST);
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Category");
+
+                dispose();
+                /*
+                 * ProductsPageView productsPageView = null;
+                 * try {
+                 * productsPageView = new ProductsPageView(connection, user);
+                 * //userDetailsView.setVisible(true);
+                 * TrainsOfSheffield.getPanel().removeAll();
+                 * TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
+                 * TrainsOfSheffield.getPanel().revalidate();
+                 * 
+                 * } catch (Throwable t) {
+                 * throw new RuntimeException(t);
+                 * }
+                 */
+            }
+        });
+
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         // panel.setLayout(new GridLayout(0,1));
 
@@ -102,18 +139,17 @@ public class UserOrderView extends JFrame {
         decline = new JButton("Decline Order");
 
         System.out.println(user.getUserType());
+
+        // Add components to the panel
+        panel.add(confirmOrder);
+        panel.add(orderHistory);
+
         if (!user.getUserType().equals("customer")) {
 
-            // Add components to the panel
-            panel.add(confirmOrder);
-            panel.add(orderHistory);
             panel.add(decline);
         } else {
             System.out.println("this is customer view only");
         }
-
-        this.getContentPane().add(panel, BorderLayout.NORTH);
-        this.pack();
 
         // Create an ActionListener for the view buttons
         confirmOrder.addActionListener(new ActionListener() {
@@ -147,6 +183,8 @@ public class UserOrderView extends JFrame {
                 System.out.println("opening order");
             }
         });
+
+        this.pack();
 
     }
 

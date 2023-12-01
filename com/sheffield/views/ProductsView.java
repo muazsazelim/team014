@@ -50,19 +50,6 @@ public class ProductsView extends JFrame {
                 System.out.println("Went to Products Category");
 
                 dispose();
-                /*
-                ProductsPageView productsPageView = null;
-                try {
-                    productsPageView = new ProductsPageView(connection, user);
-                    //userDetailsView.setVisible(true);
-                    TrainsOfSheffield.getPanel().removeAll();
-                    TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
-                    TrainsOfSheffield.getPanel().revalidate();
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-                */
             }
         });
 
@@ -121,7 +108,11 @@ public class ProductsView extends JFrame {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         header.add(titleLabel, BorderLayout.PAGE_START);
         header.add(backButton, BorderLayout.WEST);
-        header.add(inventoryButton, BorderLayout.EAST);
+
+        if (!user.getUserType().equals("customer")) {
+
+            header.add(inventoryButton, BorderLayout.EAST);
+        }
 
         PreparedStatement productStatement = connection.prepareStatement(productsql);
         ResultSet products = productStatement.executeQuery();
@@ -257,29 +248,46 @@ public class ProductsView extends JFrame {
                             maxOrderLine = orderLineResultSet.getInt(1);
                         }
 
-                        OrderLine orderLine = new OrderLine(maxOrderLine + 1, orderID, Integer.parseInt(orderProductID),
-                                orderQuantity, totalPrice);
-                        OrderOperations orderOperations = new OrderOperations();
+                        String inven = "SELECT Quantity FROM Inventory WHERE ProductID = " + orderProductID;
+                        PreparedStatement invenS = connection.prepareStatement(inven);
+                        ResultSet invenR = invenS.executeQuery();
 
-                        orderOperations.addOrderLine(orderLine, connection);
-                        JOptionPane.showMessageDialog(panel, "Item(s) added to order");
+                        int itemInven = 0;
 
-                        String orderTotalS = "SELECT * FROM Orders WHERE orderID = " + orderID;
-                        PreparedStatement orderT = connection.prepareStatement(orderTotalS);
-                        ResultSet orderTR = orderT.executeQuery();
-
-                        Double currTotal = 0.00;
-                        while (orderTR.next()) {
-                            currTotal = orderTR.getDouble("totalCost");
+                        while (invenR.next()) {
+                            itemInven = invenR.getInt(1);
                         }
 
-                        Double totalForOrder = Double.sum(currTotal, totalPrice);
+                        if (orderQuantity > itemInven) {
 
-                        String updateOrder = "UPDATE Orders SET totalCost = ? WHERE orderID = ?";
-                        PreparedStatement updateO = connection.prepareStatement(updateOrder);
-                        updateO.setDouble(1, totalForOrder);
-                        updateO.setInt(2, orderID);
-                        updateO.executeUpdate();
+                            JOptionPane.showMessageDialog(panel,
+                                    "Cannot add product. We only have " + itemInven + " stock(s) for this product");
+                        } else {
+                            OrderLine orderLine = new OrderLine(maxOrderLine + 1, orderID,
+                                    Integer.parseInt(orderProductID),
+                                    orderQuantity, totalPrice);
+                            OrderOperations orderOperations = new OrderOperations();
+
+                            orderOperations.addOrderLine(orderLine, connection);
+                            JOptionPane.showMessageDialog(panel, "Item(s) added to order");
+
+                            String orderTotalS = "SELECT * FROM Orders WHERE orderID = " + orderID;
+                            PreparedStatement orderT = connection.prepareStatement(orderTotalS);
+                            ResultSet orderTR = orderT.executeQuery();
+
+                            Double currTotal = 0.00;
+                            while (orderTR.next()) {
+                                currTotal = orderTR.getDouble("totalCost");
+                            }
+
+                            Double totalForOrder = Double.sum(currTotal, totalPrice);
+
+                            String updateOrder = "UPDATE Orders SET totalCost = ? WHERE orderID = ?";
+                            PreparedStatement updateO = connection.prepareStatement(updateOrder);
+                            updateO.setDouble(1, totalForOrder);
+                            updateO.setInt(2, orderID);
+                            updateO.executeUpdate();
+                        }
 
                     } catch (SQLException w) {
                         System.out.println("Cannot insert order line");
