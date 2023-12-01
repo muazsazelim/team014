@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import com.sheffield.model.order.Order;
+
 import java.util.ArrayList;
 
 public class BankDetailsView extends JPanel {
@@ -20,7 +23,7 @@ public class BankDetailsView extends JPanel {
     private JTextField bankCardNumberField = new JTextField(20);
     private JTextField expiryDateField = new JTextField(20);
     private JTextField securityCodeField = new JTextField(20);
-    public BankDetailsView(Connection connection, User user) throws SQLException {
+    public BankDetailsView(Connection connection, Order order,User user, boolean checkout) throws SQLException {
         // Create the JFrame in the constructor
 
         JPanel contentPanel = this;
@@ -124,6 +127,32 @@ public class BankDetailsView extends JPanel {
                 }catch (Throwable t) {
                     // Close connection if database crashes.
                     throw new RuntimeException(t);
+                }
+
+                if (checkout) {
+                    UserOrderView userOrderView = null;
+                    try {
+                        userOrderView = new UserOrderView(connection, order, user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userOrderView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+                    
+                    } catch (Throwable t) {
+                        throw new RuntimeException(t);
+                    }
+                } else {
+                    UserDetailsView userDetailsView = null;
+                    try {
+                        userDetailsView = new UserDetailsView(connection, user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userDetailsView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+                    
+                    } catch (Throwable t) {
+                        throw new RuntimeException(t);
+                    }
                 }
 
                 //end of button action

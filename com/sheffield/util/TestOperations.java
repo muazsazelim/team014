@@ -454,7 +454,7 @@ public class TestOperations {
         try {
             // Create an SQL INSERT statement
             String insertSQL = "INSERT INTO Bank_Details (cardNumber, bankName, holderName, cardExpDate, secCode) VALUES (?, ?, ?, ?, ?)";
-            String insertSQL2 = "INSERT INTO Users (cardNumber) VALUES (?) WHERE userId = ?";
+            String insertSQL2 = "UPDATE Users SET cardNumber=? WHERE userId = ?";
             // Prepare and execute the INSERT statement
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setString(1, newBankDetails.getcardNumber());

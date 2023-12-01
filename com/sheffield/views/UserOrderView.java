@@ -175,15 +175,27 @@ public class UserOrderView extends JPanel {
         confirmOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                UserMainView userMainView = null;
                 BankDetailsView bankDetailsView = null;
                 try {
                     String userId = order.getUserID();
                     if(testOperations.isUserHaveBankDetails(userId, connection)){
+                        System.out.println("CONFIRMING");
                         orderOperations.updateOrderStatus(order.getOrderID(), "confirmed", connection);
+                        userMainView = new UserMainView(connection, user);
+                        
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(bankDetailsView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+
                     }else {
                         // ask josh to link bank details page
-                        bankDetailsView = new BankDetailsView(connection, user);
-                        bankDetailsView.setVisible(true);
+                        System.out.println("goig bank");
+                        bankDetailsView = new BankDetailsView(connection, order, user, true);
+                        
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(bankDetailsView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
 
                     }
                     
