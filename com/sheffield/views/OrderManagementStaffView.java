@@ -1,5 +1,8 @@
 package com.sheffield.views;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -133,19 +136,17 @@ public class OrderManagementStaffView extends JPanel {
 
             basketTable = new JTable(model);
                 
-                    if (orderOperations.isBlockedOrder(confirmedOrders[0], connection)){
-                        comboBox.addItem("CONFIRMED");
-                        comboBox.addItem("DELETE");
                     
-                    }else {
-                        comboBox.addItem("CONFIRMED");
-                        comboBox.addItem("FULFILL");
-                    }
+                    
+                    
+            
+            comboBox.addItem("FULFILL");
+                    
                 
-                comboBox.setSelectedItem(confirmedOrders[0].getOrderStatus().toString());
-                basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
-                ArrayList<Order> archivedOrders = new ArrayList<>();
-                Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate));
+            comboBox.setSelectedItem(confirmedOrders[0].getOrderStatus().toString());
+            basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
+            ArrayList<Order> archivedOrders = new ArrayList<>();
+            Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate));
 
             // Adds data to tables
             for (Order order: userOrders){
@@ -160,9 +161,14 @@ public class OrderManagementStaffView extends JPanel {
                         System.out.println("is a blocked order");
                         Object[] tableValues = getTableValues(order, connection);
                         Object[] newTableValue = new Object[tableValues.length + 1];
-
                         System.arraycopy(tableValues, 0, newTableValue, 0, tableValues.length);
-                        newTableValue[tableValues.length] = "replace with function to check if user has declined or not";
+
+                        if(orderOperations.isDeclinedOrder(order.getOrderID(), connection)){
+                            newTableValue[tableValues.length] = "TRUE";
+                        }else {
+                            newTableValue[tableValues.length] = "FALSE";
+                        }
+                               
                         modelBlocked.addRow(newTableValue);
                     }else {
                         model.addRow(getTableValues(order, connection)); }
@@ -240,6 +246,40 @@ public class OrderManagementStaffView extends JPanel {
         
         fufill = new JButton("Fulfill");
         delete = new JButton("Delete");
+        delete.setEnabled(false);
+
+        ListSelectionModel selectionModel = blockedTable.getSelectionModel();
+        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        selectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e){
+                if (!e.getValueIsAdjusting()){
+                    int selectedRow = blockedTable.getSelectedRow();
+                 
+                    delete.setEnabled(selectedRow != -1);
+                }
+
+            }
+        });
+
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                int selectedRow = blockedTable.getSelectedRow();
+                if(selectedRow != -1){
+                    int orderId = Integer.parseInt(blockedTable.getValueAt(selectedRow, 0).toString());
+                    try {          
+                        orderOperations.deleteOrder(orderId, connection);
+                        modelBlocked.removeRow(selectedRow);
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                   
+                }
+            }
+        });
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());

@@ -126,6 +126,7 @@ public class OrderOperations {
     }
 
     public void updateDeclineOrder(int orderId, Connection connection) throws SQLException{
+
         try {
             String updateSQL = "UPDATE Orders SET declined=? WHERE orderId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
@@ -145,6 +146,7 @@ public class OrderOperations {
             throw e;
         }
     }
+    
     public Order getOrder(int orderId, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT * FROM Orders WHERE orderId=?";
@@ -173,6 +175,30 @@ public class OrderOperations {
             } else {
                 System.out.println("No order to be found ");
                 return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public boolean isDeclinedOrder(int orderId, Connection connection) throws SQLException{
+        try{
+        String selectSQL = "SELECT declined FROM Orders WHERE orderId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+
+            preparedStatement.setInt(1, orderId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+            
+                if(resultSet.getBoolean("declined")){
+                    return true;
+
+                }else {return false;}
+                            
+            } else {
+                return false;              
             }
         } catch (SQLException e) {
             e.printStackTrace();
