@@ -50,19 +50,6 @@ public class ProductsView extends JFrame {
                 System.out.println("Went to Products Category");
 
                 dispose();
-                /*
-                 * ProductsPageView productsPageView = null;
-                 * try {
-                 * productsPageView = new ProductsPageView(connection, user);
-                 * //userDetailsView.setVisible(true);
-                 * TrainsOfSheffield.getPanel().removeAll();
-                 * TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
-                 * TrainsOfSheffield.getPanel().revalidate();
-                 * 
-                 * } catch (Throwable t) {
-                 * throw new RuntimeException(t);
-                 * }
-                 */
             }
         });
 
@@ -121,7 +108,11 @@ public class ProductsView extends JFrame {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         header.add(titleLabel, BorderLayout.PAGE_START);
         header.add(backButton, BorderLayout.WEST);
-        header.add(inventoryButton, BorderLayout.EAST);
+
+        if (!user.getUserType().equals("customer")) {
+
+            header.add(inventoryButton, BorderLayout.EAST);
+        }
 
         PreparedStatement productStatement = connection.prepareStatement(productsql);
         ResultSet products = productStatement.executeQuery();
