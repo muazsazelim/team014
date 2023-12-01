@@ -2,9 +2,7 @@ package com.sheffield.views;
 
 import javax.swing.*;
 
-import com.mysql.cj.result.DoubleValueFactory;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
-import com.mysql.cj.xdevapi.PreparableStatement;
+
 import com.sheffield.model.DatabaseConnectionHandler;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
@@ -18,7 +16,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProductsView extends JPanel {
@@ -290,8 +287,7 @@ public class ProductsView extends JPanel {
                                 testOperations.updateOrder(currentOrder, connection);
                             } else {
                                 System.out.println("currentOrder is not null");
-                                ArrayList<OrderLine> orderLines = testOperations
-                                        .getOrderLinesFromOrder(currentOrder.getOrderID(), connection);
+                                ArrayList<OrderLine> orderLines = testOperations.getOrderLinesFromOrder(currentOrder.getOrderID(), connection);
                                 for (int i = 0; i < orderLines.size(); i++) {
                                     if (orderLines.get(i).getProductID() == orderProductID) {
                                         currentOrderLine = orderLines.get(i);
