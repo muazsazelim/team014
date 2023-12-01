@@ -6,7 +6,6 @@ public class OrderLine {
     private int productID;
     private int quantity;
     private double lineCost;
-    // needs validatiom to be done
     public OrderLine(int orderLineID, int orderID, int productID, int quantity, double lineCost){
         this.setOrderLineID(orderLineID);      
         this.setOrderID(orderID);

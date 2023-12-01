@@ -9,11 +9,9 @@ public class DatabaseConnectionHandler {
     private static final String DB_USER = "team014";
     private static final String DB_PASSWORD = "ree9eiY1y";
 
-    // Define the connection as a class member to share it across the application.
     private Connection connection = null;
 
     public void openConnection() throws SQLException {
-        // Load the JDBC driver and open the connection
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (SQLException e) {
@@ -22,8 +20,7 @@ public class DatabaseConnectionHandler {
     }
 
     public void closeConnection() {
-        // Close the connection in a separate method to ensure proper resource
-        // management.
+        
         if (connection != null) {
             try {
                 connection.close();

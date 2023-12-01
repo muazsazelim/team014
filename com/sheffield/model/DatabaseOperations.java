@@ -9,10 +9,8 @@ import java.sql.SQLException;
 import java.awt.*;
 
 import javax.swing.FocusManager;
-//import javax.swing.*;
 import javax.swing.JFrame;
 
-// import com.mysql.cj.protocol.ResultsetRow;
 import com.sheffield.util.HashedPasswordGenerator;
 import com.sheffield.util.TestOperations;
 import com.sheffield.views.UserMainView;
@@ -59,10 +57,7 @@ public class DatabaseOperations {
                         statement.setString(3, userId);
                         statement.setBoolean(2, accountLocked);
 
-                        // Set the account_locked if the failed attempt more than 3
-                        if (failedLoginAttempts >= 3) {
-                            statement.setBoolean(2, true);
-                        }
+                        
                         statement.executeUpdate();
 
                         System.out.println("Incorrect password. Failed login attempts: " + failedLoginAttempts);

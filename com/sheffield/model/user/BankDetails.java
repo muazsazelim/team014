@@ -86,22 +86,22 @@ public class BankDetails {
     // Private validation methods for each attribute
 
     private boolean isValidcardNumber(String cardNumber) {
-        // Implement cardNumber validation logic here (e.g., length, format)
+        // Implemented cardNumber validation logic here (e.g., length, format)
         return cardNumber != null && cardNumber.length() == 16;
     }
 
     private boolean isValidholderName(String holderName) {
-        // Implement holderName validation logic here (e.g., length)
+        // Implemented holderName validation logic here (e.g., length)
         return holderName != null && holderName.length() <= 100;
     }
 
     private boolean isValidsecCode(String secCode) {
-        // Implement secCode validation logic here (e.g., length, format)
+        // Implemented secCode validation logic here (e.g., length, format)
         return secCode != null && secCode.length() == 3;
     }
 
     private boolean isValidCard() {
-        // Implement overall card validation logic here (e.g., length, format)
+        // Implemented overall card validation logic here (e.g., length, format)
         return isValidcardNumber(this.cardNumber) && isValidholderName(this.holderName) && isValidsecCode(this.secCode);
     }
 
