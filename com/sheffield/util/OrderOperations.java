@@ -526,6 +526,26 @@ public class OrderOperations {
         }
     }
 
+    public int getOrderIDByOrderLineID(int orderLineID, Connection connection) throws SQLException{
+        int result = 0;
+        try {
+            String selectSQL = "SELECT orderID FROM Order_Line WHERE orderLineID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setInt(1, orderLineID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                 result =  resultSet.getInt("orderID");
+            } 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return result;
+    }
+
     public int getQuantitybyProductID(int productID, Connection connection) throws SQLException {
 
         try {
