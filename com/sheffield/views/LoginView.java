@@ -189,8 +189,6 @@ import java.awt.*;
                 public void actionPerformed(ActionEvent e) {
                     String email = emailField.getText();
                     char[] passwordChars = passwordField.getPassword();
-                    System.out.println(email);
-                    System.out.println(new String(passwordChars));
                     if (!email.isEmpty() && !(passwordChars == null) && !(passwordChars.length == 0)){
                         DatabaseOperations databaseOperations = new DatabaseOperations();
                         if (databaseOperations.verifyLogin(connection, email, passwordChars)) {

@@ -121,6 +121,7 @@ public class OrderManagementStaffView extends JPanel {
         
 
         try {
+            
             Order[] userOrders = orderOperations.getAllOrders( connection);
 
             Order[] confirmedOrders = Arrays.stream(userOrders)
@@ -130,31 +131,31 @@ public class OrderManagementStaffView extends JPanel {
 
             basketTable = new JTable(model);
              
-            comboBox.addItem("CONFIRMED");
-            comboBox.addItem("FULFILL");
-                           
-            comboBox.setSelectedItem(confirmedOrders[0].getOrderStatus().toString());
-            basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
+            
 
 
 
             ArrayList<Order> archivedOrders = new ArrayList<>();
             Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate));
+            if (userOrders.length != 0){
 
-            // Adds data to tables
-            for (Order order: userOrders){               
-                if (order.getOrderStatus() == OrderStatus.FULFILLED)
-                {
-                    archivedOrders.add(order);
+                comboBox.addItem("CONFIRMED");
+                comboBox.addItem("FULFILL");
+                           
+               // comboBox.setSelectedItem(confirmedOrders[0].getOrderStatus().toString());
+                basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
+                // Adds data to tables
+                for (Order order: userOrders){               
+                    if (order.getOrderStatus() == OrderStatus.FULFILLED)
+                    {
+                        archivedOrders.add(order);
                     
-                }else if (order.getOrderStatus() == OrderStatus.CONFIRMED){
+                    }else if (order.getOrderStatus() == OrderStatus.CONFIRMED){
 
-                    if(orderOperations.isBlockedOrder(order, connection)){
-
-                        
-                        Object[] tableValues = getTableValues(order, connection);
-                        Object[] newTableValue = new Object[tableValues.length + 1];
-                        System.arraycopy(tableValues, 0, newTableValue, 0, tableValues.length);
+                        if(orderOperations.isBlockedOrder(order, connection)){                      
+                            Object[] tableValues = getTableValues(order, connection);
+                            Object[] newTableValue = new Object[tableValues.length + 1];
+                            System.arraycopy(tableValues, 0, newTableValue, 0, tableValues.length);
 
                         if(orderOperations.isDeclinedOrder(order.getOrderID(), connection)){
 
@@ -163,13 +164,15 @@ public class OrderManagementStaffView extends JPanel {
                            newTableValue[tableValues.length] = "FALSE";
                         }
                                
-                        modelBlocked.addRow(newTableValue);
-                    }else {
-                        model.addRow(getTableValues(order, connection)); 
-                    }   
+                            modelBlocked.addRow(newTableValue);
+                        }else {
+                            model.addRow(getTableValues(order, connection)); 
+                        }   
                 }
                               
             }
+            }
+            
 
 
             Collections.sort(archivedOrders, Comparator.comparing(Order::getIssueDate));
@@ -356,12 +359,12 @@ public class OrderManagementStaffView extends JPanel {
                 try {
                     userIDforSearch = orderOperations.getUserIDbyOrderID(orderIdForSearch, connection);
                     Address address = testOperations.getAddress(userIDforSearch, connection);
-                    // EVERYONE NEEDS AN ADDRESS OR THIS DONT WORK
-                  //  String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
+                    
+                    String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
                      ordersForTable = new Object[]{order.getOrderID(), order.getIssueDate(), testOperations.getForename(userIDforSearch, connection),
                                         testOperations.getSurname(userIDforSearch, connection),
                                         testOperations.getEmail(userIDforSearch, connection),
-                                        "addressDisplay", order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
+                                        addressDisplay, order.getTotalCost(), order.getOrderStatus(), testOperations.isUserHaveBankDetails(userIDforSearch, connection)};
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
