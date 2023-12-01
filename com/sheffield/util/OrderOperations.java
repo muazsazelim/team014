@@ -125,6 +125,26 @@ public class OrderOperations {
         }
     }
 
+    public void updateDeclineOrder(int orderId, Connection connection) throws SQLException{
+        try {
+            String updateSQL = "UPDATE Orders SET declined=? WHERE orderId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setBoolean(1, true);
+            preparedStatement.setInt(2, orderId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: ");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
     public Order getOrder(int orderId, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT * FROM Orders WHERE orderId=?";

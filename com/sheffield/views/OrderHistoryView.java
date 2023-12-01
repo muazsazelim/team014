@@ -159,7 +159,15 @@ public class OrderHistoryView extends JPanel {
             public void actionPerformed(ActionEvent e){
                 int selectedRow = blockedTable.getSelectedRow();
                 if(selectedRow != -1){
-                    System.out.println("Performing action for selected row: " + selectedRow);
+                    int orderId = Integer.parseInt(blockedTable.getValueAt(selectedRow, 0).toString());
+                    try {          
+                        orderOperations.updateDeclineOrder(orderId, connection);
+                        modelBlocked.removeRow(selectedRow);
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                   
                 }
             }
         });
@@ -195,10 +203,15 @@ public class OrderHistoryView extends JPanel {
       
         JScrollPane scrollPane = new JScrollPane(basketTable);
         JScrollPane scrollPane1 = new JScrollPane(blockedTable);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(decline);
+
+    
         
 
-        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(scrollPane, BorderLayout.NORTH);
         panel.add(scrollPane1, BorderLayout.CENTER);
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         
 
