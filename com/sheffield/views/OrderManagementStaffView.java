@@ -7,6 +7,7 @@ import com.sheffield.model.Address;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
 import com.sheffield.model.order.Order.OrderStatus;
+import com.sheffield.model.user.User;
 import com.sheffield.util.OrderOperations;
 import com.sheffield.util.TestOperations;
 
@@ -35,7 +36,7 @@ public class OrderManagementStaffView extends JFrame {
     private TestOperations testOperations = new TestOperations();
     
 
-    public OrderManagementStaffView (Connection connection) throws SQLException {
+    public OrderManagementStaffView (Connection connection, User user) throws SQLException {
 
         this.setTitle("Train of Sheffield");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -104,7 +105,7 @@ public class OrderManagementStaffView extends JFrame {
 
             basketTable = new JTable(model);
                 
-                    if (isBlockedOrder(confirmedOrders[0], connection)){
+                    if (orderOperations.isBlockedOrder(confirmedOrders[0], connection)){
                         comboBox.addItem("CONFIRMED");
                         comboBox.addItem("DELETE");
                     
@@ -127,7 +128,7 @@ public class OrderManagementStaffView extends JFrame {
                     
                 }else if (order.getOrderStatus() == OrderStatus.CONFIRMED){
 
-                    if(isBlockedOrder(order, connection)){
+                    if(orderOperations.isBlockedOrder(order, connection)){
                         System.out.println("is a blocked order");
                         Object[] tableValues = getTableValues(order, connection);
                         Object[] newTableValue = new Object[tableValues.length + 1];
@@ -163,9 +164,8 @@ public class OrderManagementStaffView extends JFrame {
                         try {
                             
                             Order order = confirmedOrders[row];
-                            orderDetailsView = new OrderDetailsView(connection, order);
-                            orderDetailsView.setVisible(true);
-                            
+                            orderDetailsView = new OrderDetailsView(connection, order, user);
+                            orderDetailsView.setVisible(true);                           
                              
                         } catch (SQLException i) {
                             i.printStackTrace();
@@ -300,26 +300,7 @@ public class OrderManagementStaffView extends JFrame {
     }
     
 
-    public boolean isBlockedOrder(Order order, Connection connection) throws SQLException{
-        System.out.println("blocked funciton");
-        OrderOperations orderOperations = new OrderOperations();
-        try{
-            for (OrderLine orderLine : orderOperations.getAllOrdersLinesByOrder(order.getOrderID(), connection)) {
-                int stockQuantity = orderOperations.getQuantitybyProductID(orderLine.getProductID(), connection);
-                if (stockQuantity - orderLine.getQuantity()< 0){
-                    System.out.println(stockQuantity - orderLine.getQuantity());
-                    return true;
-                }
-            }
-            return false;
-            
-        }catch (SQLException e){
-            e.printStackTrace();
-            throw e;
-        }
-        
-        
-    }
+    
 
     private Object[] getTableValues(Order order, Connection connection){
         int orderIdForSearch = order.getOrderID();

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
+import com.sheffield.model.user.User;
 
 public class OrderOperations {
 
@@ -157,6 +158,25 @@ public class OrderOperations {
             e.printStackTrace();
             throw e;// Re-throw the exception to signal an error.
         }
+    }
+
+    public boolean isBlockedOrder(Order order, Connection connection) throws SQLException{
+        System.out.println("blocked funciton");
+        
+        try{
+            for (OrderLine orderLine : getAllOrdersLinesByOrder(order.getOrderID(), connection)) {
+                int stockQuantity = getQuantitybyProductID(orderLine.getProductID(), connection);
+                if (stockQuantity - orderLine.getQuantity()< 0){
+                    System.out.println(stockQuantity - orderLine.getQuantity());
+                    return true;
+                }
+            }
+            return false;
+            
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw e;
+        }      
     }
 
     public void updateQuantity(int orderId, int quantity, Connection connection) throws SQLException {
