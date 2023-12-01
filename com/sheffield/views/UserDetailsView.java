@@ -29,10 +29,15 @@ public class UserDetailsView extends JPanel {
         //parent.add(contentPanel, BorderLayout.CENTER);
 
         JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
         contentPanel.add(panel, BorderLayout.CENTER);
 
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+        contentPanel.add(header, BorderLayout.NORTH);
 
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
 
         
         // Create buttons that links to other pages from default page
@@ -91,7 +96,7 @@ public class UserDetailsView extends JPanel {
         userDetails.add(updateButton);
 
         JButton backButton = new JButton("Back");
-        userDetails.add(backButton);
+        header.add(backButton, BorderLayout.WEST);
 
         updateButton.addActionListener(new ActionListener() {
             @Override

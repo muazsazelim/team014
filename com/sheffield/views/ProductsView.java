@@ -42,8 +42,29 @@ public class ProductsView extends JFrame {
         this.add(header, BorderLayout.PAGE_START);
         this.add(panel, BorderLayout.CENTER);
 
-        JButton mainPage;
-        mainPage = new JButton("Back to Main Page");
+        JButton backButton;
+        backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Category");
+
+                dispose();
+                /*
+                ProductsPageView productsPageView = null;
+                try {
+                    productsPageView = new ProductsPageView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+                */
+            }
+        });
 
         JButton inventoryButton = new JButton("Go to Inventory");
         inventoryButton.addActionListener(new ActionListener() {
@@ -99,8 +120,8 @@ public class ProductsView extends JFrame {
         titleLabel.setFont(new Font("Default", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         header.add(titleLabel, BorderLayout.PAGE_START);
-        header.add(mainPage, BorderLayout.LINE_END);
-        header.add(inventoryButton, BorderLayout.LINE_START);
+        header.add(backButton, BorderLayout.WEST);
+        header.add(inventoryButton, BorderLayout.EAST);
 
         PreparedStatement productStatement = connection.prepareStatement(productsql);
         ResultSet products = productStatement.executeQuery();

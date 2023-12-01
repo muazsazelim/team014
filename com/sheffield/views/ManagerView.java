@@ -35,19 +35,28 @@ public class ManagerView extends JPanel {
         // Create buttons that links to other pages from default page
         JLabel managerView;
         managerView = new JLabel("Manager View");
+        managerView.setHorizontalAlignment(JLabel.CENTER);
 
         // Add components to the panel
+
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
         JPanel managerPromo = new JPanel();
         managerPromo.setLayout(new BorderLayout());
 
-        managerPromo.add(managerView, BorderLayout.NORTH);
-        managerPromo.add(panel,BorderLayout.CENTER);
-
-        contentPanel.add(managerPromo, BorderLayout.NORTH);
-        contentPanel.add(staffList, BorderLayout.CENTER);
-        // contentPanel.add(staffList, BorderLayout.SOUTH);
         JButton backButton = new JButton("Back");
-        contentPanel.add(backButton, BorderLayout.SOUTH);
+        
+
+        header.add(managerView, BorderLayout.NORTH);
+        header.add(backButton, BorderLayout.WEST);
+        managerPromo.add(panel, BorderLayout.NORTH);
+        managerPromo.add(staffList,BorderLayout.CENTER);
+
+        contentPanel.add(header, BorderLayout.NORTH);
+        contentPanel.add(managerPromo, BorderLayout.CENTER);
+        // contentPanel.add(staffList, BorderLayout.SOUTH);
+        
 
 
         JTextField promote = new JTextField();

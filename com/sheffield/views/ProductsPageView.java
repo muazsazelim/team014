@@ -2,6 +2,7 @@ package com.sheffield.views;
 
 import javax.swing.*;
 
+import com.mysql.cj.xdevapi.JsonParser;
 import com.sheffield.model.DatabaseConnectionHandler;
 import com.sheffield.model.user.User;
 
@@ -22,7 +23,11 @@ public class ProductsPageView extends JPanel {
         JPanel navigation = new JPanel();
         navigation.setLayout(new GridLayout(0, 1));
 
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
         contentPanel.add(navigation, BorderLayout.CENTER);
+        contentPanel.add(header, BorderLayout.NORTH);
 
         // Create buttons that links to other pages from default page
 
@@ -36,6 +41,8 @@ public class ProductsPageView extends JPanel {
         JButton rollingStock = new JButton("Rolling Stock");
         JButton controllers = new JButton("Controllers");
 
+        JButton backButton = new JButton("Back");
+
 
         navigation.add(trackPack);
         navigation.add(trackPiece);
@@ -43,6 +50,8 @@ public class ProductsPageView extends JPanel {
         navigation.add(trainSet);
         navigation.add(rollingStock);
         navigation.add(controllers);
+
+        header.add(backButton, BorderLayout.WEST);
 
         trackPack.addActionListener(new ActionListener() {
             @Override
@@ -149,6 +158,26 @@ public class ProductsPageView extends JPanel {
                     throw new RuntimeException(t);
                 }                
 
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to User Main View");
+
+                //dispose();
+                UserMainView userMainView = null;
+                try {
+                    userMainView = new UserMainView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
             }
         });
 
