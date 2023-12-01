@@ -1,8 +1,6 @@
 package com.sheffield.views;
 
 import javax.swing.*;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -13,8 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-
 import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
@@ -24,8 +20,6 @@ import com.sheffield.util.TestOperations;
 public class UserOrderView extends JPanel {
     private JButton confirmOrder;
     private JButton delete;
-    private JButton orderHistory;
-    private JButton decline;
     private JTable basketTable;
     
     private TestOperations testOperations = new TestOperations();
@@ -49,7 +43,7 @@ public class UserOrderView extends JPanel {
         JButton backButton = new JButton("Back");
 
         header.add(backButton, BorderLayout.WEST);
-
+        // navigates to Products Page
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,13 +67,13 @@ public class UserOrderView extends JPanel {
         });
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        // panel.setLayout(new GridLayout(0,1));
+      ;
 
         JLabel titleLabel = new JLabel("Order Basket");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
-        // need to replace with selection from cataloge table
+       
         
         String[] columnNames = { "Order Line ID", "Product ID", "Quantity", "Cost" };
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
@@ -123,7 +117,7 @@ public class UserOrderView extends JPanel {
                     
                         
                     } catch (SQLException e1) {
-                        // TODO Auto-generated catch block
+                  
                         e1.printStackTrace();
                     }
                     
@@ -142,6 +136,7 @@ public class UserOrderView extends JPanel {
         delete = new JButton("Delete");
         delete.setEnabled(false);
 
+        // Selection Function
         ListSelectionModel selectionModel = new DefaultListSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);     
         basketTable.setSelectionModel(selectionModel);
@@ -165,7 +160,7 @@ public class UserOrderView extends JPanel {
         });
 
 
-        System.out.println(user.getUserType());
+       
 
         JLabel totalCost = new JLabel();
         String totalCostString = String.valueOf(orderOperations.calculateTotalOrderCost(order.getOrderID(), connection));
@@ -177,7 +172,7 @@ public class UserOrderView extends JPanel {
         panel.add(delete);
 
 
-        // Create an ActionListener for the view buttons
+        //  ActionListener for the Confirm Button
         confirmOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,7 +181,7 @@ public class UserOrderView extends JPanel {
                 try {
                     String userId = order.getUserID();
                     if(testOperations.isUserHaveBankDetails(userId, connection)){
-                        System.out.println("CONFIRMING");
+                       
                         orderOperations.updateOrderStatus(order.getOrderID(), "confirmed", connection);
                         userMainView = new UserMainView(connection, user);
                         
@@ -195,8 +190,7 @@ public class UserOrderView extends JPanel {
                         TrainsOfSheffield.getPanel().revalidate();
 
                     }else {
-                        // ask josh to link bank details page
-                        System.out.println("goig bank");
+                        
                         bankDetailsView = new BankDetailsView(connection, order, user, true);
                         
                         TrainsOfSheffield.getPanel().removeAll();
@@ -206,12 +200,13 @@ public class UserOrderView extends JPanel {
                     }
                     
                 } catch (SQLException e1) {
-                    // TODO Auto-generated catch block
+                   
                     e1.printStackTrace();
                 }
             }
         });
 
+        // Action Listener for Delete Button
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
@@ -223,7 +218,7 @@ public class UserOrderView extends JPanel {
                     orderOperations.deleteOrderLine(orderLineId, connection);
                     model.removeRow(selectedRow);
                 } catch (SQLException e1) {
-                    // TODO Auto-generated catch block
+                
                     e1.printStackTrace();
                 }
             }
