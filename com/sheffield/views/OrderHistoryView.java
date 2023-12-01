@@ -16,6 +16,7 @@ import java.util.Comparator;
 
 import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
+import com.sheffield.model.order.Order.OrderStatus;
 import com.sheffield.util.OrderOperations;
 
 
@@ -116,7 +117,7 @@ public class OrderHistoryView extends JPanel {
             
            
             for (Order order: userOrders){
-                if(orderOperations.isBlockedOrder(order, connection)){
+                if(orderOperations.isBlockedOrder(order, connection) && order.getOrderStatus() != OrderStatus.FULFILLED){
                     Object[] ordersForBlockedTable = {order.getOrderID(), order.getIssueDate(), "test"};
                     modelBlocked.addRow(ordersForBlockedTable);
                 }else{
