@@ -45,7 +45,7 @@ public class Order {
     }
 
     public void setIssueDate(Date issueDate) {
-        if (issueDate != null && !issueDate.after(new Date())) {
+        if (!issueDate.after(new Date())) {
             this.issueDate = issueDate;
         } else {
             throw new IllegalArgumentException("future dates are not valid");

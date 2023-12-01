@@ -8,19 +8,18 @@ import com.mysql.cj.xdevapi.PreparableStatement;
 import com.sheffield.model.DatabaseConnectionHandler;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
+import com.sheffield.model.order.Order.OrderStatus;
 import com.sheffield.model.user.User;
 import com.sheffield.util.OrderOperations;
+import com.sheffield.util.TestOperations;
 
 import java.sql.*;
-import java.sql.Date;
-
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 public class ProductsView extends JPanel {
 
@@ -36,36 +35,33 @@ public class ProductsView extends JPanel {
 
     public ProductsView(Connection connection, int n, User user) throws SQLException {
 
-
         JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
-        
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel header = new JPanel(new BorderLayout());
 
         contentPanel.add(header, BorderLayout.PAGE_START);
         contentPanel.add(panel, BorderLayout.CENTER);
-        
 
         JButton backButton;
         backButton = new JButton("Back");
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Products Category");    
+                System.out.println("Went to Products Category");
                 ProductsPageView productsPageView = null;
                 try {
                     productsPageView = new ProductsPageView(connection, user);
-                    //userDetailsView.setVisible(true);
+                    // userDetailsView.setVisible(true);
                     TrainsOfSheffield.getPanel().removeAll();
                     TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
                     TrainsOfSheffield.getPanel().revalidate();
-    
+
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
-                
+
             }
         });
 
@@ -104,14 +100,12 @@ public class ProductsView extends JPanel {
 
                         Order newOrder = new Order(orderID, userID, issueDate, total, status);
 
-                        
-                        
-                        userOrderView = new UserOrderView(connection, newOrder,user);
-                        //userDetailsView.setVisible(true);
+                        userOrderView = new UserOrderView(connection, newOrder, user);
+                        // userDetailsView.setVisible(true);
                         TrainsOfSheffield.getPanel().removeAll();
                         TrainsOfSheffield.getPanel().add(userOrderView, BorderLayout.CENTER);
                         TrainsOfSheffield.getPanel().revalidate();
-       
+
                     }
 
                 } catch (Throwable t) {
@@ -160,7 +154,6 @@ public class ProductsView extends JPanel {
         header.add(backButton, BorderLayout.WEST);
 
         header.add(basketButton, BorderLayout.EAST);
-
 
         PreparedStatement productStatement = connection.prepareStatement(productsql);
         ResultSet products = productStatement.executeQuery();
@@ -240,7 +233,7 @@ public class ProductsView extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
-                    String orderProductID = pIDs.get(final_i);
+                    int orderProductID = Integer.valueOf(pIDs.get(final_i));
 
                     int orderQuantity = Integer.valueOf(String.valueOf(combos[final_i].getSelectedItem()));
 
@@ -250,52 +243,9 @@ public class ProductsView extends JPanel {
 
                     // temporary orderID
                     int orderID = 6;
+                    TestOperations testOperations = new TestOperations();
 
                     try {
-                        String orderLineQuery = "SELECT COUNT(*) FROM Order_Line";
-                        String orderQ = "SELECT * FROM Orders WHERE userId = '" + user.getuserId()
-                                + "' AND status = 'pending'";
-
-                        PreparedStatement orderLineStatement = connection.prepareStatement(orderLineQuery);
-                        ResultSet orderLineResultSet = orderLineStatement.executeQuery();
-
-                        PreparedStatement orderLineStatement2 = connection.prepareStatement(orderQ);
-                        ResultSet orderLineResultSet2 = orderLineStatement2.executeQuery();
-
-                        int currOrderID = 0;
-                        while (orderLineResultSet2.next()) {
-                            currOrderID = orderLineResultSet2.getInt("orderID");
-                        }
-
-                        if (currOrderID == 0) {
-                            String addOrderQ = "INSERT INTO Orders (userId, issueDate, totalCost, status) VALUES (?, CURRENT_TIMESTAMP,?, ?)";
-                            PreparedStatement addO = connection.prepareStatement(addOrderQ);
-                            addO.setString(1, user.getuserId());
-                            // addO.setDate(2, (java.sql.Date) d);
-                            addO.setDouble(2, 0.00);
-                            addO.setString(3, "pending");
-
-                            addO.executeUpdate();
-
-                            String newOI = "SELECT COUNT(*) FROM Orders";
-                            PreparedStatement newOIS = connection.prepareStatement(newOI);
-                            ResultSet newOIII = newOIS.executeQuery();
-                            int newOrderID1 = 0;
-                            while (newOIII.next()) {
-                                newOrderID1 = newOIII.getInt(1);
-                            }
-
-                            orderID = newOrderID1 + 1;
-
-                        } else {
-                            orderID = currOrderID;
-                        }
-
-                        int maxOrderLine = 0;
-                        while (orderLineResultSet.next()) {
-                            maxOrderLine = orderLineResultSet.getInt(1);
-                        }
-
                         String inven = "SELECT Quantity FROM Inventory WHERE ProductID = " + orderProductID;
                         PreparedStatement invenS = connection.prepareStatement(inven);
                         ResultSet invenR = invenS.executeQuery();
@@ -311,30 +261,63 @@ public class ProductsView extends JPanel {
                             JOptionPane.showMessageDialog(panel,
                                     "Cannot add product. We only have " + itemInven + " stock(s) for this product");
                         } else {
-                            OrderLine orderLine = new OrderLine(maxOrderLine + 1, orderID,
-                                    Integer.parseInt(orderProductID),
-                                    orderQuantity, totalPrice);
-                            OrderOperations orderOperations = new OrderOperations();
-
-                            orderOperations.addOrderLine(orderLine, connection);
-                            JOptionPane.showMessageDialog(panel, "Item(s) added to order");
-
-                            String orderTotalS = "SELECT * FROM Orders WHERE orderID = " + orderID;
-                            PreparedStatement orderT = connection.prepareStatement(orderTotalS);
-                            ResultSet orderTR = orderT.executeQuery();
-
-                            Double currTotal = 0.00;
-                            while (orderTR.next()) {
-                                currTotal = orderTR.getDouble("totalCost");
+                            ArrayList<Order> orders = testOperations.getAllOrdersObj(connection);
+                            Order currentOrder = null;
+                            OrderLine currentOrderLine = null;
+                            for (int i = 0; i < orders.size(); i++) {
+                                if (orders.get(i).getOrderStatus() == OrderStatus.PENDING
+                                        && orders.get(i).getUserID().equals(user.getuserId())) {
+                                    currentOrder = orders.get(i);
+                                }
                             }
 
-                            Double totalForOrder = Double.sum(currTotal, totalPrice);
+                            if (currentOrder == null) {
+                                System.out.println("currentOrder is null");
 
-                            String updateOrder = "UPDATE Orders SET totalCost = ? WHERE orderID = ?";
-                            PreparedStatement updateO = connection.prepareStatement(updateOrder);
-                            updateO.setDouble(1, totalForOrder);
-                            updateO.setInt(2, orderID);
-                            updateO.executeUpdate();
+                                Order newOrder = new Order(0, user.getuserId(), new Date(100, 1, 1), 0.00, "pending");
+                                testOperations.insertOrder(newOrder, connection);
+                                orders = testOperations.getAllOrdersObj(connection);
+                                for (int i = 0; i < orders.size(); i++) {
+                                    if (orders.get(i).getOrderStatus() == OrderStatus.PENDING
+                                            && orders.get(i).getUserID().equals(user.getuserId())) {
+                                        currentOrder = orders.get(i);
+                                    }
+                                }
+                                OrderLine orderLine = new OrderLine(0, currentOrder.getOrderID(), orderProductID,
+                                        orderQuantity, totalPrice);
+                                testOperations.insertOrderLine(orderLine, connection);
+                                currentOrder.setTotalCost(currentOrder.getTotalCost() + totalPrice);
+                                testOperations.updateOrder(currentOrder, connection);
+                            } else {
+                                System.out.println("currentOrder is not null");
+                                ArrayList<OrderLine> orderLines = testOperations
+                                        .getOrderLinesFromOrder(currentOrder.getOrderID(), connection);
+                                for (int i = 0; i < orderLines.size(); i++) {
+                                    if (orderLines.get(i).getProductID() == orderProductID) {
+                                        currentOrderLine = orderLines.get(i);
+                                    }
+                                }
+                                OrderLine orderLine;
+                                if (currentOrderLine == null) {
+                                    orderLine = new OrderLine(0, currentOrder.getOrderID(), orderProductID,
+                                            orderQuantity,
+                                            totalPrice);
+                                    testOperations.insertOrderLine(orderLine, connection);
+                                    currentOrder.setTotalCost(currentOrder.getTotalCost() + totalPrice);
+                                    testOperations.updateOrder(currentOrder, connection);
+
+                                } else {
+                                    orderLine = new OrderLine(currentOrderLine.getOrderLineID(),
+                                            currentOrder.getOrderID(),
+                                            orderProductID, orderQuantity + currentOrderLine.getQuantity(),
+                                            totalPrice + currentOrderLine.getLineCost());
+                                    testOperations.updateOrderLine(orderLine, connection);
+                                    currentOrder.setTotalCost(currentOrder.getTotalCost() + totalPrice);
+                                    testOperations.updateOrder(currentOrder, connection);
+
+                                }
+
+                            }
                         }
 
                     } catch (SQLException w) {
