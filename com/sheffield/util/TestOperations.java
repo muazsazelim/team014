@@ -501,6 +501,40 @@ public class TestOperations {
        
     }
 
+    public BankDetails getBankDetails (String userId, Connection connection) throws SQLException{
+         try {
+            String cardNum = null;
+            String selectSQL = "SELECT * FROM Users WHERE userId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                cardNum = resultSet.getString("cardNumber");
+                String selectSQL2 = "SELECT * FROM Bank_Details WHERE cardNumber=?";
+                PreparedStatement preparedStatement2 = connection.prepareStatement(selectSQL2);
+                preparedStatement2.setString(1, cardNum);
+                ResultSet resultSet2 = preparedStatement2.executeQuery();
+                if (resultSet2.next()) {
+                    //cardNum = resultSet2.getString("cardNumber");
+                    String bankName = resultSet2.getString("bankName");
+                    String holderName = resultSet2.getString("holderName");
+                    String cardExpDate = resultSet2.getString("cardExpDate");
+                    String secCode = resultSet2.getString("secCode");
+                    BankDetails bankDetails = new BankDetails(cardNum, bankName, holderName, cardExpDate, secCode);
+                    return bankDetails;
+                }else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+       
+    }
+
    
 
     public static void main(String[] args) {
