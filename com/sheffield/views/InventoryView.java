@@ -71,7 +71,9 @@ public class InventoryView extends JPanel {
                 EditInventoryView editInventoryView = null;
                 try {
                     editInventoryView = new EditInventoryView(connection, user);
-                    editInventoryView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(editInventoryView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
 
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
@@ -126,7 +128,30 @@ public class InventoryView extends JPanel {
             panel.add(sp);
 
             panel.add(editPage);
-            panel.setSize(320, 280);
+
+            JButton newItem = new JButton("Create Product");
+            panel.add(newItem);
+
+            newItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("Went to Create Product");
+    
+                    NewItemView newItemView = null;
+                    try {
+                        newItemView = new NewItemView(connection, user);
+
+                        
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(newItemView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+                        
+    
+                    } catch (Throwable t) {
+                        throw new RuntimeException(t);
+                    }
+                }
+            });
 
 
         } catch (SQLException e) {

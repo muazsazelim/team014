@@ -1,8 +1,11 @@
 package com.sheffield.views;
 
 import javax.swing.*;
+import javax.swing.text.StyledEditorKit;
 
 import com.sheffield.model.user.User;
+import com.sheffield.model.Product;
+import com.sheffield.util.TestOperations;
 
 import java.sql.*;
 import java.awt.*;
@@ -12,30 +15,54 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EditInventoryView extends JFrame {
+public class EditInventoryView extends JPanel {
     public EditInventoryView(Connection connection, User user) throws SQLException {
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 320);
+        
 
-        JPanel panel = new JPanel(new BorderLayout());
-        this.add(panel);
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel(new GridLayout(0,2));
+
+        contentPanel.add(panel, BorderLayout.CENTER);
+        
 
         JLabel titleLabel = new JLabel("Edit Inventory");
         titleLabel.setFont(new Font("Default", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(titleLabel, BorderLayout.NORTH);
+        contentPanel.add(titleLabel, BorderLayout.NORTH);
 
-        JTextField txtPID;
-        JLabel lblPID;
+        
+        JLabel lblPID = new JLabel("Enter Product ID");
+        JTextField txtPID = new JTextField();
 
-        lblPID = new JLabel("Enter Product ID");
-        txtPID = new JTextField();
-        txtPID.setToolTipText("Product ID");
-        txtPID.selectAll();
+        JLabel productNameLabel = new JLabel("Enter Product Name");
+        JTextField productNameInput = new JTextField();
+
+        JLabel brandNameLabel = new JLabel("Enter Brand Name");
+        JTextField brandNameInput = new JTextField();
+
+        JLabel retailPriceLabel = new JLabel("Enter Retail Price");
+        JTextField retailPriceInput = new JTextField();
+
+        JLabel gaugeTyepLabel = new JLabel("Enter Gauge Type");
+        JTextField gaugeTypeInput = new JTextField();
+
 
         panel.add(lblPID);
         panel.add(txtPID);
+
+        panel.add(productNameLabel);
+        panel.add(productNameInput);
+
+        panel.add(brandNameLabel);
+        panel.add(brandNameInput);
+
+        panel.add(retailPriceLabel);
+        panel.add(retailPriceInput);
+
+        panel.add(gaugeTyepLabel);
+        panel.add(gaugeTypeInput);
 
         JTextField txtQuantity;
         JLabel lblQuantity;
@@ -55,64 +82,62 @@ public class EditInventoryView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String productID;
-                    String quantity;
-                    String totalProductID = "SELECT * From Product";
-                    PreparedStatement tPID = connection.prepareStatement(totalProductID);
-                    ResultSet tProductID = tPID.executeQuery();
-                    List<String> pIDs = new ArrayList<>();
-                    while (tProductID.next()) {
-                        pIDs.add(Integer.toString(tProductID.getInt("productID")));
-                    }
-                    productID = txtPID.getText().strip();
-                    quantity = txtQuantity.getText().strip();
-                    try {
-                        if (!productID.equals("") && !quantity.equals("")) {
-                            try {
-                                Integer.parseInt(productID);
+                    TestOperations testOperations = new TestOperations();
+                    if (!txtPID.getText().equals("")) {
+                        int productId = Integer.valueOf(txtPID.getText());
 
-                                Integer.parseInt(quantity);
-                                if (pIDs.contains(productID)) {
+                        Product updatedProduct = testOperations.getProduct(productId, connection);
 
-                                    String newQ = "SELECT Quantity FROM Inventory WHERE ProductID = " + productID;
-                                    PreparedStatement nQ = connection.prepareStatement(newQ);
-                                    ResultSet newQuan = nQ.executeQuery();
-                                    int currentQuantity = 0;
-                                    int totalQuantity = 0;
-                                    while (newQuan.next()) {
-                                        currentQuantity = newQuan.getInt(1);
-                                    }
+                        if (!txtQuantity.getText().equals("")) {
+                            System.out.println("Getting Stock");
 
-                                    int newQuantity = Integer.parseInt(quantity);
-                                    totalQuantity = currentQuantity + newQuantity;
+                            int quantity = Integer.valueOf(txtQuantity.getText());
+                            System.out.println(quantity);
+                            System.out.println(productId);
 
-                                    Statement stmt = connection.createStatement();
-                                    String query = "UPDATE Inventory SET Quantity = " + totalQuantity
-                                            + " WHERE ProductID = "
-                                            + productID;
-                                    stmt.executeUpdate(query);
+                            int currentQuantity = testOperations.getStock(productId, connection);
+                            
+                            System.out.println(currentQuantity);
 
-                                    txtPID.setText("");
-                                    txtQuantity.setText("");
-
-                                    JOptionPane.showMessageDialog(panel, "Inventory Updated");
-                                } else {
-
-                                    JOptionPane.showMessageDialog(panel, "Product did not exists");
-                                }
-                            } catch (NumberFormatException n) {
-
-                                JOptionPane.showMessageDialog(panel, "Please Enter Only Number");
-
+                            if (currentQuantity >= 0) {
+                                System.out.println("Stock Updating");
+                                int newQuantity = currentQuantity + quantity;
+                                System.out.println(newQuantity);
+                                testOperations.updateStock(productId, newQuantity, connection);
+                                txtQuantity.setText("");
                             }
-                        } else {
-
-                            JOptionPane.showMessageDialog(panel, "Empty Input");
+                            
                         }
-                    } catch (Exception s) {
-                        s.printStackTrace();
 
+                        if (!productNameInput.getText().equals("")) 
+                        {
+                            updatedProduct.setProductName(productNameInput.getText());
+                            productNameInput.setText("");
+                        }   
+
+                        if (!brandNameInput.getText().equals("")) 
+                        {
+                            updatedProduct.setBrandName(brandNameInput.getText());
+                            brandNameInput.setText("");
+                        }   
+
+                        if (!retailPriceInput.getText().equals("")) 
+                        {
+                            float retailPriceFloat = Float.valueOf(retailPriceInput.getText());
+                            updatedProduct.setRetailPrie(retailPriceFloat);
+                            retailPriceInput.setText("");
+                        }   
+
+                        if (!gaugeTypeInput.getText().equals("")) 
+                        {
+                            updatedProduct.setGaugeType(gaugeTypeInput.getText());
+                            gaugeTypeInput.setText("");
+                        }   
+                        txtPID.setText("");
+
+                        testOperations.updateProduct(updatedProduct, connection);
                     }
+
                 } catch (SQLException w) {
                     w.printStackTrace();
                 }
@@ -131,11 +156,12 @@ public class EditInventoryView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Inventory View");
 
-                dispose();
                 InventoryView inventoryView = null;
                 try {
                     inventoryView = new InventoryView(connection, user);
-                    inventoryView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(inventoryView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
 
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
@@ -143,11 +169,7 @@ public class EditInventoryView extends JFrame {
             }
         });
 
-        this.getContentPane().setLayout(new BorderLayout());
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        panel.setSize(320, 170);
-        this.setVisible(true);
     }
 
 }
