@@ -169,7 +169,7 @@ public class UserOrderView extends JPanel {
 
         JLabel totalCost = new JLabel();
         String totalCostString = String.valueOf(orderOperations.calculateTotalOrderCost(order.getOrderID(), connection));
-        totalCost.setText(totalCostString);
+        totalCost.setText("Order Total - " + totalCostString);
 
         panel.add(totalCost);
         // Add components to the panel

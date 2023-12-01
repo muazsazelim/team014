@@ -3,13 +3,18 @@ package com.sheffield.views;
 import javax.swing.*;
 
 import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.order.Order;
 import com.sheffield.model.user.User;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
+
 
 public class UserMainView extends JPanel {
 
@@ -24,7 +29,59 @@ public class UserMainView extends JPanel {
 
         JButton logOutButton;
         logOutButton = new JButton("Log Out");
+        JButton basketButton = new JButton("My Cart");
         header.add(logOutButton, BorderLayout.WEST);
+        header.add(basketButton, BorderLayout.EAST);
+
+        
+        basketButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Cart Page");
+                UserOrderView userOrderView = null;
+
+                // Order userOrder = new Order();
+
+                try {
+                    String getQ = "SELECT * FROM Orders WHERE userId = '" + user.getuserId()
+                            + "' AND status = 'pending'";
+
+                    PreparedStatement getQS = connection.prepareStatement(getQ);
+                    ResultSet getQR = getQS.executeQuery();
+
+                    int orderID = 0;
+                    String userID = "";
+                    Date issueDate = Date.valueOf("2023-11-11");
+                    Double total = 0.00;
+                    String status = "pending";
+
+                    while (getQR.next()) {
+                        orderID = getQR.getInt("orderID");
+                        userID = getQR.getString("userId");
+                        // issueDate = getQR.getDate("issueDate");
+                        total = getQR.getDouble("totalCost");
+                    }
+
+                    if (orderID == 0) {
+                        JOptionPane.showMessageDialog(contentPanel, "Your cart is empty");
+                    } else {
+
+                        Order newOrder = new Order(orderID, userID, issueDate, total, status);
+
+                        userOrderView = new UserOrderView(connection, newOrder, user);
+                        // userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userOrderView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+
+                    }
+
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+
+            }
+        });
 
 
 
