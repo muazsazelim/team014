@@ -51,7 +51,7 @@ public class UserMainView extends JPanel {
 
                     StaffView staffView = null;
                     try {
-                        staffView = new StaffView(connection);
+                        staffView = new StaffView(connection, user);
 
                         TrainsOfSheffield.getPanel().removeAll();
                         TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);
@@ -78,7 +78,7 @@ public class UserMainView extends JPanel {
 
                     StaffView staffView = null;
                     try {
-                        staffView = new StaffView(connection);
+                        staffView = new StaffView(connection, user);
 
                         TrainsOfSheffield.getPanel().removeAll();
                         TrainsOfSheffield.getPanel().add(staffView, BorderLayout.CENTER);

@@ -23,11 +23,16 @@ public class OrderDetailsView extends JPanel {
     private JButton products;
     private JTable basketTable;
     
-    public OrderDetailsView (Connection connection, Order order) throws SQLException {
+    public OrderDetailsView (Connection connection, Order order, User user) throws SQLException {
 
 
         JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
+
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
+        contentPanel.add(header, BorderLayout.NORTH);
  
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -88,6 +93,30 @@ public class OrderDetailsView extends JPanel {
         scrollPane2.setBorder(BorderFactory.createTitledBorder("Order Status: " + order.getOrderStatus()));
         panel.add(scrollPane2, BorderLayout.CENTER);
         this.setVisible(true);
+        
+        JButton backButton = new JButton("Back");
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to User Main View");
+
+                //dispose();
+                OrderHistoryView orderHistoryView = null;
+                try {
+                    orderHistoryView = new OrderHistoryView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(orderHistoryView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
+        header.add(backButton,BorderLayout.WEST);
         
 
     }
