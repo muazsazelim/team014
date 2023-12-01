@@ -258,7 +258,7 @@ public class OrderOperations {
                         "OrderLineId='" + resultSet.getInt("orderLineID") + "'" +
                         ", ProductID='" + resultSet.getInt("productID") + "'" +
                         ", Quantity='" + resultSet.getInt("quantity") + "'" +
-                        ", LineCost='" + resultSet.getInt("lineCost") + "'" +
+                        ", LineCost='" + resultSet.getDouble("lineCost") + "'" +
                         "}");
                 orderList.add(orderline);
 
