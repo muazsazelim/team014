@@ -20,7 +20,7 @@ import java.util.List;
 
 import java.util.Date;
 
-public class ProductsView extends JFrame {
+public class ProductsView extends JPanel {
 
     /*
      * productType
@@ -33,17 +33,39 @@ public class ProductsView extends JFrame {
      */
 
     public ProductsView(Connection connection, int n, User user) throws SQLException {
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 500);
+
+
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+        
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel header = new JPanel(new BorderLayout());
-        this.add(header, BorderLayout.PAGE_START);
-        this.add(panel, BorderLayout.CENTER);
 
-        JButton mainPage;
-        mainPage = new JButton("Back to Main Page");
+        contentPanel.add(header, BorderLayout.PAGE_START);
+        contentPanel.add(panel, BorderLayout.CENTER);
+        
+
+        JButton backButton;
+        backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Products Category");    
+                ProductsPageView productsPageView = null;
+                try {
+                    productsPageView = new ProductsPageView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+                
+            }
+        });
 
         JButton inventoryButton = new JButton("Go to Inventory");
         inventoryButton.addActionListener(new ActionListener() {
@@ -51,7 +73,7 @@ public class ProductsView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Inventory View");
 
-                dispose();
+                //dispose();
                 InventoryView inventoryView = null;
                 try {
                     inventoryView = new InventoryView(connection, user);
@@ -99,8 +121,12 @@ public class ProductsView extends JFrame {
         titleLabel.setFont(new Font("Default", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         header.add(titleLabel, BorderLayout.PAGE_START);
-        header.add(mainPage, BorderLayout.LINE_END);
-        header.add(inventoryButton, BorderLayout.LINE_START);
+        header.add(backButton, BorderLayout.WEST);
+
+        if (!user.getUserType().equals("customer")) {
+
+            header.add(inventoryButton, BorderLayout.EAST);
+        }
 
         PreparedStatement productStatement = connection.prepareStatement(productsql);
         ResultSet products = productStatement.executeQuery();
@@ -236,29 +262,46 @@ public class ProductsView extends JFrame {
                             maxOrderLine = orderLineResultSet.getInt(1);
                         }
 
-                        OrderLine orderLine = new OrderLine(maxOrderLine + 1, orderID, Integer.parseInt(orderProductID),
-                                orderQuantity, totalPrice);
-                        OrderOperations orderOperations = new OrderOperations();
+                        String inven = "SELECT Quantity FROM Inventory WHERE ProductID = " + orderProductID;
+                        PreparedStatement invenS = connection.prepareStatement(inven);
+                        ResultSet invenR = invenS.executeQuery();
 
-                        orderOperations.addOrderLine(orderLine, connection);
-                        JOptionPane.showMessageDialog(panel, "Item(s) added to order");
+                        int itemInven = 0;
 
-                        String orderTotalS = "SELECT * FROM Orders WHERE orderID = " + orderID;
-                        PreparedStatement orderT = connection.prepareStatement(orderTotalS);
-                        ResultSet orderTR = orderT.executeQuery();
-
-                        Double currTotal = 0.00;
-                        while (orderTR.next()) {
-                            currTotal = orderTR.getDouble("totalCost");
+                        while (invenR.next()) {
+                            itemInven = invenR.getInt(1);
                         }
 
-                        Double totalForOrder = Double.sum(currTotal, totalPrice);
+                        if (orderQuantity > itemInven) {
 
-                        String updateOrder = "UPDATE Orders SET totalCost = ? WHERE orderID = ?";
-                        PreparedStatement updateO = connection.prepareStatement(updateOrder);
-                        updateO.setDouble(1, totalForOrder);
-                        updateO.setInt(2, orderID);
-                        updateO.executeUpdate();
+                            JOptionPane.showMessageDialog(panel,
+                                    "Cannot add product. We only have " + itemInven + " stock(s) for this product");
+                        } else {
+                            OrderLine orderLine = new OrderLine(maxOrderLine + 1, orderID,
+                                    Integer.parseInt(orderProductID),
+                                    orderQuantity, totalPrice);
+                            OrderOperations orderOperations = new OrderOperations();
+
+                            orderOperations.addOrderLine(orderLine, connection);
+                            JOptionPane.showMessageDialog(panel, "Item(s) added to order");
+
+                            String orderTotalS = "SELECT * FROM Orders WHERE orderID = " + orderID;
+                            PreparedStatement orderT = connection.prepareStatement(orderTotalS);
+                            ResultSet orderTR = orderT.executeQuery();
+
+                            Double currTotal = 0.00;
+                            while (orderTR.next()) {
+                                currTotal = orderTR.getDouble("totalCost");
+                            }
+
+                            Double totalForOrder = Double.sum(currTotal, totalPrice);
+
+                            String updateOrder = "UPDATE Orders SET totalCost = ? WHERE orderID = ?";
+                            PreparedStatement updateO = connection.prepareStatement(updateOrder);
+                            updateO.setDouble(1, totalForOrder);
+                            updateO.setInt(2, orderID);
+                            updateO.executeUpdate();
+                        }
 
                     } catch (SQLException w) {
                         System.out.println("Cannot insert order line");
@@ -272,7 +315,7 @@ public class ProductsView extends JFrame {
         }
 
         JScrollPane sp = new JScrollPane(panel);
-        this.add(sp);
+        contentPanel.add(sp);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 

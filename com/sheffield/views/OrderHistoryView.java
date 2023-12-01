@@ -28,6 +28,35 @@ public class OrderHistoryView extends JPanel {
         JPanel contentPanel = this;
         contentPanel.setLayout(new BorderLayout());
 
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
+        contentPanel.add(header, BorderLayout.NORTH);
+
+        JButton backButton = new JButton("Back");
+        header.add(backButton,BorderLayout.WEST);
+
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to User Main View");
+
+                //dispose();
+                UserMainView userMainView = null;
+                try {
+                    userMainView = new UserMainView(connection, user);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
 
         JPanel panel = new JPanel();
         contentPanel.add(panel);
@@ -93,7 +122,7 @@ public class OrderHistoryView extends JPanel {
                         Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
                         Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
                         Order order = userOrders[row];
-                        orderDetailsView = new OrderDetailsView(connection, order);
+                        orderDetailsView = new OrderDetailsView(connection, order, user);
                         TrainsOfSheffield.getPanel().removeAll();
                         TrainsOfSheffield.getPanel().add(orderDetailsView, BorderLayout.CENTER);
                         TrainsOfSheffield.getPanel().revalidate();
@@ -115,6 +144,9 @@ public class OrderHistoryView extends JPanel {
 
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(scrollPane1, BorderLayout.CENTER);
+
+        
+
 
     }
     

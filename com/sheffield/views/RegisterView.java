@@ -39,6 +39,11 @@ public class RegisterView extends JPanel {
 
         contentPanel.add(panel, BorderLayout.CENTER);
 
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
+        contentPanel.add(header, BorderLayout.NORTH);
+
         // Set a layout manager for the panel (e.g., GridLayout)
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -57,6 +62,8 @@ public class RegisterView extends JPanel {
         JLabel regLabel2 = new JLabel(" where your past journeys are your future destinations.");
         JButton registerButton = new JButton("Register");
 
+        JButton backButton = new JButton("Back");
+
         // Add components to the panel
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -73,6 +80,8 @@ public class RegisterView extends JPanel {
         panel.add(errorLabel2, gbc);
         gbc.gridy = 24;
         panel.add(registerButton, gbc);
+        
+        header.add(backButton, BorderLayout.WEST);
 
 
         //copy pasta start
@@ -151,6 +160,26 @@ public class RegisterView extends JPanel {
                     throw new RuntimeException(t);
                 }
 
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to LoginView");
+
+                //dispose();
+                LoginView loginView = null;
+                try {
+                    loginView = new LoginView(connection);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(loginView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
             }
         });
     }
