@@ -34,7 +34,7 @@ public class InventoryView extends JPanel {
         backButton = new JButton("Back");
 
         JButton editPage;
-        editPage = new JButton("Add quantity");
+        editPage = new JButton("Edit Product");
 
         header.add(backButton, BorderLayout.WEST);
 
