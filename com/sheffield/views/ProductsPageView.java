@@ -182,7 +182,7 @@ public class ProductsPageView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Cart Page");
-                UserOrderView userO = null;
+                UserOrderView userOrderView = null;
 
                 // Order userOrder = new Order();
 
@@ -212,9 +212,14 @@ public class ProductsPageView extends JPanel {
 
                         Order newOrder = new Order(orderID, userID, issueDate, total, status);
 
-                        userO = new UserOrderView(connection, newOrder, user);
-
-                        userO.setVisible(true);
+                        
+                        
+                        userOrderView = new UserOrderView(connection, newOrder,user);
+                        //userDetailsView.setVisible(true);
+                        TrainsOfSheffield.getPanel().removeAll();
+                        TrainsOfSheffield.getPanel().add(userOrderView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().revalidate();
+       
                     }
 
                 } catch (Throwable t) {
