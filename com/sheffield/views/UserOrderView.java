@@ -38,7 +38,6 @@ public class UserOrderView extends JFrame {
         JPanel header = new JPanel();
         header.setLayout(new BorderLayout());
 
-
         this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(contentPanel, BorderLayout.CENTER);
 
@@ -56,23 +55,20 @@ public class UserOrderView extends JFrame {
 
                 dispose();
                 /*
-                ProductsPageView productsPageView = null;
-                try {
-                    productsPageView = new ProductsPageView(connection, user);
-                    //userDetailsView.setVisible(true);
-                    TrainsOfSheffield.getPanel().removeAll();
-                    TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
-                    TrainsOfSheffield.getPanel().revalidate();
-    
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-                */
+                 * ProductsPageView productsPageView = null;
+                 * try {
+                 * productsPageView = new ProductsPageView(connection, user);
+                 * //userDetailsView.setVisible(true);
+                 * TrainsOfSheffield.getPanel().removeAll();
+                 * TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
+                 * TrainsOfSheffield.getPanel().revalidate();
+                 * 
+                 * } catch (Throwable t) {
+                 * throw new RuntimeException(t);
+                 * }
+                 */
             }
         });
-
-        
-
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         // panel.setLayout(new GridLayout(0,1));
@@ -143,11 +139,13 @@ public class UserOrderView extends JFrame {
         decline = new JButton("Decline Order");
 
         System.out.println(user.getUserType());
+
+        // Add components to the panel
+        panel.add(confirmOrder);
+        panel.add(orderHistory);
+
         if (!user.getUserType().equals("customer")) {
 
-            // Add components to the panel
-            panel.add(confirmOrder);
-            panel.add(orderHistory);
             panel.add(decline);
         } else {
             System.out.println("this is customer view only");

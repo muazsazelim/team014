@@ -31,14 +31,17 @@ public class UserMainView extends JPanel {
         JButton products;
         JButton staff;
         JButton manager;
+        JButton logOutButton;
 
         userDetails = new JButton("Change Details");
         orderHistory = new JButton("Order History");
         products = new JButton("View Products");
+        logOutButton = new JButton("Log Out");
 
         navigation.add(userDetails);
         navigation.add(orderHistory);
         navigation.add(products);
+        navigation.add(logOutButton);
 
         if (user.getUserType().equals("staff")) {
             staff = new JButton("Staff");
@@ -166,6 +169,26 @@ public class UserMainView extends JPanel {
                     throw new RuntimeException(t);
                 }                
 
+            }
+        });
+
+        logOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("User Logged Out");
+
+                //dispose();
+                LoginView loginView = null;
+                try {
+                    loginView = new LoginView(connection);
+                    //userDetailsView.setVisible(true);
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(loginView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
             }
         });
 
