@@ -55,12 +55,10 @@ public class UserOrderView extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Products Category");
 
-                //dispose();
                 
                 ProductsPageView productsPageView = null;
                 try {
                     productsPageView = new ProductsPageView(connection, user);
-                    //userDetailsView.setVisible(true);
                     TrainsOfSheffield.getPanel().removeAll();
                     TrainsOfSheffield.getPanel().add(productsPageView, BorderLayout.CENTER);
                     TrainsOfSheffield.getPanel().revalidate();
@@ -137,7 +135,6 @@ public class UserOrderView extends JPanel {
 
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Create buttons that links to other pages from default page
         confirmOrder = new JButton("Confirm Order");
         delete = new JButton("Delete");
         delete.setEnabled(false);
@@ -172,12 +169,10 @@ public class UserOrderView extends JPanel {
         totalCost.setText("Order Total - " + totalCostString);
 
         panel.add(totalCost);
-        // Add components to the panel
         panel.add(confirmOrder);
         panel.add(delete);
 
 
-        // Create an ActionListener for the view buttons
         confirmOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -195,7 +190,6 @@ public class UserOrderView extends JPanel {
                         TrainsOfSheffield.getPanel().revalidate();
 
                     }else {
-                        // ask josh to link bank details page
                         System.out.println("goig bank");
                         bankDetailsView = new BankDetailsView(connection, order, user, true);
                         
