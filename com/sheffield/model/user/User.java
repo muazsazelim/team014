@@ -77,7 +77,11 @@ public class User {
     }
 
     public void setForename(String forename) {
-        this.forename = forename;
+        if (isValidName(forename)) {
+            this.forename = forename;
+        } else {
+            throw new IllegalArgumentException("Name can not contain digits");
+        }
     }
 
     public String getForename() {
@@ -85,7 +89,11 @@ public class User {
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        if (isValidName(surname)) {
+            this.surname = surname;
+        } else {
+            throw new IllegalArgumentException("Name can not contain digits");
+        }
     }
 
     public String getSurname() {
@@ -110,7 +118,14 @@ public class User {
 
     private boolean isValidemail(String email) {
         // Implement email validation logic here (e.g., length)
-        return email != null && email.length() <= 100;
+        if(email.contains("@") && email.contains(".") && email != null && email.length() <= 100){
+            return true;
+        }else {return false;}
+        
+    }
+
+    private boolean isValidName(String name){
+        return !name.contains(".*\\d.*");
     }
 
 
