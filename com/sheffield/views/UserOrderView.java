@@ -29,7 +29,7 @@ public class UserOrderView extends JPanel {
     private JTable basketTable;
     
     private TestOperations testOperations = new TestOperations();
-    OrderOperations orderOperations = new OrderOperations();
+    private OrderOperations orderOperations = new OrderOperations();
 
     public UserOrderView(Connection connection, Order order, User user) throws SQLException {
 
@@ -121,7 +121,7 @@ public class UserOrderView extends JPanel {
                         model.setValueAt(newCost, row, 3);
 
                     
-                        Double newTotalOrderCost = orderOperations.calculateTotalOrderCost(order.getOrderID(), connection);
+                        
                     } catch (SQLException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
@@ -167,8 +167,14 @@ public class UserOrderView extends JPanel {
 
         System.out.println(user.getUserType());
 
+        JLabel totalCost = new JLabel();
+        String totalCostString = String.valueOf(orderOperations.calculateTotalOrderCost(order.getOrderID(), connection));
+        totalCost.setText(totalCostString);
+
+        panel.add(totalCost);
         // Add components to the panel
         panel.add(confirmOrder);
+        panel.add(delete);
 
 
         // Create an ActionListener for the view buttons
