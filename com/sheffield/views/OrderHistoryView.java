@@ -21,9 +21,6 @@ import com.sheffield.util.OrderOperations;
 
 
 public class OrderHistoryView extends JPanel {
-    private JButton userDetails;
-    private JButton orderHistory;
-    private JButton products;
     private JTable basketTable;
     private JTable blockedTable;
     private JButton decline;
@@ -41,7 +38,7 @@ public class OrderHistoryView extends JPanel {
         JButton backButton = new JButton("Back");
         header.add(backButton,BorderLayout.WEST);
 
-
+        //Navigates to User Main Page
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,16 +103,16 @@ public class OrderHistoryView extends JPanel {
             comboBox.addItem("Yes");
             comboBox.addItem("No");
 
-            comboBox.setSelectedItem("test");
+            
             blockedTable.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
         
 
         try {
-            System.out.println(user.getuserId());
+       
             Order[] userOrders = orderOperations.getAllOrdersByUser(user.getuserId(), connection);
             Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate).reversed());
             
-           
+           //Separate Blocked Orders from Normal
             for (Order order: userOrders){
                 if(orderOperations.isBlockedOrder(order, connection) && order.getOrderStatus() != OrderStatus.FULFILLED){
                     Object[] ordersForBlockedTable = {order.getOrderID(), order.getIssueDate(), "test"};
@@ -140,6 +137,7 @@ public class OrderHistoryView extends JPanel {
         decline = new JButton("Decline Order");
         decline.setEnabled(false);
 
+        //Selection Function
         ListSelectionModel selectionModel = blockedTable.getSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -155,6 +153,7 @@ public class OrderHistoryView extends JPanel {
             }
         });
 
+        //Action Listnener for Decline Button
         decline.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
@@ -165,7 +164,7 @@ public class OrderHistoryView extends JPanel {
                         orderOperations.updateDeclineOrder(orderId, connection);
                         modelBlocked.removeRow(selectedRow);
                     } catch (SQLException e1) {
-                        // TODO Auto-generated catch block
+                      
                         e1.printStackTrace();
                     }
                    
@@ -173,13 +172,13 @@ public class OrderHistoryView extends JPanel {
             }
         });
 
-
+        //Mouse Listener for retrieving Order ID
         basketTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int column = basketTable.columnAtPoint(e.getPoint());
                 int row = basketTable.rowAtPoint(e.getPoint());
-                System.out.println(row);
+          
                 if (column == 0) { 
                     OrderDetailsView orderDetailsView = null;
                     try {
