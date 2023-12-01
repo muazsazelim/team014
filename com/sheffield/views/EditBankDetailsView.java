@@ -87,7 +87,7 @@ public class EditBankDetailsView extends JPanel {
                 //dispose();
                 BankDetailsView loginView = null;
                 try {
-                    loginView = new BankDetailsView(connection, user);
+                    loginView = new BankDetailsView(connection, null,user,false);
                     TrainsOfSheffield.getPanel().removeAll();
                     TrainsOfSheffield.getPanel().add(loginView, BorderLayout.CENTER);
                     TrainsOfSheffield.getPanel().revalidate();
