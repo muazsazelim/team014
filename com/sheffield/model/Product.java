@@ -6,15 +6,17 @@ public class Product {
     private String brandName;
     private float retailPrice;
     private String gaugeType;
+    private String productCode;
 
     // Constructor to initialize a User object with its attributes
 
-    public Product(int productId, String productName, String brandName, float retailPrice, String gaugeType) {
+    public Product(int productId, String productName, String brandName, float retailPrice, String gaugeType, String productCode) {
         this.setProductId(productId);
         this.setProductName(productName);
         this.setBrandName(brandName);
         this.setRetailPrie(retailPrice);
         this.setGaugeType(gaugeType);
+        this.setProductCode(productCode);
     }
 
     // Getter and setter methods for the userId attribute with validation
@@ -56,6 +58,14 @@ public class Product {
 
     public String getGaugeType() {
         return gaugeType;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public String getProductCode(String productCode) {
+        return productCode;
     }
 
 

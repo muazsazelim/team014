@@ -510,10 +510,10 @@ public class TestOperations {
             ResultSet resultSet = preparedStatement.executeQuery();
             System.out.println("<==================== Product by ProductId =====================>");
             if (resultSet.next()) {
-                Product product = new Product(resultSet.getInt("productID"), resultSet.getString("productName"),resultSet.getString("brandName"), resultSet.getFloat("retailPrice"), resultSet.getString("gaugeType"));
+                Product product = new Product(resultSet.getInt("productID"), resultSet.getString("productName"),resultSet.getString("brandName"), resultSet.getFloat("retailPrice"), resultSet.getString("gaugeType"), resultSet.getString("productCo"));
                 System.out.println("{" +
                         "productId='" + resultSet.getInt("productID") + "'" +
-                        ", email='" + resultSet.getString("productName") + "'" +
+                        ", productName='" + resultSet.getString("productName") + "'" +
                         "}");
                 return product;
             } else {
@@ -521,6 +521,79 @@ public class TestOperations {
                 return null;
             }
             
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    public int getStock(int productId, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Inventory WHERE ProductID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setInt(1, productId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            System.out.println("<==================== Product by ProductId =====================>");
+            if (resultSet.next()) {
+                int stock = resultSet.getInt("quantity");
+                System.out.println("{" +
+                        "productId='" + resultSet.getInt("productId") + "'" +
+                        ", quantity='" + resultSet.getInt("quantity") + "'" +
+                        "}");
+                return stock;
+            } else {
+                System.out.println("Product with productId " + productId + " not found.");
+                return -1;
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+
+    public void updateStock(int productId, int quantity, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Inventory SET Quantity=? WHERE productID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, productId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for productID: " + productId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
+
+    
+    public void updateProduct(Product newProduct, Connection connection) throws SQLException {
+        try {
+            String updateSQL = "UPDATE Product SET productName=?,"+
+            "brandName=?, retailPrice=?, gaugeType=? WHERE productID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setString(1, newProduct.getProductName());
+            preparedStatement.setString(2, newProduct.getBrandName());
+            preparedStatement.setFloat(3, newProduct.getRetailPrice());
+            preparedStatement.setString(4, newProduct.getGaugeType());
+            preparedStatement.setInt(5, newProduct.getProductId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for productID: " + newProduct.getProductId());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;// Re-throw the exception to signal an error.
