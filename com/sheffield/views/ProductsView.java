@@ -20,7 +20,7 @@ import java.util.List;
 
 import java.util.Date;
 
-public class ProductsView extends JFrame {
+public class ProductsView extends JPanel {
 
     /*
      * productType
@@ -33,14 +33,18 @@ public class ProductsView extends JFrame {
      */
 
     public ProductsView(Connection connection, int n, User user) throws SQLException {
-        this.setTitle("Train of Sheffield");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 500);
+
+
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+        
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel header = new JPanel(new BorderLayout());
-        this.add(header, BorderLayout.PAGE_START);
-        this.add(panel, BorderLayout.CENTER);
+
+        contentPanel.add(header, BorderLayout.PAGE_START);
+        contentPanel.add(panel, BorderLayout.CENTER);
+        
 
         JButton backButton;
         backButton = new JButton("Back");
@@ -48,9 +52,7 @@ public class ProductsView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Products Category");
-
-                dispose();
-                /*
+                
                 ProductsPageView productsPageView = null;
                 try {
                     productsPageView = new ProductsPageView(connection, user);
@@ -62,7 +64,7 @@ public class ProductsView extends JFrame {
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
-                */
+                
             }
         });
 
@@ -72,7 +74,7 @@ public class ProductsView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Went to Inventory View");
 
-                dispose();
+                //dispose();
                 InventoryView inventoryView = null;
                 try {
                     inventoryView = new InventoryView(connection, user);
@@ -293,7 +295,7 @@ public class ProductsView extends JFrame {
         }
 
         JScrollPane sp = new JScrollPane(panel);
-        this.add(sp);
+        contentPanel.add(sp);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
