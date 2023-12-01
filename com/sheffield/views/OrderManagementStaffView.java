@@ -29,6 +29,7 @@ public class OrderManagementStaffView extends JFrame {
     private JButton fufill;
     private JTable basketTable;
     private JTable archivedTable;
+    private JTable blockedTable;
     private JButton delete;
     private OrderOperations orderOperations = new OrderOperations();
     private TestOperations testOperations = new TestOperations();
@@ -46,7 +47,7 @@ public class OrderManagementStaffView extends JFrame {
         this.add(panel);
 
         this.getContentPane().setLayout(new BorderLayout());
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new BorderLayout());
         
        // panel.setLayout(new GridLayout(0,1));
 
@@ -78,6 +79,16 @@ public class OrderManagementStaffView extends JFrame {
             };
 
             archivedTable = new JTable(modelArchive);
+
+            String[] columnNameForBlocked = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details", "Declined"};
+            DefaultTableModel modelBlocked = new DefaultTableModel(columnNameForBlocked, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+            };
+
+            blockedTable = new JTable(modelBlocked);
         
        // OrderLine[] orderLineForOrder 
         try {
@@ -106,12 +117,28 @@ public class OrderManagementStaffView extends JFrame {
                 basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
                 ArrayList<Order> archivedOrders = new ArrayList<>();
                 Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate));
+
+            // Adds data to tables
             for (Order order: userOrders){
+                
                 if (order.getOrderStatus() == OrderStatus.FULFILLED)
                 {
                     archivedOrders.add(order);
+                    
                 }else if (order.getOrderStatus() == OrderStatus.CONFIRMED){
-                    model.addRow(getTableValues(order, connection));
+
+                    if(isBlockedOrder(order, connection)){
+                        System.out.println("is a blocked order");
+                        Object[] tableValues = getTableValues(order, connection);
+                        Object[] newTableValue = new Object[tableValues.length + 1];
+
+                        System.arraycopy(tableValues, 0, newTableValue, 0, tableValues.length);
+                        newTableValue[tableValues.length] = "replace with function to check if user has declined or not";
+                        modelBlocked.addRow(newTableValue);
+                    }else {
+                        model.addRow(getTableValues(order, connection)); }
+                    
+                    
                 }
                               
 
@@ -149,9 +176,7 @@ public class OrderManagementStaffView extends JFrame {
             });
 
             
-            JScrollPane scrollPane = new JScrollPane(basketTable);
-            panel.add(scrollPane, BorderLayout.CENTER);
-
+            
             
              
 
@@ -164,30 +189,44 @@ public class OrderManagementStaffView extends JFrame {
         basketTable.setCellSelectionEnabled(false);
         basketTable.setRowSelectionAllowed(false);
         basketTable.setColumnSelectionAllowed(false);
-    
+
+        basketTable.setPreferredScrollableViewportSize(new Dimension(100,100));
+        blockedTable.setPreferredScrollableViewportSize(new Dimension(100,100));
+        archivedTable.setPreferredScrollableViewportSize(new Dimension(100,100));
       
         JScrollPane scrollPane = new JScrollPane(basketTable);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Confirmed Orders"));
-        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(scrollPane, BorderLayout.NORTH);
+        this.setVisible(true);
+
+        JScrollPane scrollPane3 = new JScrollPane(blockedTable);
+        scrollPane3.setBorder(BorderFactory.createTitledBorder("Blocked Orders"));
+        panel.add(scrollPane3, BorderLayout.CENTER);
         this.setVisible(true);
 
         
         JScrollPane scrollPane2 = new JScrollPane(archivedTable);
         scrollPane2.setBorder(BorderFactory.createTitledBorder("Archived Orders"));
-        panel.add(scrollPane2, BorderLayout.CENTER);
+        panel.add(scrollPane2, BorderLayout.SOUTH);
         this.setVisible(true);
+
+        
        
         
         orderHistory = new JButton("Order History");
         fufill = new JButton("Fulfill");
         delete = new JButton("Delete");
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(delete);
+        buttonPanel.add(orderHistory);
+        buttonPanel.add(fufill);
         
-        panel.add(delete);
-        panel.add(orderHistory);
-        panel.add(fufill);
-
+        
         this.getContentPane().add(panel, BorderLayout.NORTH);
+        
+        this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         this.pack();
 
 
