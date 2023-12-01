@@ -225,6 +225,28 @@ public class OrderOperations {
         }      
     }
 
+    public void updateOrderLineCost(double cost, int orderlineId, Connection connection) throws SQLException{
+        try {
+            String updateSQL = "UPDATE Order_Line SET lineCost=? WHERE orderLineID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+
+            preparedStatement.setDouble(1, cost);
+            preparedStatement.setInt(2, orderlineId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: ");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     public void updateQuantity(int productId, int quantity, Connection connection) throws SQLException {
         try {
             String updateSQL = "UPDATE Inventory SET Quantity=? WHERE ProductID=?";
@@ -232,6 +254,27 @@ public class OrderOperations {
 
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, productId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) updated successfully.");
+            } else {
+                System.out.println("No rows were updated for userId: ");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public void updateOrderLineQuantity(int orderLineId, int quantity, Connection connection) throws SQLException{
+        try {
+            String updateSQL = "UPDATE Order_Line SET quantity=? WHERE orderLineID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
+
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, orderLineId);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -395,6 +438,25 @@ public class OrderOperations {
         }
     }
 
+    public Double getProductCost (int productId, Connection connection) throws SQLException{
+         try {
+            String selectSQL = "SELECT retailPrice FROM Product WHERE productID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setInt(1, productId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getDouble("retailPrice");
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     public void insertOrder(Order order, Connection connection) throws SQLException {
         try {
             String insertSQL = "INSERT INTO Orders (orderId, userId, issueDate, totalCost, status) VALUES (?, ?, ?, ?, ?)";
@@ -489,4 +551,22 @@ public class OrderOperations {
 
     }
 
+    public void deleteOrderLine(int orderLineId, Connection connection) throws SQLException{
+        try {
+            String deleteSQL = "DELETE FROM Order_Line WHERE orderLineID=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL);
+            preparedStatement.setInt(1, orderLineId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(rowsAffected + " row(s) deleted successfully.");
+            } else {
+                System.out.println("No rows were deleted for userId: " + orderLineId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
+    }
 }

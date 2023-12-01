@@ -3,10 +3,14 @@ package com.sheffield.views;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -19,6 +23,7 @@ import com.sheffield.util.TestOperations;
 
 public class UserOrderView extends JPanel {
     private JButton confirmOrder;
+    private JButton delete;
     private JButton orderHistory;
     private JButton decline;
     private JTable basketTable;
@@ -80,7 +85,7 @@ public class UserOrderView extends JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 2;
             }
         };
         // OrderLine[] orderLineForOrder
@@ -100,6 +105,29 @@ public class UserOrderView extends JPanel {
 
         }
 
+        basketTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                int column = basketTable.columnAtPoint(e.getPoint());
+                int row = basketTable.rowAtPoint(e.getPoint());
+                if(column == 2){
+                    int orderLineId = Integer.parseInt(model.getValueAt(row, 0).toString());
+                    int productId = Integer.parseInt(model.getValueAt(row, 1).toString());
+                    int newQuantity = Integer.parseInt(model.getValueAt(row, 2).toString());
+                    try {
+                        orderOperations.updateOrderLineQuantity(orderLineId, newQuantity, connection);
+                        double newCost = orderOperations.getProductCost(productId, connection) * newQuantity;
+                        orderOperations.updateOrderLineCost(newCost, orderLineId, connection);
+                        model.setValueAt(newCost, row, 3);
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    
+                }
+            }
+        });
+
         
 
         JScrollPane scrollPane = new JScrollPane(basketTable);
@@ -108,6 +136,31 @@ public class UserOrderView extends JPanel {
 
         // Create buttons that links to other pages from default page
         confirmOrder = new JButton("Confirm Order");
+        delete = new JButton("Delete");
+        delete.setEnabled(false);
+
+        ListSelectionModel selectionModel = new DefaultListSelectionModel();
+        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);     
+        basketTable.setSelectionModel(selectionModel);
+        
+         selectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e){
+                if (!e.getValueIsAdjusting()){
+                    int selectedRow = basketTable.getSelectedRow();
+                    if (selectedRow != -1){
+                                                   
+                        delete.setEnabled(true);
+                                                
+                    }else {
+                         delete.setEnabled(false);
+                    }                   
+                    
+                }
+
+            }
+        });
+
 
         System.out.println(user.getUserType());
 
@@ -143,6 +196,23 @@ public class UserOrderView extends JPanel {
 
                     }
                     
+                } catch (SQLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                int selectedRow = basketTable.getSelectedRow();
+
+                int orderLineId = Integer.parseInt(basketTable.getValueAt(selectedRow, 0).toString());
+
+                try {          
+                    orderOperations.deleteOrderLine(orderLineId, connection);
+                    model.removeRow(selectedRow);
                 } catch (SQLException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
