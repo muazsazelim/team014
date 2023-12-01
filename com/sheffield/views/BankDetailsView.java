@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BankDetailsView extends JFrame {
+public class BankDetailsView extends JPanel {
     private JTextField bankCardNameField = new JTextField(20);
     private JTextField holderNameField = new JTextField(20);
     private JTextField bankCardNumberField = new JTextField(20);
@@ -22,16 +22,22 @@ public class BankDetailsView extends JFrame {
     private JTextField securityCodeField = new JTextField(20);
     public BankDetailsView(Connection connection, User user) throws SQLException {
         // Create the JFrame in the constructor
-        this.setTitle("Bank Details Update");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(320, 400);
+
+        JPanel contentPanel = this;
+        contentPanel.setLayout(new BorderLayout());
+
 
         // Create a JPanel to hold the components
         JPanel panel = new JPanel();
-        this.add(panel);
-
-        // Set a layout manager for the panel (e.g., GridLayout)
         panel.setLayout(new GridBagLayout());
+
+        contentPanel.add(panel, BorderLayout.CENTER);
+
+        JPanel header = new JPanel();
+        header.setLayout(new BorderLayout());
+
+        contentPanel.add(header, BorderLayout.NORTH);
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
@@ -81,8 +87,6 @@ public class BankDetailsView extends JFrame {
 
         // end
 
-        this.getContentPane().add(panel);
-        this.pack();
         
 
         // Create an ActionListener for the register button
@@ -98,7 +102,6 @@ public class BankDetailsView extends JFrame {
                         if (field1 == null){
                             listNotNull= false;
                         }else{
-                            System.out.println(field1.getText().length());
                             inputList.add(field1.getText()) ;
                         }
                     }
@@ -108,16 +111,15 @@ public class BankDetailsView extends JFrame {
                             BankDetails newBankDetails = new BankDetails(inputList.get(2), inputList.get(0), inputList.get(1), inputList.get(3), inputList.get(4));
                             databaseOperations.insertBankDetails(newBankDetails, connection, user);
                             System.out.println("New Bank details created");
-                            System.out.println(newBankDetails); //hide this later
                             JOptionPane.showMessageDialog(null, "Bank Details submited");
-                            dispose(); //dialog here
+                            //dispose(); //dialog here
                         } else {
                             errorFillLabel.setVisible(true);
-                            pack();
+                            //pack();
                         }
                     }else {
                         errorFillLabel.setVisible(true);
-                        pack();
+                        //pack();
                     }
                 }catch (Throwable t) {
                     // Close connection if database crashes.
