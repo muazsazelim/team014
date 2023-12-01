@@ -1,5 +1,8 @@
 package com.sheffield.views;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -22,7 +25,8 @@ public class OrderHistoryView extends JPanel {
     private JButton products;
     private JTable basketTable;
     private JTable blockedTable;
-    private Object[][] data;
+    private JButton decline;
+   
     public OrderHistoryView (Connection connection, User user) throws SQLException {
 
         JPanel contentPanel = this;
@@ -77,6 +81,10 @@ public class OrderHistoryView extends JPanel {
         OrderOperations orderOperations = new OrderOperations();
         
         String[] columnNames = {"OrderID", "Date"};
+        String[] columnBlockedNames = {"OrderID", "Date","Decline"};
+
+        JComboBox<String> comboBox = new JComboBox<>();
+        
             DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -84,8 +92,21 @@ public class OrderHistoryView extends JPanel {
             }
             };
 
+            DefaultTableModel modelBlocked = new DefaultTableModel(columnBlockedNames, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false; 
+                }
+                };
+
             basketTable = new JTable(model);
-            blockedTable = new JTable(model);
+            blockedTable = new JTable(modelBlocked);
+
+            comboBox.addItem("Yes");
+            comboBox.addItem("No");
+
+            comboBox.setSelectedItem("test");
+            blockedTable.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
         
 
         try {
@@ -95,8 +116,14 @@ public class OrderHistoryView extends JPanel {
             
            
             for (Order order: userOrders){
-            Object[] ordersForTable = {order.getOrderID(), order.getIssueDate()};
-            model.addRow(ordersForTable);
+                if(orderOperations.isBlockedOrder(order, connection)){
+                    Object[] ordersForBlockedTable = {order.getOrderID(), order.getIssueDate(), "test"};
+                    modelBlocked.addRow(ordersForBlockedTable);
+                }else{
+                    Object[] ordersForTable = {order.getOrderID(), order.getIssueDate()};
+                    model.addRow(ordersForTable);
+                }
+            
             }
 
             
@@ -106,8 +133,36 @@ public class OrderHistoryView extends JPanel {
         }
 
         basketTable.setCellSelectionEnabled(false);
-        basketTable.setRowSelectionAllowed(false);
+        
         basketTable.setColumnSelectionAllowed(false);
+
+        decline = new JButton("Decline Order");
+        decline.setEnabled(false);
+
+        ListSelectionModel selectionModel = blockedTable.getSelectionModel();
+        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        selectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e){
+                if (!e.getValueIsAdjusting()){
+                    int selectedRow = blockedTable.getSelectedRow();
+                 
+                    decline.setEnabled(selectedRow != -1);
+                }
+
+            }
+        });
+
+        decline.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                int selectedRow = blockedTable.getSelectedRow();
+                if(selectedRow != -1){
+                    System.out.println("Performing action for selected row: " + selectedRow);
+                }
+            }
+        });
 
 
         basketTable.addMouseListener(new MouseAdapter() {

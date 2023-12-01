@@ -208,10 +208,6 @@ public class OrderManagementStaffView extends JPanel {
             });
 
             
-            
-            
-             
-
              
         } catch (SQLException e) {
             e.printStackTrace();         
@@ -264,7 +260,7 @@ public class OrderManagementStaffView extends JPanel {
                     try {
                         orderOperations.deleteOrder(orderId, connection);
                     } catch (SQLException e1) {
-                       
+                      
                         e1.printStackTrace();
                     }
                     model.removeRow(0);
@@ -275,6 +271,12 @@ public class OrderManagementStaffView extends JPanel {
             }
         });
         
+        orderHistory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Went to Order History Page");
+            }
+        });
 
         fufill.addActionListener(new ActionListener() {
             @Override

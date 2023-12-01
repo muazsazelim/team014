@@ -15,13 +15,16 @@ import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
 import com.sheffield.model.order.OrderLine;
 import com.sheffield.util.OrderOperations;
+import com.sheffield.util.TestOperations;
 
 public class UserOrderView extends JPanel {
     private JButton confirmOrder;
     private JButton orderHistory;
     private JButton decline;
     private JTable basketTable;
-    private Object[][] data;
+    
+    private TestOperations testOperations = new TestOperations();
+    OrderOperations orderOperations = new OrderOperations();
 
     public UserOrderView(Connection connection, Order order, User user) throws SQLException {
 
@@ -72,7 +75,7 @@ public class UserOrderView extends JPanel {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titleLabel, BorderLayout.NORTH);
         // need to replace with selection from cataloge table
-        OrderOperations orderOperations = new OrderOperations();
+        
         String[] columnNames = { "Order Line ID", "Product ID", "Quantity", "Cost" };
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -97,30 +100,7 @@ public class UserOrderView extends JPanel {
 
         }
 
-        basketTable.getDefaultEditor(Object.class).addCellEditorListener(new CellEditorListener() {
-
-            @Override
-            public void editingStopped(ChangeEvent e) {
-                int row = basketTable.getSelectedRow();
-                int column = basketTable.getSelectedColumn();
-                Object editedValue = basketTable.getValueAt(row, column);
-
-                System.out.println("Cell edited: Row=" + row + ", Column=" + column + ", New Value=" + editedValue);
-
-                data[row][column] = editedValue;
-
-            }
-
-            @Override
-            public void editingCanceled(ChangeEvent e) {
-                int row = basketTable.getSelectedRow();
-                int column = basketTable.getSelectedColumn();
-
-                Object originalValue = data[row][column];
-                basketTable.setValueAt(originalValue, row, column);
-            }
-
-        });
+        
 
         JScrollPane scrollPane = new JScrollPane(basketTable);
 
@@ -139,8 +119,22 @@ public class UserOrderView extends JPanel {
         confirmOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // creates new order for customer
-                // needs the array of orderlines from table and adds them to the table
+                BankDetailsView bankDetailsView = null;
+                try {
+                    String userId = order.getUserID();
+                    if(testOperations.isUserHaveBankDetails(userId, connection)){
+                        orderOperations.updateOrderStatus(order.getOrderID(), "confirmed", connection);
+                    }else {
+                        // ask josh to link bank details page
+                        bankDetailsView = new BankDetailsView(connection, user);
+                        bankDetailsView.setVisible(true);
+
+                    }
+                    
+                } catch (SQLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
         });
 
