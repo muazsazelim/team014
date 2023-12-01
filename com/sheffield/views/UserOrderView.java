@@ -7,6 +7,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -80,7 +82,7 @@ public class UserOrderView extends JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 2;
             }
         };
         // OrderLine[] orderLineForOrder
@@ -99,6 +101,29 @@ public class UserOrderView extends JPanel {
             e.printStackTrace();
 
         }
+
+        basketTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                int column = basketTable.columnAtPoint(e.getPoint());
+                int row = basketTable.rowAtPoint(e.getPoint());
+                if(column == 2){
+                    int orderLineId = Integer.parseInt(model.getValueAt(row, 0).toString());
+                    int productId = Integer.parseInt(model.getValueAt(row, 1).toString());
+                    int newQuantity = Integer.parseInt(model.getValueAt(row, 2).toString());
+                    try {
+                        orderOperations.updateOrderLineQuantity(orderLineId, newQuantity, connection);
+                        double newCost = orderOperations.getProductCost(productId, connection) * newQuantity;
+                        orderOperations.updateOrderLineCost(newCost, orderLineId, connection);
+                        model.setValueAt(newCost, row, 3);
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    
+                }
+            }
+        });
 
         
 
