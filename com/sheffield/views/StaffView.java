@@ -23,17 +23,7 @@ public class StaffView extends JPanel {
 
         JPanel header = new JPanel();
         header.setLayout(new BorderLayout());
- 
 
-        // Create a JPanel to hold the components
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0,1));
-
-        contentPanel.add(header, BorderLayout.NORTH);
-        contentPanel.add(panel, BorderLayout.CENTER);
-
-        
-        // Create buttons that links to other pages from default page
         JLabel staffView = new JLabel();
         staffView.setText("Staff View");
         staffView.setHorizontalAlignment(JLabel.CENTER);
@@ -41,9 +31,62 @@ public class StaffView extends JPanel {
 
         JButton backButton = new JButton("Back");
 
-
         header.add(staffView, BorderLayout.NORTH);
         header.add(backButton, BorderLayout.WEST);
+ 
+
+        // Create a JPanel to hold the components
+        JPanel staffContent = new JPanel();
+        staffContent.setLayout(new GridLayout(0,1));
+
+        contentPanel.add(header, BorderLayout.NORTH);
+        contentPanel.add(staffContent, BorderLayout.CENTER);
+
+
+        JButton inventory = new JButton("Inventory");
+        JButton orderManagement = new JButton("OrderManagement");
+
+        staffContent.add(inventory);
+        staffContent.add(orderManagement);
+
+        inventory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                InventoryView inventoryView = null;
+
+                try {
+                    inventoryView = new InventoryView(connection, user);
+
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(inventoryView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+                    
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });      
+        
+        orderManagement.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OrderManagementStaffView orderManagementStaffView = null;
+
+                try {
+                    orderManagementStaffView = new OrderManagementStaffView(connection, user);
+
+                    TrainsOfSheffield.getPanel().removeAll();
+                    TrainsOfSheffield.getPanel().add(orderManagementStaffView, BorderLayout.CENTER);
+                    TrainsOfSheffield.getPanel().revalidate();
+                    
+    
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });  
+        
 
 
         backButton.addActionListener(new ActionListener() {
