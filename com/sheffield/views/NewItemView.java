@@ -141,7 +141,7 @@ public class NewItemView extends JFrame {
                     String bN = bNameF.getText();
                     String rP = rPriceF.getText();
                     String pC = pCodeF.getText();
-                    Double.valueOf(pC);
+                    Integer.valueOf(pC);
                     String gaugeType = "";
                     String pType = "";
                     String pTID = "";
@@ -225,10 +225,26 @@ public class NewItemView extends JFrame {
 
                     q.executeUpdate();
 
+                    String pMax = "SELECT COUNT(*) FROM Product";
+                    PreparedStatement pMa = connection.prepareStatement(pMax);
+                    ResultSet pM = pMa.executeQuery();
+
+                    int pIM = 0;
+
+                    while (pM.next()) {
+                        pIM = pM.getInt(1);
+                    }
+
+                    String addI = "INSERT INTO Inventory (ProductID, Quantity) VALUES (" + pIM + ", 0)";
+                    System.out.println(addI);
+                    PreparedStatement add = connection.prepareStatement(addI);
+                    add.executeUpdate();
+
                 } catch (Throwable t) {
 
                     JOptionPane.showMessageDialog(panel,
                             "You have error in the product information, please check again.");
+                    t.printStackTrace();
                 }
             }
         });
