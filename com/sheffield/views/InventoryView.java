@@ -64,7 +64,7 @@ public class InventoryView extends JFrame {
                 dispose();
                 StaffView staffView = null;
                 try {
-                    staffView = new StaffView(connection);
+                    staffView = new StaffView(connection, user);
                     staffView.setVisible(true);
 
                 } catch (Throwable t) {
