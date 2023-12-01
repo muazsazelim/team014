@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.sheffield.model.Address;
 import com.sheffield.model.DatabaseConnectionHandler;
+import com.sheffield.model.Product;
 import com.sheffield.model.user.BankDetails;
 import com.sheffield.model.user.User;
 import com.sheffield.model.order.Order;
@@ -499,6 +500,31 @@ public class TestOperations {
             throw e;
         }
        
+    }
+
+    public Product getProduct(int productId, Connection connection) throws SQLException {
+        try {
+            String selectSQL = "SELECT * FROM Product WHERE productId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setInt(1, productId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            System.out.println("<==================== Product by ProductId =====================>");
+            if (resultSet.next()) {
+                Product product = new Product(resultSet.getInt("productID"), resultSet.getString("productName"),resultSet.getString("brandName"), resultSet.getFloat("retailPrice"), resultSet.getString("gaugeType"));
+                System.out.println("{" +
+                        "productId='" + resultSet.getInt("productID") + "'" +
+                        ", email='" + resultSet.getString("productName") + "'" +
+                        "}");
+                return product;
+            } else {
+                System.out.println("Product with productId " + productId + " not found.");
+                return null;
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;// Re-throw the exception to signal an error.
+        }
     }
 
    
