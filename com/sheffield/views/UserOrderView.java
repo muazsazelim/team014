@@ -119,6 +119,9 @@ public class UserOrderView extends JPanel {
                         double newCost = orderOperations.getProductCost(productId, connection) * newQuantity;
                         orderOperations.updateOrderLineCost(newCost, orderLineId, connection);
                         model.setValueAt(newCost, row, 3);
+
+                    
+                        Double newTotalOrderCost = orderOperations.calculateTotalOrderCost(order.getOrderID(), connection);
                     } catch (SQLException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();

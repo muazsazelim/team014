@@ -381,6 +381,22 @@ public class OrderOperations {
 
     }
 
+    public Double calculateTotalOrderCost(int orderId, Connection connection){
+        Double cost = 0.0;
+        try {
+            OrderLine[] orderLines = getAllOrdersLinesByOrder(orderId, connection);
+            
+            for (OrderLine orderLine : orderLines) {
+               cost = cost + orderLine.getLineCost(); 
+            }
+            
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return cost;
+    }
+
     public String getProductCode(int productID, Connection connection) throws SQLException {
         try {
             String selectSQL = "SELECT productCo FROM Product WHERE productID=?";
