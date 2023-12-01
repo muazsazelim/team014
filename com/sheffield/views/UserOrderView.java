@@ -128,21 +128,12 @@ public class UserOrderView extends JPanel {
 
         // Create buttons that links to other pages from default page
         confirmOrder = new JButton("Confirm Order");
-        orderHistory = new JButton("Order History");
-        decline = new JButton("Decline Order");
 
         System.out.println(user.getUserType());
 
         // Add components to the panel
         panel.add(confirmOrder);
-        panel.add(orderHistory);
 
-        if (!user.getUserType().equals("customer")) {
-
-            panel.add(decline);
-        } else {
-            System.out.println("this is customer view only");
-        }
 
         // Create an ActionListener for the view buttons
         confirmOrder.addActionListener(new ActionListener() {
@@ -153,29 +144,7 @@ public class UserOrderView extends JPanel {
             }
         });
 
-        decline.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // creates new order for customer
-                // needs the array of orderlines from table and adds them to the table
-            }
-        });
 
-        orderHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //dispose();
-                OrderHistoryView orderHistoryView = null;
-                try {
-                    orderHistoryView = new OrderHistoryView(connection, user);
-                    orderHistoryView.setVisible(true);
-
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-                System.out.println("opening order");
-            }
-        });
 
     }
 
