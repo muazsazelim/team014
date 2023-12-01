@@ -225,13 +225,13 @@ public class OrderOperations {
         }      
     }
 
-    public void updateQuantity(int orderId, int quantity, Connection connection) throws SQLException {
+    public void updateQuantity(int productId, int quantity, Connection connection) throws SQLException {
         try {
-            String updateSQL = "UPDATE Inventory SET quantity=? WHERE orderId=?";
+            String updateSQL = "UPDATE Inventory SET Quantity=? WHERE ProductID=?";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL);
 
             preparedStatement.setInt(1, quantity);
-            preparedStatement.setInt(2, orderId);
+            preparedStatement.setInt(2, productId);
 
             int rowsAffected = preparedStatement.executeUpdate();
 

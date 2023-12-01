@@ -31,7 +31,6 @@ import com.sheffield.model.user.User;
 
 public class OrderManagementStaffView extends JPanel {
     
-    private JButton orderHistory;
     private JButton fufill;
     private JTable basketTable;
     private JTable archivedTable;
@@ -80,9 +79,8 @@ public class OrderManagementStaffView extends JPanel {
             }
         });
 
-        
-       // panel.setLayout(new GridLayout(0,1));
 
+        //Title Page
         JLabel titleLabel = new JLabel("Order Mangement");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -90,65 +88,61 @@ public class OrderManagementStaffView extends JPanel {
 
         int statusIndex = 7;
 
-        
-
         JComboBox<String> comboBox = new JComboBox<>();
 
-        String[] columnNames = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details"};
-            
-            DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+
+        // Initallising Table: Confirmed - Blocked - Archived
+        String[] columnNames = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details"};   
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return row ==0 && column == statusIndex; 
             }
-            };
+        };
 
-            DefaultTableModel modelArchive = new DefaultTableModel(columnNames, 0) {
+        DefaultTableModel modelArchive = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-            };
+        };
+        archivedTable = new JTable(modelArchive);
 
-            archivedTable = new JTable(modelArchive);
-
-            String[] columnNameForBlocked = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details", "Declined"};
-            DefaultTableModel modelBlocked = new DefaultTableModel(columnNameForBlocked, 0) {
+        String[] columnNameForBlocked = {"OrderID", "Date", "Forename", "Surname", "Email", "Delivery Address", "Total Price", "Status", "Valid Bank Details", "Declined"};
+        DefaultTableModel modelBlocked = new DefaultTableModel(columnNameForBlocked, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-            };
-
-            blockedTable = new JTable(modelBlocked);
+        };
+        blockedTable = new JTable(modelBlocked);
         
-       // OrderLine[] orderLineForOrder 
+
+        
+
         try {
             Order[] userOrders = orderOperations.getAllOrders( connection);
 
             Order[] confirmedOrders = Arrays.stream(userOrders)
                 .filter(order -> order.getOrderStatus() == Order.OrderStatus.CONFIRMED)
                 .toArray(Order[]::new);
-
             Arrays.sort(confirmedOrders, Comparator.comparing(Order::getIssueDate));
 
-            
-
             basketTable = new JTable(model);
-                                    
+             
             comboBox.addItem("CONFIRMED");
             comboBox.addItem("FULFILL");
-            
-                    
-                
+                           
             comboBox.setSelectedItem(confirmedOrders[0].getOrderStatus().toString());
             basketTable.getColumnModel().getColumn(statusIndex).setCellEditor(new DefaultCellEditor(comboBox));
+
+
+
             ArrayList<Order> archivedOrders = new ArrayList<>();
             Arrays.sort(userOrders, Comparator.comparing(Order::getIssueDate));
 
             // Adds data to tables
-            for (Order order: userOrders){
-                
+            for (Order order: userOrders){               
                 if (order.getOrderStatus() == OrderStatus.FULFILLED)
                 {
                     archivedOrders.add(order);
@@ -156,33 +150,32 @@ public class OrderManagementStaffView extends JPanel {
                 }else if (order.getOrderStatus() == OrderStatus.CONFIRMED){
 
                     if(orderOperations.isBlockedOrder(order, connection)){
-                        System.out.println("is a blocked order");
+
+                        
                         Object[] tableValues = getTableValues(order, connection);
                         Object[] newTableValue = new Object[tableValues.length + 1];
                         System.arraycopy(tableValues, 0, newTableValue, 0, tableValues.length);
 
                         if(orderOperations.isDeclinedOrder(order.getOrderID(), connection)){
+
                             newTableValue[tableValues.length] = "TRUE";
                         }else {
-                            newTableValue[tableValues.length] = "FALSE";
+                           newTableValue[tableValues.length] = "FALSE";
                         }
                                
                         modelBlocked.addRow(newTableValue);
                     }else {
-                        model.addRow(getTableValues(order, connection)); }
-                    
-                    
+                        model.addRow(getTableValues(order, connection)); 
+                    }   
                 }
                               
-
             }
+
 
             Collections.sort(archivedOrders, Comparator.comparing(Order::getIssueDate));
             for(Order order : archivedOrders){
                 modelArchive.addRow(getTableValues(order, connection));
             }
-
-
 
             basketTable.addMouseListener(new MouseAdapter() {
                 @Override
@@ -222,10 +215,16 @@ public class OrderManagementStaffView extends JPanel {
         basketTable.setRowSelectionAllowed(false);
         basketTable.setColumnSelectionAllowed(false);
 
+        archivedTable.setCellSelectionEnabled(false);
+        archivedTable.setRowSelectionAllowed(false);
+        archivedTable.setColumnSelectionAllowed(false);
+
+        //Setting Dimentions for Tables
         basketTable.setPreferredScrollableViewportSize(new Dimension(100,100));
         blockedTable.setPreferredScrollableViewportSize(new Dimension(100,100));
         archivedTable.setPreferredScrollableViewportSize(new Dimension(100,100));
-      
+        
+        //Organising Tables on Panes
         JScrollPane scrollPane = new JScrollPane(basketTable);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Confirmed Orders"));
         panel.add(scrollPane, BorderLayout.NORTH);
@@ -233,25 +232,22 @@ public class OrderManagementStaffView extends JPanel {
         JScrollPane scrollPane3 = new JScrollPane(blockedTable);
         scrollPane3.setBorder(BorderFactory.createTitledBorder("Blocked Orders"));
         panel.add(scrollPane3, BorderLayout.CENTER);
-
-        
+       
         JScrollPane scrollPane2 = new JScrollPane(archivedTable);
         scrollPane2.setBorder(BorderFactory.createTitledBorder("Archived Orders"));
         panel.add(scrollPane2, BorderLayout.SOUTH);
 
         
        
-        
+        // Labelling Buttons
         fufill = new JButton("Fulfill");
         delete = new JButton("Delete");
         delete.setEnabled(false);
 
+        //Creating Selection 
         ListSelectionModel selectionModel = new DefaultListSelectionModel();
-        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-       
+        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);     
         blockedTable.setSelectionModel(selectionModel);
-        
-
         
 
         selectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -259,9 +255,18 @@ public class OrderManagementStaffView extends JPanel {
             public void valueChanged(ListSelectionEvent e){
                 if (!e.getValueIsAdjusting()){
                     int selectedRow = blockedTable.getSelectedRow();
-                    if(blockedTable.getValueAt(selectedRow, 2).toString() == "true"){
-                        delete.setEnabled(selectedRow != -1);
+                    if (selectedRow != -1){
+                        
+                            
+                            if(blockedTable.getValueAt(selectedRow, 9).toString() == "TRUE"){
+                            delete.setEnabled(true);
+                            }else{delete.setEnabled(false);}
+                        
                     }
+                    
+                    
+
+                    
                     
                 }
 
@@ -269,22 +274,20 @@ public class OrderManagementStaffView extends JPanel {
         });
 
         
-     
-
+        //Adding Buttons to their own panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
         buttonPanel.add(delete);
         buttonPanel.add(fufill);
-        
-        
-        
+               
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+
 
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
                 int selectedRow = blockedTable.getSelectedRow();
-                if(selectedRow != -1){
+                
                     int orderId = Integer.parseInt(blockedTable.getValueAt(selectedRow, 0).toString());
                     try {          
                         orderOperations.deleteOrder(orderId, connection);
@@ -294,7 +297,7 @@ public class OrderManagementStaffView extends JPanel {
                         e1.printStackTrace();
                     }
                    
-                }
+                
             }
         });
     
@@ -324,7 +327,7 @@ public class OrderManagementStaffView extends JPanel {
                                     currentQuantity = newQuan.getInt(1);
                                 }                 
                             int updatedQuantity =  currentQuantity - orderOperations.getQuantitybyProductID(productId, connection);
-                            orderOperations.updateQuantity(orderId, updatedQuantity, connection);
+                            orderOperations.updateQuantity(productId, updatedQuantity, connection);
                             
                         }
                         modelArchive.addRow(getTableValues(order, connection));
@@ -342,6 +345,7 @@ public class OrderManagementStaffView extends JPanel {
 
     }
     
+    
 
     
 
@@ -352,7 +356,8 @@ public class OrderManagementStaffView extends JPanel {
                 try {
                     userIDforSearch = orderOperations.getUserIDbyOrderID(orderIdForSearch, connection);
                     Address address = testOperations.getAddress(userIDforSearch, connection);
-                    // String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
+                    // EVERYONE NEEDS AN ADDRESS OR THIS DONT WORK
+                  //  String addressDisplay = address.getHouseNumber() + ", " + address.getRoadName() + ", " + address.getCityName() + ", " + address.getPostcode();
                      ordersForTable = new Object[]{order.getOrderID(), order.getIssueDate(), testOperations.getForename(userIDforSearch, connection),
                                         testOperations.getSurname(userIDforSearch, connection),
                                         testOperations.getEmail(userIDforSearch, connection),
