@@ -191,7 +191,7 @@ public class UserOrderView extends JPanel {
                         userMainView = new UserMainView(connection, user);
                         
                         TrainsOfSheffield.getPanel().removeAll();
-                        TrainsOfSheffield.getPanel().add(bankDetailsView, BorderLayout.CENTER);
+                        TrainsOfSheffield.getPanel().add(userMainView, BorderLayout.CENTER);
                         TrainsOfSheffield.getPanel().revalidate();
 
                     }else {
