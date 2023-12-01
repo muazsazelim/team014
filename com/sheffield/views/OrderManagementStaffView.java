@@ -176,10 +176,6 @@ public class OrderManagementStaffView extends JFrame {
             });
 
             
-            
-            
-             
-
              
         } catch (SQLException e) {
             e.printStackTrace();         
@@ -224,8 +220,7 @@ public class OrderManagementStaffView extends JFrame {
         buttonPanel.add(fufill);
         
         
-        this.getContentPane().add(panel, BorderLayout.NORTH);
-        
+        this.getContentPane().add(panel, BorderLayout.NORTH);  
         this.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         this.pack();
 
@@ -239,7 +234,7 @@ public class OrderManagementStaffView extends JFrame {
                     try {
                         orderOperations.deleteOrder(orderId, connection);
                     } catch (SQLException e1) {
-                       
+                      
                         e1.printStackTrace();
                     }
                     model.removeRow(0);
@@ -249,14 +244,7 @@ public class OrderManagementStaffView extends JFrame {
                 }
             }
         });
-        
-        orderHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Order History Page");
-            }
-        });
-
+       
         fufill.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
