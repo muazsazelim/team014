@@ -135,12 +135,10 @@ public class OrderManagementStaffView extends JPanel {
             
 
             basketTable = new JTable(model);
-                
-                    
-                    
-                    
-            
+                                    
+            comboBox.addItem("CONFIRMED");
             comboBox.addItem("FULFILL");
+            
                     
                 
             comboBox.setSelectedItem(confirmedOrders[0].getOrderStatus().toString());
@@ -248,20 +246,39 @@ public class OrderManagementStaffView extends JPanel {
         delete = new JButton("Delete");
         delete.setEnabled(false);
 
-        ListSelectionModel selectionModel = blockedTable.getSelectionModel();
+        ListSelectionModel selectionModel = new DefaultListSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+       
+        blockedTable.setSelectionModel(selectionModel);
+        
+
+        
 
         selectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e){
                 if (!e.getValueIsAdjusting()){
                     int selectedRow = blockedTable.getSelectedRow();
-                 
-                    delete.setEnabled(selectedRow != -1);
+                    if(blockedTable.getValueAt(selectedRow, 2).toString() == "true"){
+                        delete.setEnabled(selectedRow != -1);
+                    }
+                    
                 }
 
             }
         });
+
+        
+     
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(delete);
+        buttonPanel.add(fufill);
+        
+        
+        
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         delete.addActionListener(new ActionListener() {
             @Override
@@ -280,44 +297,9 @@ public class OrderManagementStaffView extends JPanel {
                 }
             }
         });
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
-        buttonPanel.add(delete);
-        buttonPanel.add(fufill);
+    
         
-        
-        
-        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-
-       
-        delete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if ("DELETE".equals(basketTable.getValueAt(0, statusIndex))){
-                    int orderId = Integer.valueOf(basketTable.getValueAt(0,0).toString()) ;
-                    try {
-                        orderOperations.deleteOrder(orderId, connection);
-                    } catch (SQLException e1) {
-                      
-                        e1.printStackTrace();
-                    }
-                    model.removeRow(0);
-                    System.out.println("deleted order");
-                        
-
-                }
-            }
-        });
-        
-        orderHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Went to Order History Page");
-            }
-        });
-
+     
         fufill.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
